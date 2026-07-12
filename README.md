@@ -1,4 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌱 AgriVest
+
+An AI-powered farmland investment platform that transforms farmland into a data-driven, investable asset.
+
+---
+
+## Features
+
+- Fractional farmland investment
+- AI-powered crop analysis
+- IoT-based farm monitoring
+- Soil health tracking
+- Yield prediction
+- Investment dashboard
+- Revenue analytics
+- Performance-based profit sharing
+
+---
+
+## Tech Stack
+
+Frontend
+- React.js
+- Next.js
+- Tailwind CSS
+
+Backend
+- Node.js
+- Express.js
+
+Database
+- MongoDB
+
+AI & IoT
+- AI Prediction
+- IoT Sensors
+
+Deployment
+- Docker
+- Vercel
+
+---
+
+## System Workflow
+
+Investor → Platform → Farmer
+
+Farmer → IoT Sensors → AI Engine
+
+AI → Dashboard
+
+Dashboard → Investment Analytics
+
+---
+
+## Screenshots
+
+Landing Page
+
+Dashboard
+
+Investment Page
+
+Farm Analytics
+
+Soil Health Monitoring
+
+---
+
+## Installation
+
+git clone ...
+
+npm install
+
+npm run devThis is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
