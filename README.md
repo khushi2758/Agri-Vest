@@ -1,111 +1,105 @@
 # 🌱 AgriVest
 
-An AI-powered farmland investment platform that transforms farmland into a data-driven, investable asset.
+An advanced, AI-powered farmland investment platform that transforms agricultural assets into data-driven, investable tokens using the global **AGV** currency system.
 
 ---
 
-## Features
+## 🚀 Key Features
 
-- Fractional farmland investment
-- AI-powered crop analysis
-- IoT-based farm monitoring
-- Soil health tracking
-- Yield prediction
-- Investment dashboard
-- Revenue analytics
-- Performance-based profit sharing
+- **Fractional Farmland Investment:** Invest globally using AGV tokens pegged 1:1 with USD.
+- **Social Trading & Leaderboards:** Follow top-performing portfolios and get real-time toast notifications for new trades.
+- **AI-Powered Crop Analysis:** Advanced machine learning algorithms predict yield and evaluate soil health.
+- **IoT-Based Farm Monitoring:** Real-time telemetry nodes track moisture, health, and efficiency.
+- **Dynamic Dashboards:** Dense 12-column layouts for pro-level analytics, drawing tools on candlestick charts, and performance tables.
+- **Automated KYC & Security:** Blockchain-inspired data hashing and secure OTP login timers.
 
 ---
 
-## Tech Stack
+## 🛠 Tech Stack
 
-Frontend
-- React.js
-- Next.js
-- Tailwind CSS
+**Frontend Architecture**
+- React 18 & Next.js 14 App Router
+- Tailwind CSS (Custom Green Aesthetics & Glassmorphism)
+- Recharts (Interactive Financial Data Visualization)
+- Framer Motion (Micro-animations and Page Transitions)
+- Lucide React (Consistent iconography)
 
-Backend
-- Node.js
-- Express.js
-
-Database
-- MongoDB
-
-AI & IoT
-- AI Prediction
-- IoT Sensors
-
-Deployment
-- Docker
-- Vercel
+**Backend & Data Layer**
+- Node.js & Next.js API Routes
+- MongoDB (Database: `agrivest_db`)
+- JWT & OTP Authentication (In-memory TTL caching)
+- Native Crypto Hash Security
 
 ---
 
-## System Workflow
+## 📊 Contributor Leaderboard
 
-Investor → Platform → Farmer
+We love our community! Here is a visual representation of recent project contributions based on commit history:
 
-Farmer → IoT Sensors → AI Engine
-
-AI → Dashboard
-
-Dashboard → Investment Analytics
-
----
-
-## Screenshots
-
-Landing Page
-
-Dashboard
-
-Investment Page
-
-Farm Analytics
-
-Soil Health Monitoring
-
----
-
-## Installation
-
-git clone ...
-
-npm install
-
-npm run devThis is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```markdown
+User           | Commits | Activity Graph
+---------------|---------|--------------------------------------------------
+Khushi Bera    | 6       | █████████████ (33%)
+Rishita        | 5       | ███████████ (28%)
+royrhea        | 4       | █████████ (22%)
+Darkness2758   | 3       | ███████ (17%)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Installation & Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/Rohan/Agri-Vest.git
+   cd Agri-Vest
+   ```
 
-## Learn More
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Configure Environment:**
+   Create a `.env` file in the root directory and add your MongoDB connection string and JWT secret.
+   ```env
+   MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/agrivest_db
+   JWT_SECRET=your_super_secret_key
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. **Access the App:**
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📈 System Workflow & Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Investor Flow:**
+   Registers securely via OTP → Completes KYC → Funds Wallet with AGV → Browses Marketplace → Invests or Follows Top Performers.
+2. **Farmer Flow:**
+   Lists Agricultural Asset → Connects IoT Sensors → Receives Funding → Updates Crop Status.
+3. **Data Pipeline:**
+   IoT Sensors → AI Engine → Dashboard Visualization → Revenue Profit Sharing calculations.
+
+---
+
+## 🔒 Security Best Practices
+
+- All passwords and critical user data are hashed using `crypto` HMAC-SHA256.
+- OTPs expire strictly after 10 minutes.
+- API endpoints are protected by bearer token verification.
+- Cross-Site Scripting (XSS) protections enabled on all React forms.
+
+---
+
+## 🌐 Global Currency Strategy (AGV)
+
+The platform operates on **AGV**, a unified digital token. 
+1 AGV is strictly pegged to $1 USD. A fractional service fee is deducted during initial conversion to fund technology education initiatives for rural farmers globally.
+
+---
