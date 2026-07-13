@@ -16,7 +16,7 @@ let client = null;
 
 async function connect() {
   if (!client) {
-    client = new MongoClient(URI);
+    client = new MongoClient(URI, { tlsAllowInvalidCertificates: true });
     await client.connect();
   }
   return client.db(DB_NAME);

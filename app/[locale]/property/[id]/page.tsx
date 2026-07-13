@@ -71,6 +71,9 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
             <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-neutral-700 rounded-xl shadow-sm hover:bg-gray-50 transition-colors">
               <Bookmark size={16} />
             </button>
+            <Link href={`/${locale}/stock/${property.id}`} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-white px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-black transition-all">
+              <Activity size={16} className="text-[#c8e639]" /> Market Analysis
+            </Link>
             <button onClick={() => setIsTradeModalOpen(true)} className="flex items-center gap-2 text-sm font-extrabold bg-[#c8e639] text-[#1b2620] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-[#b0cc2f] transition-all">
               Invest Now <ArrowUpRight size={16} />
             </button>
@@ -313,6 +316,9 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
               </div>
 
               <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
+                <Link href={`/${locale}/stock/${property.id}`} className="bg-transparent border border-[#1b2620]/20 hover:bg-[#1b2620]/5 text-[#1b2620] font-extrabold px-6 py-3.5 rounded-full transition-colors whitespace-nowrap flex items-center gap-2">
+                  <Activity size={16} /> Market Analysis
+                </Link>
                 <Link href={`/${locale}/prospectus/${property.id}`} className="bg-white/30 hover:bg-white/50 text-[#1b2620] font-extrabold px-6 py-3.5 rounded-full transition-colors whitespace-nowrap">
                   View Prospectus
                 </Link>

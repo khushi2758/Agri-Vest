@@ -5,70 +5,64 @@ async function run() {
   try {
     db = await connect();
     
-    // Drop collection if it exists to ensure idempotency
     await db.collection('users').drop().catch(() => {});
 
     await db.createCollection('users', {
       validator: {
         $jsonSchema: {
           bsonType: "object",
-          required: ["email", "name", "role", "created_at", "updated_at", "wallet"],
+          required: ["email", "name", "role", "created_at", "updated_at", "wallet", "password_hash"],
           properties: {
             email: {
-              bsonType: "string",
-              description: "email must be a string and is required"
+              bsonType: "string"
             },
             name: {
               bsonType: "string",
-              maxLength: 100,
-              description: "name must be a string of max length 100 and is required"
+              maxLength: 100
             },
             phone: {
               bsonType: "string",
-              pattern: "^\\+?[0-9]{10,14}$",
-              description: "phone must be a string matching the pattern ^\\+?[0-9]{10,14}$"
+              pattern: "^\\+?[0-9]{10,14}$"
+            },
+            preferred_language: {
+              bsonType: "string",
+              enum: ["en", "es", "fr", "hi"]
+            },
+            password_hash: {
+              bsonType: "string"
             },
             role: {
               bsonType: "string",
-              enum: ["landowner", "investor", "agronomist", "agri_tech", "admin"],
-              description: "role must be one of landowner, investor, agronomist, agri_tech, admin and is required"
+              enum: ["landowner", "investor", "agronomist", "agri_tech", "admin"]
             },
             is_active: {
-              bsonType: "bool",
-              description: "is_active must be a boolean"
+              bsonType: "bool"
             },
             last_login: {
-              bsonType: "date",
-              description: "last_login must be a date"
+              bsonType: "date"
             },
             created_at: {
-              bsonType: "date",
-              description: "created_at must be a date and is required"
+              bsonType: "date"
             },
             updated_at: {
-              bsonType: "date",
-              description: "updated_at must be a date and is required"
+              bsonType: "date"
             },
             kyc: {
               bsonType: "object",
               required: ["verified"],
               properties: {
                 verified: {
-                  bsonType: "bool",
-                  description: "kyc.verified must be a boolean and is required"
+                  bsonType: "bool"
                 },
                 doc_type: {
                   bsonType: "string",
-                  enum: ["PAN", "AADHAAR", "PASSPORT"],
-                  description: "kyc.doc_type must be one of PAN, AADHAAR, PASSPORT"
+                  enum: ["PAN", "AADHAAR", "PASSPORT"]
                 },
                 doc_ref: {
-                  bsonType: "string",
-                  description: "kyc.doc_ref must be a string"
+                  bsonType: "string"
                 },
                 verified_at: {
-                  bsonType: "date",
-                  description: "kyc.verified_at must be a date"
+                  bsonType: "date"
                 }
               }
             },
@@ -77,12 +71,10 @@ async function run() {
               required: ["balance", "currency"],
               properties: {
                 balance: {
-                  bsonType: ["string", "decimal"],
-                  description: "wallet.balance must be a decimal (represented as string or BSON decimal) and is required"
+                  bsonType: ["string", "decimal"]
                 },
                 currency: {
-                  bsonType: "string",
-                  description: "wallet.currency must be a string and is required"
+                  bsonType: "string"
                 }
               }
             }
@@ -93,14 +85,12 @@ async function run() {
       validationLevel: "strict"
     });
 
-    // Create Indexes
     const collection = db.collection('users');
     await collection.createIndex({ email: 1 }, { unique: true });
     await collection.createIndex({ role: 1 });
 
-    console.log("✓ users done");
   } catch (err) {
-    console.error("✗ users failed:", err);
+    console.error(err);
     process.exit(1);
   } finally {
     await close();

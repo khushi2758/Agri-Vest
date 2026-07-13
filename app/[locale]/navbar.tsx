@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
@@ -18,17 +19,37 @@ const easeOut = [0.16, 1, 0.3, 1] as const;
 
 export default function NavBar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [active, setActive] = useState(pathname);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setActive(pathname);
   }, [pathname]);
 
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data);
+        }
+      } catch (e) {
+        
+      } finally {
+        setLoading(false);
+      }
+    }
+    checkAuth();
+  }, []);
+
   return (
     <>
       <motion.header
-        className="relative flex items-center justify-between py-3 z-30 sticky top-0 bg-transparent backdrop-blur-sm border-b border-neutral-200 w-full px-1 sm:px-6 lg:px-8 text-[#526108] text-bold font-mono"
+        className="relative flex items-center justify-between py-3 z-30 top-0 bg-transparent backdrop-blur-sm border-b border-neutral-200 w-full px-1 sm:px-6 lg:px-8 text-[#526108] text-bold font-mono"
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: easeOut }}
@@ -53,7 +74,7 @@ export default function NavBar() {
               {active === href && (
                 <motion.div
                   layoutId="nav-underline"
-                  className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-neutral-900"
+                  className="absolute left-0 right-0 -bottom-0.5 h-0.5 bg-neutral-900"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -61,13 +82,31 @@ export default function NavBar() {
           ))}
         </nav>
 
-        <motion.button
-          className="hidden rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white md:block"
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
-        >
-          Login|register
-        </motion.button>
+        <div className="hidden md:flex items-center gap-3">
+          {!loading && user ? (
+            <button
+              onClick={() => router.push("/en/profile")}
+              className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
+            >
+              <User size={16} /> Profile
+            </button>
+          ) : !loading ? (
+            <>
+              <button
+                onClick={() => router.push("/en/login")}
+                className="rounded-full px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => router.push("/en/register")}
+                className="rounded-full bg-[#1b2620] text-[#c8e639] px-5 py-2 text-sm font-medium transition hover:bg-black hover:shadow-md"
+              >
+                Register
+              </button>
+            </>
+          ) : null}
+        </div>
 
         <button
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -142,21 +181,45 @@ export default function NavBar() {
                     </Link>
                   </motion.div>
                 ))}
-                <motion.button
+                
+                <motion.div
                   variants={{
                     hidden: { opacity: 0, x: -12 },
                     show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: easeOut } },
                   }}
-                  className="mt-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
+                  className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2"
                 >
-                  Login|register
-                </motion.button>
+                  {!loading && user ? (
+                    <button
+                      onClick={() => { router.push("/en/profile"); setMobileOpen(false); }}
+                      className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
+                    >
+                      <User size={16} /> Profile
+                    </button>
+                  ) : !loading ? (
+                    <>
+                      <button
+                        onClick={() => { router.push("/en/login"); setMobileOpen(false); }}
+                        className="w-full rounded-full border border-neutral-200 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100"
+                      >
+                        Login
+                      </button>
+                      <button
+                        onClick={() => { router.push("/en/register"); setMobileOpen(false); }}
+                        className="w-full rounded-full bg-[#1b2620] text-[#c8e639] px-5 py-2.5 text-sm font-medium transition hover:bg-black"
+                      >
+                        Register
+                      </button>
+                    </>
+                  ) : null}
+                </motion.div>
+
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.header>
-      <div className="h-1 w-full bg-gradient-to-r from-[#c8e639] via-[#8fd0c8] to-[#a78bd8]" />
+      <div className="h-1 w-full bg-linear-to-r from-[#c8e639] via-[#8fd0c8] to-[#a78bd8]" />
     </>
   );
 }
