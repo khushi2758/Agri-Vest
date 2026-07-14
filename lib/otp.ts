@@ -1,7 +1,13 @@
 import nodemailer from "nodemailer";
 
-const otpStore = new Map<string, { code: string; expiresAt: number }>();
+const globalWithOtp = global as typeof globalThis & {
+  _otpStore?: Map<string, { code: string; expiresAt: number }>;
+};
 
+if (!globalWithOtp._otpStore) {
+  globalWithOtp._otpStore = new Map();
+}
+const otpStore = globalWithOtp._otpStore;
 export function generateOTP(email: string): string {
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   otpStore.set(email, {

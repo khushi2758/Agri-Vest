@@ -10,7 +10,7 @@ export default function Register() {
     name: "",
     email: "", 
     password: "", 
-    role: "investor",
+    roles: ["investor"],
     phone: "",
     preferred_language: "en",
     otp: "" 
@@ -37,6 +37,15 @@ export default function Register() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRoleToggle = (role: string) => {
+    setFormData(prev => {
+      const roles = prev.roles.includes(role)
+        ? prev.roles.filter(r => r !== role)
+        : [...prev.roles, role];
+      return { ...prev, roles };
+    });
   };
 
   const requestOTP = async (e: React.FormEvent) => {
@@ -150,12 +159,20 @@ export default function Register() {
                     </div>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-extrabold text-[#1b2620] uppercase tracking-widest ml-1">Account Type</label>
-                    <select name="role" value={formData.role} onChange={handleChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-[#1b2620] focus:outline-none focus:border-[#c8e639] focus:ring-1 focus:ring-[#c8e639] transition-all appearance-none cursor-pointer">
-                      <option value="investor">Investor</option>
-                      <option value="farmer">Farmer (Producer)</option>
-                    </select>
+                  <div className="space-y-1.5 col-span-2">
+                    <label className="text-xs font-extrabold text-[#1b2620] uppercase tracking-widest ml-1">Account Types (Select all that apply)</label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                      {[
+                        { id: 'investor', label: 'Investor' },
+                        { id: 'farmer', label: 'Farmer (Producer)' },
+                        { id: 'landowner', label: 'Landowner' }
+                      ].map(roleOption => (
+                        <label key={roleOption.id} className={`flex items-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${formData.roles.includes(roleOption.id) ? 'bg-[#c8e639]/20 border-[#c8e639]' : 'bg-gray-50 border-gray-200 hover:border-[#c8e639]/50'}`}>
+                          <input type="checkbox" className="accent-[#1b2620] w-4 h-4 cursor-pointer" checked={formData.roles.includes(roleOption.id)} onChange={() => handleRoleToggle(roleOption.id)} />
+                          <span className="text-sm font-bold text-[#1b2620]">{roleOption.label}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="space-y-1.5 col-span-2">

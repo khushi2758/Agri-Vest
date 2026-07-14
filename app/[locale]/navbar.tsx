@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Trash2, Globe } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
@@ -24,6 +24,8 @@ export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setActive(pathname);
@@ -38,13 +40,53 @@ export default function NavBar() {
           setUser(data);
         }
       } catch (e) {
-        
       } finally {
         setLoading(false);
       }
     }
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/en/login");
+      router.refresh();
+    } catch (e) {}
+  };
+
+  const handleDeleteAccount = async () => {
+    if (confirm("Are you sure you want to permanently delete your account? This cannot be undone.")) {
+      try {
+        await fetch("/api/auth/delete-account", { method: "POST" });
+        router.push("/en/register");
+        router.refresh();
+      } catch (e) {}
+    }
+  };
+
+  const filteredNavLinks = NAV_LINKS.filter((link) => {
+    if (user && user.roles) {
+      const isFarmer = user.roles.includes("farmer") || user.roles.includes("agronomist");
+      const isInvestor = user.roles.includes("investor");
+      if (isFarmer && !isInvestor) {
+        if (link.label === "Investor" || link.label === "Portfolio") {
+          return false;
+        }
+      }
+    }
+    return true;
+  });
 
   return (
     <>
@@ -62,7 +104,7 @@ export default function NavBar() {
         </Link>
 
         <nav className="hidden gap-10 text-md font-medium md:flex">
-          {NAV_LINKS.map(({ label, href }) => (
+          {filteredNavLinks.map(({ label, href }) => (
             <Link key={label} href={href} className="relative pb-1">
               <motion.span
                 whileHover={{ y: -2 }}
@@ -83,13 +125,58 @@ export default function NavBar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
+          <button
+            onClick={() => router.push("/en/Community")}
+            className="flex items-center justify-center rounded-full p-2 text-neutral-900 transition hover:bg-neutral-100"
+            title="Community Feedback"
+          >
+            <Globe size={20} />
+          </button>
           {!loading && user ? (
-            <button
-              onClick={() => router.push("/en/profile")}
-              className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
-            >
-              <User size={16} /> Profile
-            </button>
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
+              >
+                <User size={16} /> Profile
+              </button>
+              <AnimatePresence>
+                {dropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2"
+                  >
+                    <button
+                      onClick={() => { setDropdownOpen(false); router.push("/en/profile"); }}
+                      className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    >
+                      <User size={14} /> Profile
+                    </button>
+                    <button
+                      onClick={() => { setDropdownOpen(false); router.push("/en/settings"); }}
+                      className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    >
+                      <Settings size={14} /> Settings
+                    </button>
+                    <div className="h-px w-full bg-gray-100 my-1"></div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    >
+                      <LogOut size={14} /> Logout
+                    </button>
+                    <button
+                      onClick={handleDeleteAccount}
+                      className="w-full text-left px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 mt-1"
+                    >
+                      <Trash2 size={14} /> Delete Account
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           ) : !loading ? (
             <>
               <button
@@ -157,7 +244,7 @@ export default function NavBar() {
                 initial="hidden"
                 animate="show"
               >
-                {NAV_LINKS.map(({ label, href }) => (
+                {filteredNavLinks.map(({ label, href }) => (
                   <motion.div
                     key={label}
                     variants={{
@@ -168,8 +255,8 @@ export default function NavBar() {
                     <Link
                       href={href}
                       onClick={() => {
-                        setActive(href);
-                        setMobileOpen(false);
+                         setActive(href);
+                         setMobileOpen(false);
                       }}
                       className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition ${
                         active === label
@@ -189,13 +276,39 @@ export default function NavBar() {
                   }}
                   className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2"
                 >
+                  <button
+                    onClick={() => { router.push("/en/Community"); setMobileOpen(false); }}
+                    className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-200 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100"
+                  >
+                    <Globe size={16} /> Community
+                  </button>
                   {!loading && user ? (
-                    <button
-                      onClick={() => { router.push("/en/profile"); setMobileOpen(false); }}
-                      className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
-                    >
-                      <User size={16} /> Profile
-                    </button>
+                    <>
+                      <button
+                        onClick={() => { router.push("/en/profile"); setMobileOpen(false); }}
+                        className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
+                      >
+                        <User size={16} /> Profile
+                      </button>
+                      <button
+                        onClick={() => { router.push("/en/settings"); setMobileOpen(false); }}
+                        className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
+                      >
+                        <Settings size={16} /> Settings
+                      </button>
+                      <button
+                        onClick={() => { handleLogout(); setMobileOpen(false); }}
+                        className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
+                      >
+                        <LogOut size={16} /> Logout
+                      </button>
+                      <button
+                        onClick={() => { handleDeleteAccount(); setMobileOpen(false); }}
+                        className="w-full flex justify-center items-center gap-2 rounded-full border border-red-500 px-5 py-2.5 text-sm font-bold text-red-500 transition hover:bg-red-500 hover:text-white mt-2"
+                      >
+                        <Trash2 size={16} /> Delete Account
+                      </button>
+                    </>
                   ) : !loading ? (
                     <>
                       <button

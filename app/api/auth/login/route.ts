@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       { $set: { last_login: new Date() } }
     );
 
-    const token = signToken({ sub: user._id.toString(), role: user.role, email: user.email, name: user.name });
+    const token = signToken({ sub: user._id.toString(), roles: user.roles || (user.role ? [user.role] : []), email: user.email, name: user.name });
 
     const response = NextResponse.json({ success: true }, { status: 200 });
     response.cookies.set("session", token, {

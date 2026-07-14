@@ -5,9 +5,9 @@ import { verifyOTP } from "@/lib/otp";
 
 export async function POST(request: Request) {
   try {
-    const { email, name, password, role, phone, preferred_language, otp } = await request.json();
+    const { email, name, password, roles, phone, preferred_language, otp } = await request.json();
 
-    if (!email || !name || !password || !role || !otp) {
+    if (!email || !name || !password || !roles || !roles.length || !otp) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -23,8 +23,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email already exists" }, { status: 409 });
     }
 
-    let assignedRole = role;
-    if (role === "farmer") assignedRole = "agronomist";
+    let assignedRoles = roles.map((r: string) => r === "farmer" ? "agronomist" : r);
 
     const password_hash = hashPassword(password);
     const now = new Date();
@@ -32,7 +31,8 @@ export async function POST(request: Request) {
     const newUser = {
       email,
       name,
-      role: assignedRole,
+      role: assignedRoles.includes("agronomist") ? "agronomist" : "investor",
+      roles: assignedRoles,
       password_hash,
       phone: phone || "+10000000000",
       preferred_language: preferred_language || "en",
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     const result = await db.collection("users").insertOne(newUser);
     
-    const token = signToken({ sub: result.insertedId.toString(), role: assignedRole, email, name });
+    const token = signToken({ sub: result.insertedId.toString(), roles: assignedRoles, email, name });
 
     const response = NextResponse.json({ success: true }, { status: 201 });
     response.cookies.set("session", token, {

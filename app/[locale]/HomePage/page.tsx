@@ -11,7 +11,9 @@ import { motion } from 'motion/react';
 import NavBar from '@/app/[locale]/navbar';
 import { useTranslations } from 'next-intl';
 import Footer from '../Footer';
-// Shared easing + stagger so every section feels like one choreography, not scattered effects
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
 const container = {
@@ -38,9 +40,26 @@ const scaleIn = {
 
 export default function page() {
   const t = useTranslations('home');
+  const router = useRouter();
+  const [isLandowner, setIsLandowner] = useState(false);
+
+  useEffect(() => {
+    async function checkUser() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const user = await res.json();
+          if (user.roles && user.roles.includes('landowner')) {
+            setIsLandowner(true);
+          }
+        }
+      } catch (err) {}
+    }
+    checkUser();
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#c7cdb9] font-sans px-14">
-      {/* Background forest photo*/}
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
@@ -58,10 +77,8 @@ export default function page() {
       </motion.div>
 
       <div className="relative z-10 mx-auto max-w-[1400px] px-10">
-        {/* Nav */}
 <NavBar />
 
-        {/* Hero */}
         <main className="relative pt-5">
           <motion.div
             className="grid grid-cols-1 pb-15 gap-8 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-center"
@@ -69,7 +86,6 @@ export default function page() {
             initial="hidden"
             animate="show"
           >
-            {/* Left: Headline */}
             <motion.div className="relative z-10" variants={fadeUp}>
               <h1 className="text-6xl font-extrabold uppercase leading-[0.95] tracking-tight text-white drop-shadow-sm md:text-7xl">
                 {t('header')}
@@ -90,18 +106,20 @@ export default function page() {
                 >
                   Explore Farms
                 </motion.button>
-                <motion.button
-                  variants={fadeUp}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100"
-                >
-                  Register Farmland
-                </motion.button>
+                {isLandowner && (
+                  <motion.button
+                    variants={fadeUp}
+                    onClick={() => router.push('/en/Farmers/register')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100"
+                  >
+                    Register Farmland
+                  </motion.button>
+                )}
               </motion.div>
             </motion.div>
 
-            {/* Center: Floating island image */}
             <div>
               <motion.div
                 className="absolute top-[-15%] left-0 w-full h-full flex items-center justify-center z-20"
@@ -138,7 +156,6 @@ export default function page() {
               />
             </div>
 
-            {/* Right: Stats */}
             <motion.div
               className="relative flex flex-row gap-8 text-2xl font-bold text-white drop-shadow-sm md:items-end"
               variants={container}
@@ -175,7 +192,6 @@ export default function page() {
             </motion.div>
           </motion.div>
 
-          {/* Bottom row */}
           <motion.div
             className="mt-5 grid grid-cols-1 gap-16 pb-16 md:grid-cols-[1fr_0.6fr_1fr]"
             variants={container}

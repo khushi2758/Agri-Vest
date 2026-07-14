@@ -165,9 +165,22 @@ export default function AccountSettingsPage() {
                       <Camera size={14} />
                     </button>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button className="bg-[#1b2620] text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#0a0f0c] transition-colors shadow-sm">Upload New</button>
-                    <button className="bg-gray-100 text-gray-600 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-200 transition-colors">Delete avatar</button>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                      <button className="bg-[#1b2620] text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-[#0a0f0c] transition-colors shadow-sm">Upload New</button>
+                      <button className="bg-gray-100 text-gray-600 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-200 transition-colors">Delete avatar</button>
+                    </div>
+                    <div className="flex items-center gap-4 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 w-max">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] uppercase font-bold text-gray-400">Reputation</span>
+                        <span className="text-lg font-black text-[#1b2620]">{user.reputation || 0}</span>
+                      </div>
+                      <div className="w-px h-8 bg-gray-200"></div>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] uppercase font-bold text-gray-400">Trust Score</span>
+                        <span className="text-lg font-black text-[#1b2620]">{user.trust_value || 50}/100</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
