@@ -86,7 +86,7 @@ export default function page() {
             initial="hidden"
             animate="show"
           >
-            <motion.div className="relative z-10" variants={fadeUp}>
+            <motion.div className="relative z-30" variants={fadeUp}>
               <h1 className="text-6xl font-extrabold uppercase leading-[0.95] tracking-tight text-white drop-shadow-sm md:text-7xl">
                 {t('header')}
                 <br />
@@ -102,11 +102,12 @@ export default function page() {
                   variants={fadeUp}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.96 }}
+                  onClick={() => router.push('/en/Explore')}
                   className="rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800"
                 >
                   Explore Farms
                 </motion.button>
-                {isLandowner && (
+                {!isLandowner && (
                   <motion.button
                     variants={fadeUp}
                     onClick={() => router.push('/en/Farmers/register')}
@@ -143,7 +144,8 @@ export default function page() {
                   alt="Floating island with tree"
                   width={550}
                   height={400}
-                  className="object-contain drop-shadow-2xl"
+                  className="object-contain drop-shadow-2xl  pointer-events-none"
+                   
                 />
               </motion.div>
 

@@ -129,15 +129,18 @@ export default function RegisterLand() {
   };
 
   return (
-     <div className="min-h-screen bg-[#b8cb8a] px-6 pb-20 font-sans md:px-14  ">
+     <div className="min-h-screen bg-[#f7f9f2] px-6 pb-20 font-sans md:px-14  ">
       <NavBar />
-      <div className="mx-auto max-w-[920px] border-2 border-dashed border-[#a4c358] bg-white/50 p-6 rounded-xl mt-3.5">
+      <div className="mx-auto max-w-[1000px]  border-2 border-dashed border-[#8bba16] bg-white p-6 rounded-xl mt-3.5">
         
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: easeOut }} className="text-center">
-          <h1 className="text-3xl font-extrabold uppercase tracking-tight text-[#335202] md:text-4xl">Register Your Land</h1>
-          <p className="mx-auto mt-3 max-w-[46ch] text-sm text-neutral-500">
-            Provide the technical and legal attributes required to open your farm to global agricultural investment.
-          </p>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: easeOut }} className="text-center bg-neutral-50  rounded-t-2xl">
+              <div className="mx-auto mt-3 m text-sm text-neutral-600  border-b-2 border-[#c1ed7a] p-3  w-full text-6xl font-extrabold
+    text-transparent
+    [-webkit-text-stroke:1.5px_theme(colors.neutral.900)] ">
+          <h1 className="text-3xl max-w-[45px]  font-extrabold uppercase tracking-tight   text-[#c1ed7a] md:text-4xl p-2 bg-neutral-900 m-2 rounded-2xl">Register Your Land</h1>
+      
+           <p className="max-w-[45ch] "> Provide the technical and legal attributes required to open your farm to global agricultural investment.</p>
+          </div>
         </motion.div>
 
         <div className="mt-12 flex flex-col gap-10">
