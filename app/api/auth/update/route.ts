@@ -44,7 +44,14 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Profile not found or no changes made" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: "Profile updated successfully" }, { status: 200 });
+    const response = NextResponse.json({ success: true, message: "Profile updated successfully" }, { status: 200 });
+    
+    response.cookies.set("NEXT_LOCALE", preferred_language, {
+      path: "/",
+      maxAge: 365 * 24 * 60 * 60,
+    });
+
+    return response;
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Internal server error" }, { status: 500 });
   }

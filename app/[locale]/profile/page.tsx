@@ -85,7 +85,14 @@ export default function AccountSettingsPage() {
       });
       if (res.ok) {
         if (user.preferred_language !== editForm.preferred_language) {
-          window.location.reload();
+          const currentPath = window.location.pathname;
+          const segments = currentPath.split('/');
+          if (segments.length > 1) {
+            segments[1] = editForm.preferred_language;
+            window.location.href = segments.join('/');
+          } else {
+            window.location.href = `/${editForm.preferred_language}/profile`;
+          }
         }
       }
     } catch (err) {
@@ -257,6 +264,13 @@ export default function AccountSettingsPage() {
                       <option value="es">Español (Spanish)</option>
                       <option value="fr">Français (French)</option>
                       <option value="hi">हिन्दी (Hindi)</option>
+                      <option value="de">Deutsch (German)</option>
+                      <option value="it">Italiano (Italian)</option>
+                      <option value="ja">日本語 (Japanese)</option>
+                      <option value="ko">한국어 (Korean)</option>
+                      <option value="pt">Português (Portuguese)</option>
+                      <option value="ru">Русский (Russian)</option>
+                      <option value="zh">中文 (Chinese)</option>
                     </select>
                   </div>
 

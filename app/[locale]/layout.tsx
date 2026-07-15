@@ -32,7 +32,7 @@ export default async function RootLayout({
       const decoded = verifyToken(token);
       if (decoded && decoded.sub) {
         const client = await clientPromise;
-        const db = client.db("agrivest");
+        const db = client.db("agrivest_db");
         const user = await db.collection("users").findOne({ _id: new ObjectId(decoded.sub) });
         if (user && user.preferred_language) {
           prefLang = user.preferred_language;

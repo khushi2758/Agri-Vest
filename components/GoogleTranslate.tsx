@@ -19,7 +19,7 @@ export default function GoogleTranslate({ preferredLanguage }: { preferredLangua
         new (window as any).google.translate.TranslateElement(
           { 
             pageLanguage: 'en',
-            includedLanguages: 'en,es,fr,hi',
+            includedLanguages: 'en,es,fr,hi,de,it,ja,ko,pt,ru,zh',
             autoDisplay: false,
             layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE
           }, 
