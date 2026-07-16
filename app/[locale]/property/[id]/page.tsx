@@ -67,7 +67,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ propertyId: property.id, status: "draft" })
       });
-      router.push(`/${locale}/Agronomist`);
+      router.push(`/${locale}/Agronomist?landId=${property.id}`);
     } catch (e) {
       setAnalyzing(false);
     }
