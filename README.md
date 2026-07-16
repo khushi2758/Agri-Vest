@@ -39,7 +39,7 @@ We love our community! Here is a visual representation of recent project contrib
 ```markdown
 User           | Commits | Activity Graph
 ---------------|---------|--------------------------------------------------
-Darkness2758   | 11      | ████████████████ (39%)
+Rohan Basu   | 11      | ████████████████ (39%)
 Khushi Bera    | 8       | ███████████ (29%)
 Rishita        | 5       | ███████ (18%)
 royrhea        | 4       | ██████ (14%)
