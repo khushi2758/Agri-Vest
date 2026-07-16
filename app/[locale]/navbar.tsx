@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Explore", href: "/Explore" },
   { label: "Investor", href: "/Investor" },
   { label: "Farmers", href: "/Farmers" },
+  { label: "Agronomist", href: "/Agronomist" },
   { label: "Wallet", href: "/Wallet" },
   { label: "Portfolio", href: "/Portfolio" }
 ];
@@ -77,13 +78,19 @@ export default function NavBar() {
 
   const filteredNavLinks = NAV_LINKS.filter((link) => {
     if (user && user.roles) {
-      const isFarmer = user.roles.includes("farmer") || user.roles.includes("agronomist");
+      const isFarmer = user.roles.includes("farmer");
+      const isAgronomist = user.roles.includes("agronomist");
       const isInvestor = user.roles.includes("investor");
-      if (isFarmer && !isInvestor) {
+      if ((isFarmer || isAgronomist) && !isInvestor) {
         if (link.label === "Investor" || link.label === "Portfolio") {
           return false;
         }
       }
+      if (!isAgronomist && link.label === "Agronomist") {
+        return false;
+      }
+    } else if (link.label === "Investor" || link.label === "Portfolio" || link.label === "Agronomist") {
+      return false;
     }
     return true;
   });

@@ -2,6 +2,7 @@
 import React, { use, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import NavBar from "../../navbar";
 import {
@@ -41,10 +42,36 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
   const resolvedParams = use(params);
   const propertyId = resolvedParams.id;
   const locale = resolvedParams.locale;
+  const router = useRouter();
 
   const property = FARMLANDS.find(f => f.id === propertyId) || FARMLANDS[0];
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Overview");
+  const [user, setUser] = useState<any>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(res => res.json())
+      .then(data => setUser(data))
+      .catch(() => {});
+  }, []);
+
+  const isAgronomist = user?.roles?.includes("agronomist");
+
+  const handleAnalyze = async () => {
+    setAnalyzing(true);
+    try {
+      await fetch("/api/agronomist/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ propertyId: property.id, status: "draft" })
+      });
+      router.push(`/${locale}/Agronomist`);
+    } catch (e) {
+      setAnalyzing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f9f2] font-sans pb-20 selection:bg-[#c8e639] selection:text-black">
@@ -71,12 +98,20 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
             <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-neutral-700 rounded-xl shadow-sm hover:bg-gray-50 transition-colors">
               <Bookmark size={16} />
             </button>
-            <Link href={`/${locale}/stock/${property.id}`} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-white px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-black transition-all">
-              <Activity size={16} className="text-[#c8e639]" /> Market Analysis
-            </Link>
-            <button onClick={() => setIsTradeModalOpen(true)} className="flex items-center gap-2 text-sm font-extrabold bg-[#c8e639] text-[#1b2620] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-[#b0cc2f] transition-all">
-              Invest Now <ArrowUpRight size={16} />
-            </button>
+            {isAgronomist ? (
+              <button onClick={handleAnalyze} disabled={analyzing} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-[#c8e639] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-black transition-all disabled:opacity-50">
+                <Sprout size={16} /> {analyzing ? "Loading..." : "Analyze Land"}
+              </button>
+            ) : (
+              <>
+                <Link href={`/${locale}/stock/${property.id}`} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-white px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-black transition-all">
+                  <Activity size={16} className="text-[#c8e639]" /> Market Analysis
+                </Link>
+                <button onClick={() => setIsTradeModalOpen(true)} className="flex items-center gap-2 text-sm font-extrabold bg-[#c8e639] text-[#1b2620] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-[#b0cc2f] transition-all">
+                  Invest Now <ArrowUpRight size={16} />
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -316,15 +351,23 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
               </div>
 
               <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
-                <Link href={`/${locale}/stock/${property.id}`} className="bg-transparent border border-[#1b2620]/20 hover:bg-[#1b2620]/5 text-[#1b2620] font-extrabold px-6 py-3.5 rounded-full transition-colors whitespace-nowrap flex items-center gap-2">
-                  <Activity size={16} /> Market Analysis
-                </Link>
-                <Link href={`/${locale}/prospectus/${property.id}`} className="bg-white/30 hover:bg-white/50 text-[#1b2620] font-extrabold px-6 py-3.5 rounded-full transition-colors whitespace-nowrap">
-                  View Prospectus
-                </Link>
-                <button onClick={() => setIsTradeModalOpen(true)} className="bg-[#1b2620] hover:bg-black text-white font-extrabold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap">
-                  Invest Now <ArrowUpRight size={16} />
-                </button>
+                {isAgronomist ? (
+                  <button onClick={handleAnalyze} disabled={analyzing} className="bg-[#1b2620] hover:bg-black text-[#c8e639] font-extrabold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap disabled:opacity-50 disabled:hover:scale-100">
+                    <Sprout size={16} /> {analyzing ? "Loading..." : "Analyze Land"}
+                  </button>
+                ) : (
+                  <>
+                    <Link href={`/${locale}/stock/${property.id}`} className="bg-transparent border border-[#1b2620]/20 hover:bg-[#1b2620]/5 text-[#1b2620] font-extrabold px-6 py-3.5 rounded-full transition-colors whitespace-nowrap flex items-center gap-2">
+                      <Activity size={16} /> Market Analysis
+                    </Link>
+                    <Link href={`/${locale}/prospectus/${property.id}`} className="bg-white/30 hover:bg-white/50 text-[#1b2620] font-extrabold px-6 py-3.5 rounded-full transition-colors whitespace-nowrap">
+                      View Prospectus
+                    </Link>
+                    <button onClick={() => setIsTradeModalOpen(true)} className="bg-[#1b2620] hover:bg-black text-white font-extrabold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap">
+                      Invest Now <ArrowUpRight size={16} />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -165,7 +165,8 @@ export default function Register() {
                       {[
                         { id: 'investor', label: 'Investor' },
                         { id: 'farmer', label: 'Farmer (Producer)' },
-                        { id: 'landowner', label: 'Landowner' }
+                        { id: 'landowner', label: 'Landowner' },
+                        { id: 'agronomist', label: 'Agronomist' }
                       ].map(roleOption => (
                         <label key={roleOption.id} className={`flex items-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${formData.roles.includes(roleOption.id) ? 'bg-[#c8e639]/20 border-[#c8e639]' : 'bg-gray-50 border-gray-200 hover:border-[#c8e639]/50'}`}>
                           <input type="checkbox" className="accent-[#1b2620] w-4 h-4 cursor-pointer" checked={formData.roles.includes(roleOption.id)} onChange={() => handleRoleToggle(roleOption.id)} />

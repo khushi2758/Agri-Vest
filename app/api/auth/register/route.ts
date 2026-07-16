@@ -23,16 +23,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email already exists" }, { status: 409 });
     }
 
-    let assignedRoles = roles.map((r: string) => r === "farmer" ? "agronomist" : r);
-
     const password_hash = hashPassword(password);
     const now = new Date();
 
     const newUser = {
       email,
       name,
-      role: assignedRoles.includes("agronomist") ? "agronomist" : "investor",
-      roles: assignedRoles,
+      role: roles.includes("agronomist") ? "agronomist" : (roles.includes("farmer") ? "farmer" : "investor"),
+      roles: roles,
       password_hash,
       phone: phone || "+10000000000",
       preferred_language: preferred_language || "en",
@@ -51,7 +49,7 @@ export async function POST(request: Request) {
 
     const result = await db.collection("users").insertOne(newUser);
     
-    const token = signToken({ sub: result.insertedId.toString(), roles: assignedRoles, email, name });
+    const token = signToken({ sub: result.insertedId.toString(), roles, email, name });
 
     const response = NextResponse.json({ success: true }, { status: 201 });
     response.cookies.set("session", token, {

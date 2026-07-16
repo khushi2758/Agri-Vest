@@ -25,7 +25,8 @@ export default function AccountSettingsPage() {
     tax_id: "",
     tax_country: "",
     address: "",
-    preferred_language: "en"
+    preferred_language: "en",
+    roles: ["investor"]
   });
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -51,7 +52,8 @@ export default function AccountSettingsPage() {
             tax_id: data.tax_id || "",
             tax_country: data.tax_country || "USA",
             address: data.address || "",
-            preferred_language: data.preferred_language || "en"
+            preferred_language: data.preferred_language || "en",
+            roles: data.roles || ["investor"]
           });
         } else {
           router.push("/en/login");
@@ -76,7 +78,8 @@ export default function AccountSettingsPage() {
         id_number: editForm.id_number,
         tax_id: editForm.tax_id,
         tax_country: editForm.tax_country,
-        address: editForm.address
+        address: editForm.address,
+        roles: editForm.roles
       };
       const res = await fetch("/api/auth/update", {
         method: "PUT",
@@ -272,6 +275,28 @@ export default function AccountSettingsPage() {
                       <option value="ru">Русский (Russian)</option>
                       <option value="zh">中文 (Chinese)</option>
                     </select>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-gray-700 mb-2">Account Roles (Select all that apply)</label>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+                      {[
+                        { id: 'investor', label: 'Investor' },
+                        { id: 'farmer', label: 'Farmer (Producer)' },
+                        { id: 'landowner', label: 'Landowner' },
+                        { id: 'agronomist', label: 'Agronomist' }
+                      ].map(roleOption => (
+                        <label key={roleOption.id} className={`flex items-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${editForm.roles.includes(roleOption.id) ? 'bg-[#c8e639]/20 border-[#c8e639]' : 'bg-white border-gray-300 hover:border-[#c8e639]/50'}`}>
+                          <input type="checkbox" className="accent-[#1b2620] w-4 h-4 cursor-pointer" checked={editForm.roles.includes(roleOption.id)} onChange={() => {
+                            setEditForm(prev => {
+                              const newRoles = prev.roles.includes(roleOption.id) ? prev.roles.filter(r => r !== roleOption.id) : [...prev.roles, roleOption.id];
+                              return { ...prev, roles: newRoles.length ? newRoles : ['investor'] };
+                            });
+                          }} />
+                          <span className="text-sm font-bold text-[#1b2620]">{roleOption.label}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
 
                 </div>

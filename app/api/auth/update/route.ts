@@ -18,7 +18,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, phone, preferred_language } = await request.json();
+    const { name, phone, preferred_language, roles, gender, id_number, tax_id, tax_country, address } = await request.json();
 
     if (!name || !phone || !preferred_language) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -28,16 +28,29 @@ export async function PUT(request: Request) {
     const db = client.db("agrivest_db");
     const userObjectId = new ObjectId(payload.sub);
 
+    const updateFields: any = {
+      name, 
+      phone, 
+      preferred_language,
+      updated_at: new Date()
+    };
+
+    if (roles && Array.isArray(roles) && roles.length > 0) {
+      updateFields.roles = roles;
+      if (roles.includes("agronomist")) updateFields.role = "agronomist";
+      else if (roles.includes("farmer")) updateFields.role = "farmer";
+      else updateFields.role = "investor";
+    }
+
+    if (gender !== undefined) updateFields.gender = gender;
+    if (id_number !== undefined) updateFields.id_number = id_number;
+    if (tax_id !== undefined) updateFields.tax_id = tax_id;
+    if (tax_country !== undefined) updateFields.tax_country = tax_country;
+    if (address !== undefined) updateFields.address = address;
+
     const updateResult = await db.collection("users").updateOne(
       { _id: userObjectId },
-      { 
-        $set: { 
-          name, 
-          phone, 
-          preferred_language,
-          updated_at: new Date()
-        } 
-      }
+      { $set: updateFields }
     );
 
     if (updateResult.modifiedCount === 0) {
