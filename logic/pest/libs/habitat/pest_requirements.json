@@ -1,0 +1,114 @@
+{
+  "Cotton_Bollworm": {
+    "hosts": ["cotton", "tomato", "chickpea", "maize", "pepper"],
+    "soil_preference": ["sandy_loam", "loam", "clay_loam"],
+    "soil_avoid": ["pure_sand", "heavy_clay"],
+    "vulnerable_macro_stages": [4, 5],
+    "stage_priority": "high"
+  },
+  "Rice_Stem_Borer": {
+    "hosts": ["rice"],
+    "soil_preference": ["clay", "clay_loam", "silty_clay"],
+    "soil_avoid": ["sandy", "gravelly"],
+    "vulnerable_macro_stages": [1, 2],
+    "stage_priority": "high"
+  },
+  "Potato_Tuber_Moth": {
+    "hosts": ["potato"],
+    "soil_preference": ["sandy_loam", "loam", "well_drained"],
+    "soil_avoid": ["waterlogged", "heavy_clay"],
+    "vulnerable_macro_stages": [5],
+    "stage_priority": "critical"
+  },
+  "Banana_Weevil": {
+    "hosts": ["banana", "plantain"],
+    "soil_preference": ["loam", "silty_loam", "organic_rich"],
+    "soil_avoid": ["sandy", "stony"],
+    "vulnerable_macro_stages": [0, 1, 2, 3, 4, 5],
+    "stage_priority": "low"
+  },
+  "Fall_Armyworm": {
+    "hosts": ["maize", "sorghum", "millet", "rice", "sugarcane", "cotton"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [0, 1, 2, 3, 4, 5],
+    "stage_priority": "medium"
+  },
+  "Aphid_General": {
+    "hosts": ["wheat", "barley", "mustard", "potato", "tomato", "pepper"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [0, 1, 4],
+    "stage_priority": "medium"
+  },
+  "Diamondback_Moth": {
+    "hosts": ["cabbage", "broccoli", "cauliflower", "canola", "mustard"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [0, 1, 4],
+    "stage_priority": "high"
+  },
+  "Colorado_Potato_Beetle": {
+    "hosts": ["potato", "tomato", "eggplant"],
+    "soil_preference": ["sandy_loam", "loam"],
+    "soil_avoid": ["waterlogged", "heavy_clay"],
+    "vulnerable_macro_stages": [1, 2, 5],
+    "stage_priority": "high"
+  },
+  "Corn_Earworm": {
+    "hosts": ["maize", "tomato", "cotton", "soybean", "pepper"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [4, 5],
+    "stage_priority": "high"
+  },
+  "Bean_Pod_Borer": {
+    "hosts": ["cowpea", "pigeonpea", "beans", "soybean", "chickpea"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [4, 5],
+    "stage_priority": "high"
+  },
+  "Pink_Bollworm": {
+    "hosts": ["cotton", "okra"],
+    "soil_preference": ["sandy_loam", "loam"],
+    "soil_avoid": ["heavy_clay", "waterlogged"],
+    "vulnerable_macro_stages": [4, 5],
+    "stage_priority": "critical"
+  },
+  "Sorghum_Shoot_Fly": {
+    "hosts": ["sorghum", "pearl_millet", "maize"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [0, 1],
+    "stage_priority": "high"
+  },
+  "Brinjal_Fruit_Borer": {
+    "hosts": ["brinjal", "tomato", "potato", "pepper"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [4, 5],
+    "stage_priority": "high"
+  },
+  "Mango_Mealybug": {
+    "hosts": ["mango", "guava", "citrus"],
+    "soil_preference": ["loam", "organic_rich"],
+    "soil_avoid": ["sandy", "gravelly"],
+    "vulnerable_macro_stages": [0, 1, 2, 4],
+    "stage_priority": "medium"
+  },
+  "Citrus_Leaf_Miner": {
+    "hosts": ["orange", "lemon", "grapefruit", "lime"],
+    "soil_preference": ["any"],
+    "soil_avoid": [],
+    "vulnerable_macro_stages": [0, 1, 2],
+    "stage_priority": "medium"
+  },
+  "Sugarcane_Borer": {
+    "hosts": ["sugarcane", "rice", "maize"],
+    "soil_preference": ["clay", "clay_loam", "silty_clay"],
+    "soil_avoid": ["sandy", "gravelly"],
+    "vulnerable_macro_stages": [1, 2, 3],
+    "stage_priority": "high"
+  }
+}
