@@ -34,7 +34,7 @@ export function AnalysisModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-[32px] w-full max-w-2xl overflow-hidden shadow-2xl relative animate-in zoom-in-95">
+      <div className="bg-white rounded-4xl w-full max-w-2xl overflow-hidden shadow-2xl relative animate-in zoom-in-95">
         <button 
           onClick={onClose}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-900 bg-gray-100 rounded-full p-2 transition-colors"

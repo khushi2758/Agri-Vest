@@ -22,7 +22,7 @@ export function FieldsWidget({ onSelectLand }: FieldsWidgetProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Corn field */}
         <div className="cursor-pointer group" onClick={() => onSelectLand("corn-field")}>
-          <div className="w-full h-44 rounded-[24px] mb-3 relative overflow-hidden transition-transform group-hover:scale-[1.02] bg-[#ffe0b2] shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-2">
+          <div className="w-full h-44 rounded-3xl mb-3 relative overflow-hidden transition-transform group-hover:scale-[1.02] bg-[#ffe0b2] shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-2">
             <svg className="w-full h-full opacity-80" viewBox="0 0 400 200" preserveAspectRatio="none">
               <path d="M50,150 L150,50 L250,60 L300,180 Z" fill="#ffcc80" stroke="#fff" strokeWidth="2" />
               <path d="M150,50 L350,20 L300,180" fill="#ffe0b2" stroke="#fff" strokeWidth="2" />
@@ -47,7 +47,7 @@ export function FieldsWidget({ onSelectLand }: FieldsWidgetProps) {
 
         {/* Wheat field */}
         <div className="cursor-pointer group" onClick={() => onSelectLand("wheat-field")}>
-          <div className="w-full h-44 rounded-[24px] mb-3 relative overflow-hidden transition-transform group-hover:scale-[1.02] bg-[#c8e6c9] shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-2">
+          <div className="w-full h-44 rounded-3xl mb-3 relative overflow-hidden transition-transform group-hover:scale-[1.02] bg-[#c8e6c9] shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-2">
             <svg className="w-full h-full opacity-80" viewBox="0 0 400 200" preserveAspectRatio="none">
               <path d="M20,180 L100,20 L250,40 L350,160 Z" fill="#a5d6a7" stroke="#fff" strokeWidth="2" />
               <path d="M100,20 L300,10 L350,160" fill="#c8e6c9" stroke="#fff" strokeWidth="2" />

@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export function CalendarWidget() {
   return (
     <div>
-      <div className="bg-[#fafafa] rounded-[24px] p-6 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+      <div className="bg-[#fafafa] rounded-3xl p-6 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
         <div className="flex justify-between items-center mb-6">
           <span className="font-bold text-gray-900 text-sm">May 2023</span>
           <div className="flex gap-2 text-gray-500">

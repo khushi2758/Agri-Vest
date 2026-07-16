@@ -39,10 +39,10 @@ We love our community! Here is a visual representation of recent project contrib
 ```markdown
 User           | Commits | Activity Graph
 ---------------|---------|--------------------------------------------------
-Khushi Bera    | 6       | █████████████ (33%)
-Rishita        | 5       | ███████████ (28%)
-royrhea        | 4       | █████████ (22%)
-Darkness2758   | 3       | ███████ (17%)
+Darkness2758   | 11      | ████████████████ (39%)
+Khushi Bera    | 8       | ███████████ (29%)
+Rishita        | 5       | ███████ (18%)
+royrhea        | 4       | ██████ (14%)
 ```
 
 ---
@@ -51,7 +51,7 @@ Darkness2758   | 3       | ███████ (17%)
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/Rohan/Agri-Vest.git
+   git clone https://github.com/khushi2758/Agri-Vest.git
    cd Agri-Vest
    ```
 
