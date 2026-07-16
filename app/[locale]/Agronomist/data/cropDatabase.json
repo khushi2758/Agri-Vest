@@ -1,0 +1,14 @@
+[
+  { "id": "corn", "name": "Corn", "family": "cereal", "daysToMaturity": 120, "plantMonths": [3, 4, 5], "harvestMonths": [8, 9, 10], "nitrogenEffect": -40, "soilHealthScore": 3, "incompatibleFamilies": ["cereal"] },
+  { "id": "wheat", "name": "Wheat", "family": "cereal", "daysToMaturity": 90, "plantMonths": [9, 10, 11], "harvestMonths": [5, 6, 7], "nitrogenEffect": -25, "soilHealthScore": 4, "incompatibleFamilies": ["cereal"] },
+  { "id": "soybean", "name": "Soybean", "family": "legume", "daysToMaturity": 110, "plantMonths": [4, 5, 6], "harvestMonths": [9, 10], "nitrogenEffect": 60, "soilHealthScore": 8, "incompatibleFamilies": [] },
+  { "id": "tomato", "name": "Tomato", "family": "nightshade", "daysToMaturity": 80, "plantMonths": [3, 4, 5], "harvestMonths": [7, 8, 9], "nitrogenEffect": -20, "soilHealthScore": 4, "incompatibleFamilies": ["nightshade"] },
+  { "id": "potato", "name": "Potato", "family": "nightshade", "daysToMaturity": 100, "plantMonths": [2, 3, 4], "harvestMonths": [7, 8, 9], "nitrogenEffect": -30, "soilHealthScore": 3, "incompatibleFamilies": ["nightshade", "root"] },
+  { "id": "cabbage", "name": "Cabbage", "family": "brassica", "daysToMaturity": 70, "plantMonths": [2, 3, 8, 9], "harvestMonths": [5, 6, 11, 12], "nitrogenEffect": -15, "soilHealthScore": 5, "incompatibleFamilies": ["brassica"] },
+  { "id": "carrot", "name": "Carrot", "family": "root", "daysToMaturity": 75, "plantMonths": [3, 4, 7, 8], "harvestMonths": [6, 7, 10, 11], "nitrogenEffect": -10, "soilHealthScore": 6, "incompatibleFamilies": ["root"] },
+  { "id": "onion", "name": "Onion", "family": "allium", "daysToMaturity": 90, "plantMonths": [1, 2, 3], "harvestMonths": [6, 7, 8], "nitrogenEffect": -5, "soilHealthScore": 5, "incompatibleFamilies": ["allium"] },
+  { "id": "pumpkin", "name": "Pumpkin", "family": "cucurbit", "daysToMaturity": 100, "plantMonths": [4, 5, 6], "harvestMonths": [9, 10], "nitrogenEffect": -15, "soilHealthScore": 5, "incompatibleFamilies": ["cucurbit"] },
+  { "id": "clover", "name": "Red Clover", "family": "cover", "daysToMaturity": 60, "plantMonths": [3, 4, 8, 9], "harvestMonths": [6, 7, 11, 12], "nitrogenEffect": 80, "soilHealthScore": 9, "incompatibleFamilies": [] },
+  { "id": "pea", "name": "Field Pea", "family": "legume", "daysToMaturity": 65, "plantMonths": [2, 3, 4], "harvestMonths": [5, 6, 7], "nitrogenEffect": 50, "soilHealthScore": 8, "incompatibleFamilies": [] },
+  { "id": "rice", "name": "Rice", "family": "cereal", "daysToMaturity": 130, "plantMonths": [4, 5], "harvestMonths": [9, 10, 11], "nitrogenEffect": -35, "soilHealthScore": 4, "incompatibleFamilies": ["cereal"] }
+]
