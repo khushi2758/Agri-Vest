@@ -3,9 +3,11 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, User, Settings, LogOut, Trash2, Globe } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Trash2, Globe, Bold } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { Joyride } from "react-joyride";
 
+import { CircleQuestionMark } from 'lucide-react';
 const NAV_LINKS = [
   { label: "Home", href: "/HomePage" },
   { label: "Explore", href: "/Explore" },
@@ -26,8 +28,50 @@ export default function NavBar() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [runTour, setRunTour] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const steps = [
+  {
+    target: "#home-link",
+    content: "Welcome to AgriVest! This is the Home page."
+  },
+  {
+    target: "#explore-link",
+    content: "Discover farmland investment opportunities here."
+  },
+  {
+    target: "#investor-link",
+    content: "Investor dashboard and analytics."
+  },
+  {
+    target: "#farmers-link",
+    content: "Browse verified farmers."
+  },
+  {
+    target: "#wallet-link",
+    content: "Manage your wallet securely."
+  },
+  {
+    target: "#portfolio-link",
+    content: "Track all your investments."
+  }
+  ,
+    {
+    target: "#profile-link",
+    content: "Manage your profile, update your information, and personalize your AgriVest experience."
+  }
+  ,
+  {   target: "#community-link",
+     content:  "Share your ideas, suggestions, and connect with investors, farmers, and landowners using @mentions."
+  }
+];
+useEffect(() => {
+  const completed = localStorage.getItem("agri-tour");
 
+  if (!completed) {
+    setRunTour(true);
+  }
+}, []);
   useEffect(() => {
     setActive(pathname);
   }, [pathname]);
@@ -75,7 +119,24 @@ export default function NavBar() {
       } catch (e) {}
     }
   };
+  useEffect(() => {
+  const completed = localStorage.getItem("agri-tour");
 
+  if (!completed) {
+    setRunTour(true);
+  }
+}, []);
+const handleJoyride = (data: any) => {
+  const { status } = data;
+
+  if (
+    status === "finished" ||
+    status === "skipped"
+  ) {
+    localStorage.setItem("agri-tour", "true");
+    setRunTour(false);
+  }
+};
   const filteredNavLinks = NAV_LINKS.filter((link) => {
     if (user && user.roles) {
       const isFarmer = user.roles.includes("farmer");
@@ -97,6 +158,29 @@ export default function NavBar() {
 
   return (
     <>
+  
+
+<Joyride
+  run={runTour}
+  steps={steps}
+  continuous = {true}
+  scrollToFirstStep= {true}
+  onEvent={handleJoyride}
+  options={{
+    buttons: ["back", "skip", "primary"],
+    showProgress: true,
+    overlayClickAction: false,
+    primaryColor: "#c8e639",
+    primaryColor: "#c8e639",
+      backgroundColor: "#ffffff",
+      textColor: "#1f2937",
+      overlayColor: "rgba(0,0,0,0.45)",
+      zIndex: 9999,
+      arrowColor: "#ffffff",
+     
+  }}
+
+/>
       <motion.header
         className="relative flex items-center justify-between py-3 z-30 top-0 bg-transparent backdrop-blur-sm border-b border-neutral-200 w-full px-1 sm:px-6 lg:px-8 text-[#526108] text-bold font-mono"
         initial={{ opacity: 0, y: -16 }}
@@ -112,7 +196,12 @@ export default function NavBar() {
 
         <nav className="hidden gap-10 text-md font-medium md:flex">
           {filteredNavLinks.map(({ label, href }) => (
-            <Link key={label} href={href} className="relative pb-1">
+  <Link
+    key={label}
+    href={href}
+    id={`${label.toLowerCase()}-link`}
+    className="relative pb-1"
+  >
               <motion.span
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.2 }}
@@ -130,23 +219,26 @@ export default function NavBar() {
             </Link>
           ))}
         </nav>
-
+            
         <div className="hidden md:flex items-center gap-3">
+          
           <button
             onClick={() => router.push("/en/Community")}
             className="flex items-center justify-center rounded-full p-2 text-neutral-900 transition hover:bg-neutral-100"
             title="Community Feedback"
+            id="community-link"
           >
             <Globe size={20} />
           </button>
           {!loading && user ? (
             <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => setDropdownOpen(!dropdownOpen)} id="profile-link"
                 className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
               >
                 <User size={16} /> Profile
               </button>
+              
               <AnimatePresence>
                 {dropdownOpen && (
                   <motion.div
@@ -180,6 +272,7 @@ export default function NavBar() {
                     >
                       <Trash2 size={14} /> Delete Account
                     </button>
+                    
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -200,6 +293,14 @@ export default function NavBar() {
               </button>
             </>
           ) : null}
+          <button    onClick={() => {
+    localStorage.removeItem("agri-tour");
+    setRunTour(true);
+  }}
+ 
+>
+   <CircleQuestionMark />
+</button>
         </div>
 
         <button

@@ -7,6 +7,8 @@ import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { ObjectId } from 'mongodb';
 import "./globals.css";
+import { TourProvider } from '../context/TourContext';
+import Tour from '@/components/Tour';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
@@ -46,7 +48,10 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider>
           <GoogleTranslate preferredLanguage={prefLang} />
+
+     
           {children}
+       
         </NextIntlClientProvider>
       </body>
     </html>
