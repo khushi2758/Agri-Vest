@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import HelpTourButton from "@/app/[locale]/HelpTourButton";
 import {
   UploadCloud,
   FileText,
@@ -23,6 +24,7 @@ const fadeUp = {
 function StepLabel({ number, title, sub }: { number: string; title: string; sub: string }) {
   return (
     <div className="flex items-start gap-3">
+    
       <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-neutral-900 text-[11px] font-bold text-white">
         {number}
       </span>
@@ -49,7 +51,85 @@ function Field({ label, placeholder, value, onChange }: { label: string; placeho
 }
 
 const CROPS = ["Corn", "Soybeans", "Winter Wheat", "Alfalfa", "Fallow", "Organic Garden"];
+export const registerLandSteps = [
+  {
+    target: "#register-header",
+    content:
+      "👋 Welcome to the Land Registration page. Complete this form to verify your farmland and make it available for investment on AgriVest.",
+  },
 
+  {
+    target: "#farm-basics",
+    content:
+      "🌾 Enter your farm information, owner details, location, and total land area. These details help us identify and verify your property.",
+  },
+
+  {
+    target: "#farm-name",
+    content:
+      "🌱 Select your current crops and sustainability certifications to showcase your farming practices to potential investors.",
+  },
+
+  {
+    target: "#legal-documents",
+    content:
+      "📄 Upload your ownership documents, land deeds, or legal certificates. These files are required to verify your farmland.",
+  },
+
+  {
+    target: "#iot-installation",
+    content:
+      "📡 Choose smart IoT devices to monitor your farm. Real-time data improves transparency and increases investor confidence.",
+  },
+
+  {
+    target: "#timeline",
+    content:
+      "⏳ Review the estimated verification, certification, and listing timeline before submitting your application.",
+  },
+
+  {
+    target: "#submit-application",
+    content:
+      "✅ Once all required information is complete, submit your application for review. We'll verify your farm before listing it on AgriVest.",
+  },
+];
+export const registerLandSpeechSections = [
+  {
+    target: "#register-header",
+    text: "Welcome to the Land Registration page. This form helps you register your farmland for verification and investment opportunities through AgriVest.",
+  },
+
+  {
+    target: "#farm-basics",
+    text: "Begin by entering your farm's basic information, including the farm name, owner's name, location, and total acreage. These details help us identify and verify your property.",
+  },
+
+  {
+    target: "#farm-name",
+    text: "Next, tell us about your agricultural practices. Select the crops you currently grow and choose any sustainability certifications your farm has earned. This information helps investors better understand your farming methods.",
+  },
+
+  {
+    target: "#legal-documents",
+    text: "Upload your legal ownership documents, such as land deeds or certificates. These documents are securely verified before your farmland is approved for listing.",
+  },
+
+  {
+    target: "#iot-installation",
+    text: "Choose the smart IoT devices you would like to install on your farm. These devices provide real-time monitoring, improve transparency, and increase investor confidence.",
+  },
+
+  {
+    target: "#timeline",
+    text: "Review the expected registration, verification, and investment listing timeline. This section gives you an estimate of when your farm will become available to investors.",
+  },
+
+  {
+    target: "#submit-application",
+    text: "After reviewing all the information, click Submit Application. Our team will verify your details and notify you once your farmland has been approved.",
+  },
+];
 const CERTS = [
   { key: "organic", label: "Certified organic" },
   { key: "regen", label: "Regenerative practices" },
@@ -131,10 +211,11 @@ export default function RegisterLand() {
   return (
      <div className="min-h-screen bg-[#f7f9f2] px-6 pb-20 font-sans md:px-14  ">
       <NavBar />
+       <HelpTourButton steps={registerLandSteps} speechSections={registerLandSpeechSections} />
       <div className="mx-auto max-w-[1000px]  border-2 border-dashed border-[#8bba16] bg-white p-6 rounded-xl mt-3.5">
-        
+          
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: easeOut }} className="text-center bg-neutral-50  rounded-t-2xl">
-              <div className="mx-auto mt-3 m text-sm text-neutral-600  border-b-2 border-[#c1ed7a] p-3  w-full text-6xl font-extrabold
+              <div id="register-header" className="mx-auto mt-3 m text-sm text-neutral-600  border-b-2 border-[#c1ed7a] p-3  w-full text-6xl font-extrabold
     text-transparent
     [-webkit-text-stroke:1.5px_theme(colors.neutral.900)] ">
           <h1 className="text-3xl max-w-[45px]  font-extrabold uppercase tracking-tight   text-[#c1ed7a] md:text-4xl p-2 bg-neutral-900 m-2 rounded-2xl">Register Your Land</h1>
@@ -144,11 +225,11 @@ export default function RegisterLand() {
         </motion.div>
 
         <div className="mt-12 flex flex-col gap-10">
-          <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50  p-6 md:p-8">
-            <StepLabel number="01" title="Farmer & farm basics" sub="Ownership and geographic location details" />
+          <motion.section id="farm-basics" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50  p-6 md:p-8" >
+            <StepLabel number="01" title="Farmer & farm basics" sub="Ownership and geographic location details"  />
             <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-[1fr_1fr_auto]">
               <div className="flex flex-col gap-5">
-                <Field label="Farm entity name" placeholder="e.g. Green Meadow Holdings" value={farmName} onChange={setFarmName} />
+                <Field label="Farm entity name"  placeholder="e.g. Green Meadow Holdings" value={farmName} onChange={setFarmName} />
                 <Field label="Owner legal name" placeholder="e.g. Full legal owner name" value={ownerName} onChange={setOwnerName} />
               </div>
               <div className="flex flex-col gap-5">
@@ -163,7 +244,7 @@ export default function RegisterLand() {
             </div>
           </motion.section>
 
-          <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50 p-6 md:p-8">
+          <motion.section id="farm-name" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50 p-6 md:p-8">
             <StepLabel number="02" title="Agricultural practices" sub="Current crop cycle and sustainability certifications" />
 
             <p className="mt-6 text-[11px] font-semibold uppercase tracking-wide text-neutral-500">Active crop rotation</p>
@@ -195,7 +276,7 @@ export default function RegisterLand() {
             </div>
           </motion.section>
 
-          <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50 p-6 md:p-8">
+          <motion.section id="legal-documents" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50 p-6 md:p-8">
             <StepLabel number="03" title="Legal documentation" sub="Official titles, land deeds, and identification" />
 
             <div
@@ -249,7 +330,7 @@ export default function RegisterLand() {
             )}
           </motion.section>
 
-          <motion.section variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50 p-6 md:p-8">
+          <motion.section id="iot-installation" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-1 border-[#c7d6a0] bg-white/50 p-6 md:p-8">
             <StepLabel number="04" title="IoT sensor installation" sub="Hardware compatibility check for your farm listing" />
 
             <div className="mt-6 flex flex-col gap-2.5">
@@ -287,7 +368,7 @@ export default function RegisterLand() {
             </div>
           </motion.section>
 
-          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-2 border-[#c7d6a0] bg-white/50 border-dashed  e p-6 text-center">
+          <motion.div id="timeline" variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="rounded-2xl border-2 border-[#c7d6a0] bg-white/50 border-dashed  e p-6 text-center">
             <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-neutral-900">Expectation timeline</p>
             <div className="mx-auto mt-4 grid max-w-md grid-cols-1 gap-3 text-left sm:grid-cols-3">
               {[
@@ -304,6 +385,7 @@ export default function RegisterLand() {
           </motion.div>
 
           <motion.button
+        id=  'submit-application'
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
@@ -327,7 +409,7 @@ export default function RegisterLand() {
                 </motion.span>
               )}
             </AnimatePresence>
-          </motion.button>
+          </motion.button >
           {!canSubmit && !submitted && (
             <p className="-mt-6 text-center text-xs text-neutral-400">Fill in farm name, owner, and acreage to submit.</p>
           )}

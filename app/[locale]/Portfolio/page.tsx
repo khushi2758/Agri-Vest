@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import HelpTourButton from "../HelpTourButton";
+import {portfolioSteps} from "./tourp"
 import { 
   Search, Home, LayoutDashboard, BarChart2, Wallet, 
   Briefcase, Calendar, Settings, LogOut, Loader2, Plus, 
@@ -42,33 +44,42 @@ export default function PortfolioPage() {
 
   if (!data) return null;
 
-  return (
+   return (
     <div className="min-h-screen bg-[#f7f9f2] text-[#1b2620] flex overflow-hidden font-sans selection:bg-[#c8e639] selection:text-black">
-      
-      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col py-6 shrink-0 z-20 shadow-sm">
+      <HelpTourButton steps={portfolioSteps} />
+
+      <aside  className="w-64 bg-white border-r border-gray-100 flex flex-col py-6 shrink-0 z-20 shadow-sm">
         <div className="px-8 mb-8 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#1b2620] flex items-center justify-center">
-            <Briefcase size={16} className="text-[#c8e639]" />
+          <div  className="w-8 h-8 rounded-lg bg-[#1b2620] flex items-center justify-center" >
+            <Briefcase size={16} strokeWidth={2} className="text-[#c8e639]" />
           </div>
           <span className="font-extrabold tracking-widest text-lg">AGRI-VEST</span>
         </div>
         
-        <div className="px-6 mb-8">
+        <div id="portfolio-search" className="px-6 mb-8">
           <div className="flex items-center bg-[#f7f9f2] border border-gray-200 rounded-lg px-3 py-2 w-full">
-            <Search size={14} className="text-gray-400 mr-2" />
+            <Search size={14} strokeWidth={2} className="text-gray-400 mr-2" />
             <input type="text" placeholder="Search" className="bg-transparent border-none outline-none text-xs w-full text-[#1b2620] placeholder-gray-400" />
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 w-full px-4 flex-1">
-          <Link href="/en/Explore" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold"><LayoutDashboard size={16} /> Products</Link>
-          <Link href="/en/Portfolio" className="px-4 py-2.5 rounded-lg bg-[#f7f9f2] border border-gray-200 text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold relative shadow-sm">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#c8e639] rounded-r"></div>
-            <BarChart2 size={16} className="text-[#1b2620]" /> Portfolio
+        <div  className="flex flex-col gap-2 w-full px-4 flex-1">
+          <Link id="nav-products" href="/en/Explore" aria-label="Products" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+            <LayoutDashboard size={16} strokeWidth={2} /> Products
           </Link>
-          <Link href="/en/Wallet" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold"><Wallet size={16} /> Wallet</Link>
-          <Link href="/en/Investor" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold"><TrendingUp size={16} /> Achievement</Link>
-          <Link href="/en/profile" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold"><Settings size={16} /> Settings</Link>
+          <Link id="nav-portfolio" href="/en/Portfolio" aria-label="Portfolio" className="px-4 py-2.5 rounded-lg bg-[#f7f9f2] border border-gray-200 text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold relative shadow-sm">
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#c8e639] rounded-r"></div>
+            <BarChart2 size={16} strokeWidth={2.5} className="text-[#1b2620]" /> Portfolio
+          </Link>
+          <Link id="nav-wallet" href="/en/Wallet" aria-label="Wallet" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+            <Wallet size={16} strokeWidth={2} /> Wallet
+          </Link>
+          <Link id="nav-achievement" href="/en/Investor" aria-label="Achievement" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+            <TrendingUp size={16} strokeWidth={2} /> Achievement
+          </Link>
+          <Link id="nav-settings" href="/en/profile" aria-label="Settings" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+            <Settings size={16} strokeWidth={2} /> Settings
+          </Link>
         </div>
         
         <div className="px-4 mt-auto">
@@ -84,7 +95,7 @@ export default function PortfolioPage() {
       </aside>
 
       <main className="flex-1 flex flex-col h-screen overflow-y-auto p-8 relative">
-        <div className="flex justify-between items-end mb-10">
+        <div id="portfolio-header" className="flex justify-between items-end mb-10">
           <div>
             <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">{new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
             <div className="flex items-center gap-4">
@@ -92,15 +103,15 @@ export default function PortfolioPage() {
               <span className="text-xs font-bold text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">Show: All Projects ▾</span>
             </div>
           </div>
-          <button className="flex items-center gap-2 bg-[#1b2620] hover:bg-[#0a0f0c] text-white px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-md">
-            <Plus size={16} className="text-[#c8e639]" /> Add new
+          <button id="add-project" className="flex items-center gap-2 bg-[#1b2620] hover:bg-[#0a0f0c] text-white px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-md">
+            <Plus size={16} strokeWidth={2.5} className="text-[#c8e639]" /> Add new
           </button>
         </div>
 
         {!data.hasInvestments ? (
-          <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-white rounded-2xl shadow-sm">
+          <div id="portfolio-stats" className="flex-1 flex flex-col  items-center justify-center border-2 border-dashed border-gray-200 bg-white rounded-2xl shadow-sm">
             <div className="w-16 h-16 bg-[#f7f9f2] rounded-full flex items-center justify-center mb-4 border border-gray-100">
-              <Briefcase className="text-[#1b2620]" size={32} />
+              <Briefcase className="text-[#1b2620]" size={32} strokeWidth={2} />
             </div>
             <h2 className="text-xl font-extrabold text-[#1b2620] mb-2">No Portfolio Events Yet</h2>
             <p className="text-gray-500 text-sm font-bold max-w-sm text-center">Your portfolio roadmap will automatically populate here once you make your first investment.</p>
@@ -108,7 +119,7 @@ export default function PortfolioPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-5 gap-4 mb-10">
+            <div  className="grid grid-cols-5 gap-4 mb-10">
               
               <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm relative overflow-hidden flex flex-col justify-between h-32">
                 <div className="flex items-end gap-1 mb-2">
@@ -148,7 +159,7 @@ export default function PortfolioPage() {
                   <span className="text-green-600 bg-green-50 px-1.5 py-0.5 rounded text-xs font-bold">+1.5%</span>
                 </div>
                 <div className="flex items-center gap-2 mt-auto">
-                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><DollarSign size={10} className="text-[#1b2620]"/></div>
+                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><DollarSign size={10} strokeWidth={2} className="text-[#1b2620]"/></div>
                   <span className="text-[10px] font-bold text-gray-500 leading-tight">Spent on projects<br/>this month</span>
                 </div>
               </div>
@@ -162,7 +173,7 @@ export default function PortfolioPage() {
                   <span className="text-green-600 bg-green-50 px-1.5 py-0.5 rounded text-xs font-bold">+3.1%</span>
                 </div>
                 <div className="flex items-center gap-2 mt-auto">
-                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><Activity size={10} className="text-[#1b2620]"/></div>
+                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><Activity size={10} strokeWidth={2} className="text-[#1b2620]"/></div>
                   <span className="text-[10px] font-bold text-gray-500 leading-tight">Spent on projects<br/>this year</span>
                 </div>
               </div>
@@ -176,14 +187,14 @@ export default function PortfolioPage() {
                   <span className="text-green-600 bg-green-50 px-1.5 py-0.5 rounded text-xs font-bold">+4.3%</span>
                 </div>
                 <div className="flex items-center gap-2 mt-auto">
-                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><Clock size={10} className="text-[#1b2620]"/></div>
+                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><Clock size={10} strokeWidth={2} className="text-[#1b2620]"/></div>
                   <span className="text-[10px] font-bold text-gray-500 leading-tight">Time left before<br/>project deadline</span>
                 </div>
               </div>
 
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 overflow-x-auto custom-scrollbar">
+            <div id="roadmap-timeline" className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 overflow-x-auto custom-scrollbar">
               <div className="min-w-[800px]">
                 
                 <div className="flex mb-6 border-b border-gray-100 pb-4">
@@ -198,7 +209,7 @@ export default function PortfolioPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-6 relative">
+                <div id="project-progress" className="flex flex-col gap-6 relative">
                   
                   <div className="absolute top-0 bottom-0 left-48 right-0 flex justify-between px-4 pointer-events-none">
                     {[...Array(18)].map((_, i) => (
@@ -230,7 +241,7 @@ export default function PortfolioPage() {
                               <span className={`text-xs font-extrabold truncate max-w-[150px] ${progressWidth > 30 ? 'text-[#1b2620]' : 'text-white'}`}>{project.title}</span>
                               <div className="flex items-center gap-4">
                                 <span className={`text-[10px] font-bold flex items-center gap-1 ${progressWidth > 80 ? 'text-[#1b2620]' : 'text-white'}`}>
-                                  <CheckCircle2 size={10} className={progressWidth > 80 ? 'text-[#1b2620]' : 'text-[#c8e639]'}/> {project.tasksCompleted}/{project.tasksTotal}
+                                  <CheckCircle2 size={10} strokeWidth={2} className={progressWidth > 80 ? 'text-[#1b2620]' : 'text-[#c8e639]'}/> {project.tasksCompleted}/{project.tasksTotal}
                                 </span>
                                 <div className="flex -space-x-1.5 opacity-80">
                                   <div className="w-4 h-4 rounded-full bg-gray-200 border border-white"></div>
@@ -253,3 +264,4 @@ export default function PortfolioPage() {
     </div>
   );
 }
+

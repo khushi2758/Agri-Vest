@@ -2,6 +2,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { walletSteps } from "./tourw";
+import HelpTourButton from "../HelpTourButton";
 import Link from "next/link";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid, Cell } from "recharts";
 import { 
@@ -53,10 +55,12 @@ export default function WalletDashboard() {
   if (!data || !data.user) return null;
 
   return (
-    <div className="min-h-screen bg-[#f7f9f2] text-[#1b2620] flex overflow-hidden font-sans selection:bg-[#c8e639] selection:text-black">
+    <div className="min-h-screen bg-[#f7f9f2] text-[#1b2620] flex overflow-hidden font-sans selection:bg-[#c8e639] selection:text-black"  >
+      <HelpTourButton steps={walletSteps}/>
       
-      <aside className="w-20 border-r border-[#1b2620]/10 flex flex-col items-center py-6 shrink-0 z-20 bg-white shadow-sm">
-        <Link href="/en" className="text-[#1b2620] mb-12 hover:scale-110 transition-transform">
+      <aside id="sidebar" className="w-20 border-r border-[#1b2620]/10 flex flex-col items-center py-6 shrink-0 z-20 bg-white shadow-sm " >
+     
+        <Link href="/en" className="text-[#1b2620] mb-12 hover:scale-110 transition-transform " >
            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
            </svg>
@@ -73,13 +77,14 @@ export default function WalletDashboard() {
           <button className="p-3 rounded-xl hover:bg-[#f7f9f2] text-[#1b2620]/40 hover:text-[#1b2620] transition-all flex justify-center"><Settings size={20} /></button>
           <button onClick={() => { fetch("/api/auth/logout", {method: "POST"}).then(()=>router.push("/en/login")) }} className="p-3 rounded-xl hover:bg-red-50 text-[#1b2620]/40 hover:text-red-500 transition-all flex justify-center"><LogOut size={20} /></button>
         </div>
+        
       </aside>
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden p-6 relative">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#c8e639]/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
 
         <header className="flex justify-between items-center mb-6 relative z-30">
-          <div className="flex items-center bg-white border border-[#1b2620]/10 rounded-full px-4 py-2 w-96 shadow-sm">
+          <div id="search-bar" className="flex items-center bg-white border border-[#1b2620]/10 rounded-full px-4 py-2 w-96 shadow-sm">
             <Search size={16} className="text-[#1b2620]/40 mr-3" />
             <input type="text" placeholder="Search" className="bg-transparent border-none outline-none text-sm w-full text-[#1b2620] placeholder-[#1b2620]/40" />
             <div className="flex items-center gap-1 bg-[#f7f9f2] px-2 py-0.5 rounded text-[10px] text-[#1b2620]/60 font-bold ml-2">
@@ -95,7 +100,7 @@ export default function WalletDashboard() {
             </button>
             <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-colors"><Moon size={18} /></button>
             
-            <div className="relative" ref={profileRef}>
+            <div id="profile-menu" className="relative" ref={profileRef}>
               <div 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-3 pl-4 border-l border-[#1b2620]/10 cursor-pointer hover:opacity-80 transition-opacity"
@@ -155,7 +160,7 @@ export default function WalletDashboard() {
             
             <div className="xl:col-span-2 flex flex-col gap-6">
               
-              <div className="bg-white rounded-3xl p-8 border border-[#1b2620]/10 relative overflow-hidden flex flex-col min-h-[380px] shadow-sm">
+              <div id="balance-overview" className=" bg-white rounded-3xl p-8 border border-[#1b2620]/10 relative overflow-hidden flex flex-col min-h-[380px] shadow-sm">
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div>
                     <h2 className="text-[#1b2620]/60 text-sm font-bold mb-1">Total Balance</h2>
@@ -212,9 +217,9 @@ export default function WalletDashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[320px]">
+              <div  className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[320px]">
                  
-                 <div className="bg-gradient-to-br from-[#1b2620] to-[#0a0f0c] rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between shadow-lg">
+                 <div id="prospectus-card" className="bg-gradient-to-br from-[#1b2620] to-[#0a0f0c] rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between shadow-lg">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#c8e639]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
                     <div className="relative z-10">
                        <h3 className="text-3xl font-extrabold text-white leading-tight mb-3">Trusted by Thousands<br/>Join Us Today!</h3>
@@ -231,7 +236,7 @@ export default function WalletDashboard() {
                     </button>
                  </div>
 
-                 <div className="bg-white rounded-3xl p-6 border border-[#1b2620]/10 shadow-sm flex flex-col">
+                 <div id="investment-chart" className="bg-white rounded-3xl p-6 border border-[#1b2620]/10 shadow-sm flex flex-col">
                     <div className="flex justify-between items-start mb-6">
                        <div>
                          <h3 className="text-[#1b2620]/60 text-xs uppercase tracking-wider font-extrabold mb-1">Investments</h3>
@@ -273,7 +278,7 @@ export default function WalletDashboard() {
             
             <div className="flex flex-col gap-6">
                
-               <div className="bg-[#f7f9f2] rounded-3xl p-6 border border-[#1b2620]/10 shadow-sm relative overflow-hidden h-[420px] flex flex-col">
+               <div id="wallet-card" className="bg-[#f7f9f2] rounded-3xl p-6 border border-[#1b2620]/10 shadow-sm relative overflow-hidden h-[420px] flex flex-col">
                   <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
                   
                   <div className="flex justify-between items-center mb-8 relative z-10">
@@ -312,7 +317,7 @@ export default function WalletDashboard() {
                   </div>
                </div>
 
-               <div className="bg-white rounded-3xl p-6 border border-[#1b2620]/10 shadow-sm flex-1 min-h-[300px]">
+               <div id="recent-transactions" className="bg-white rounded-3xl p-6 border border-[#1b2620]/10 shadow-sm flex-1 min-h-[300px]">
                   <div className="flex justify-between items-center mb-6">
                      <h3 className="text-[#1b2620] font-extrabold text-sm tracking-wide uppercase">Recent Transactions</h3>
                      <button className="text-[#1b2620]/40 hover:text-[#1b2620] text-xs font-bold transition-colors">View All</button>

@@ -3,11 +3,19 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, User, Settings, LogOut, Trash2, Globe, Bold } from "lucide-react";
+import {
+  Menu,
+  X,
+  User,
+  Settings,
+  LogOut,
+  Trash2,
+  Globe,
+  Bold,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Joyride } from "react-joyride";
 
-import { CircleQuestionMark } from 'lucide-react';
+import { CircleQuestionMark } from "lucide-react";
 const NAV_LINKS = [
   { label: "Home", href: "/HomePage" },
   { label: "Explore", href: "/Explore" },
@@ -15,7 +23,7 @@ const NAV_LINKS = [
   { label: "Farmers", href: "/Farmers" },
   { label: "Agronomist", href: "/Agronomist" },
   { label: "Wallet", href: "/Wallet" },
-  { label: "Portfolio", href: "/Portfolio" }
+  { label: "Portfolio", href: "/Portfolio" },
 ];
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
@@ -31,47 +39,48 @@ export default function NavBar() {
   const [runTour, setRunTour] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const steps = [
-  {
-    target: "#home-link",
-    content: "Welcome to AgriVest! This is the Home page."
-  },
-  {
-    target: "#explore-link",
-    content: "Discover farmland investment opportunities here."
-  },
-  {
-    target: "#investor-link",
-    content: "Investor dashboard and analytics."
-  },
-  {
-    target: "#farmers-link",
-    content: "Browse verified farmers."
-  },
-  {
-    target: "#wallet-link",
-    content: "Manage your wallet securely."
-  },
-  {
-    target: "#portfolio-link",
-    content: "Track all your investments."
-  }
-  ,
     {
-    target: "#profile-link",
-    content: "Manage your profile, update your information, and personalize your AgriVest experience."
-  }
-  ,
-  {   target: "#community-link",
-     content:  "Share your ideas, suggestions, and connect with investors, farmers, and landowners using @mentions."
-  }
-];
-useEffect(() => {
-  const completed = localStorage.getItem("agri-tour");
+      target: "#home-link",
+      content: "Welcome to AgriVest! This is the Home page.",
+    },
+    {
+      target: "#explore-link",
+      content: "Discover farmland investment opportunities here.",
+    },
+    {
+      target: "#investor-link",
+      content: "Investor dashboard and analytics.",
+    },
+    {
+      target: "#farmers-link",
+      content: "Browse verified farmers.",
+    },
+    {
+      target: "#wallet-link",
+      content: "Manage your wallet securely.",
+    },
+    {
+      target: "#portfolio-link",
+      content: "Track all your investments.",
+    },
+    {
+      target: "#profile-link",
+      content:
+        "Manage your profile, update your information, and personalize your AgriVest experience.",
+    },
+    {
+      target: "#community-link",
+      content:
+        "Share your ideas, suggestions, and connect with investors, farmers, and landowners using @mentions.",
+    },
+  ];
+  useEffect(() => {
+    const completed = localStorage.getItem("agri-tour");
 
-  if (!completed) {
-    setRunTour(true);
-  }
-}, []);
+    if (!completed) {
+      setRunTour(true);
+    }
+  }, []);
   useEffect(() => {
     setActive(pathname);
   }, [pathname]);
@@ -94,7 +103,10 @@ useEffect(() => {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     }
@@ -111,7 +123,11 @@ useEffect(() => {
   };
 
   const handleDeleteAccount = async () => {
-    if (confirm("Are you sure you want to permanently delete your account? This cannot be undone.")) {
+    if (
+      confirm(
+        "Are you sure you want to permanently delete your account? This cannot be undone.",
+      )
+    ) {
       try {
         await fetch("/api/auth/delete-account", { method: "POST" });
         router.push("/en/register");
@@ -120,23 +136,28 @@ useEffect(() => {
     }
   };
   useEffect(() => {
-  const completed = localStorage.getItem("agri-tour");
+    const completed = localStorage.getItem("agri-tour");
 
-  if (!completed) {
-    setRunTour(true);
-  }
-}, []);
-const handleJoyride = (data: any) => {
-  const { status } = data;
+    if (!completed) {
+      setRunTour(true);
+    }
+  }, []);
+  const handleJoyride = (data: any) => {
+    const { status } = data;
 
-  if (
-    status === "finished" ||
-    status === "skipped"
-  ) {
-    localStorage.setItem("agri-tour", "true");
-    setRunTour(false);
-  }
-};
+    if (status === "finished" || status === "skipped") {
+      localStorage.setItem("agri-tour", "true");
+      setRunTour(false);
+    }
+  };
+  const speak = (text: string) => {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(speech);
+  };
   const filteredNavLinks = NAV_LINKS.filter((link) => {
     if (user && user.roles) {
       const isFarmer = user.roles.includes("farmer");
@@ -150,7 +171,11 @@ const handleJoyride = (data: any) => {
       if (!isAgronomist && link.label === "Agronomist") {
         return false;
       }
-    } else if (link.label === "Investor" || link.label === "Portfolio" || link.label === "Agronomist") {
+    } else if (
+      link.label === "Investor" ||
+      link.label === "Portfolio" ||
+      link.label === "Agronomist"
+    ) {
       return false;
     }
     return true;
@@ -158,9 +183,7 @@ const handleJoyride = (data: any) => {
 
   return (
     <>
-  
-
-<Joyride
+      {/*<Joyride
   run={runTour}
   steps={steps}
   continuous = {true}
@@ -180,7 +203,7 @@ const handleJoyride = (data: any) => {
      
   }}
 
-/>
+/>*/}
       <motion.header
         className="relative flex items-center justify-between py-3 z-30 top-0 bg-transparent backdrop-blur-sm border-b border-neutral-200 w-full px-1 sm:px-6 lg:px-8 text-[#526108] text-bold font-mono"
         initial={{ opacity: 0, y: -16 }}
@@ -196,16 +219,20 @@ const handleJoyride = (data: any) => {
 
         <nav className="hidden gap-10 text-md font-medium md:flex">
           {filteredNavLinks.map(({ label, href }) => (
-  <Link
-    key={label}
-    href={href}
-    id={`${label.toLowerCase()}-link`}
-    className="relative pb-1"
-  >
+            <Link
+              key={label}
+              href={href}
+              id={`${label.toLowerCase()}-link`}
+              className="relative pb-1"
+            >
               <motion.span
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.2 }}
-                className={active === href ? "text-neutral-900 font-semibold" : "text-[#374106] font-bold"}
+                className={
+                  active === href
+                    ? "text-neutral-900 font-semibold"
+                    : "text-[#374106] font-bold"
+                }
               >
                 {label}
               </motion.span>
@@ -219,9 +246,8 @@ const handleJoyride = (data: any) => {
             </Link>
           ))}
         </nav>
-            
+
         <div className="hidden md:flex items-center gap-3">
-          
           <button
             onClick={() => router.push("/en/Community")}
             className="flex items-center justify-center rounded-full p-2 text-neutral-900 transition hover:bg-neutral-100"
@@ -233,12 +259,13 @@ const handleJoyride = (data: any) => {
           {!loading && user ? (
             <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)} id="profile-link"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                id="profile-link"
                 className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
               >
                 <User size={16} /> Profile
               </button>
-              
+
               <AnimatePresence>
                 {dropdownOpen && (
                   <motion.div
@@ -248,13 +275,19 @@ const handleJoyride = (data: any) => {
                     className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2"
                   >
                     <button
-                      onClick={() => { setDropdownOpen(false); router.push("/en/profile"); }}
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        router.push("/en/profile");
+                      }}
                       className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                     >
                       <User size={14} /> Profile
                     </button>
                     <button
-                      onClick={() => { setDropdownOpen(false); router.push("/en/settings"); }}
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        router.push("/en/settings");
+                      }}
                       className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                     >
                       <Settings size={14} /> Settings
@@ -272,7 +305,6 @@ const handleJoyride = (data: any) => {
                     >
                       <Trash2 size={14} /> Delete Account
                     </button>
-                    
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -293,14 +325,14 @@ const handleJoyride = (data: any) => {
               </button>
             </>
           ) : null}
-          <button    onClick={() => {
-    localStorage.removeItem("agri-tour");
-    setRunTour(true);
-  }}
- 
->
-   <CircleQuestionMark />
-</button>
+          {/*<button
+            onClick={() => {
+              localStorage.removeItem("agri-tour");
+              setRunTour(true);
+            }}
+          >
+            <CircleQuestionMark />
+          </button>*/}
         </div>
 
         <button
@@ -347,7 +379,9 @@ const handleJoyride = (data: any) => {
                 className="flex flex-col gap-1 p-4"
                 variants={{
                   hidden: {},
-                  show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } },
+                  show: {
+                    transition: { staggerChildren: 0.06, delayChildren: 0.08 },
+                  },
                 }}
                 initial="hidden"
                 animate="show"
@@ -357,14 +391,18 @@ const handleJoyride = (data: any) => {
                     key={label}
                     variants={{
                       hidden: { opacity: 0, x: -12 },
-                      show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: easeOut } },
+                      show: {
+                        opacity: 1,
+                        x: 0,
+                        transition: { duration: 0.3, ease: easeOut },
+                      },
                     }}
                   >
                     <Link
                       href={href}
                       onClick={() => {
-                         setActive(href);
-                         setMobileOpen(false);
+                        setActive(href);
+                        setMobileOpen(false);
                       }}
                       className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition ${
                         active === label
@@ -376,16 +414,23 @@ const handleJoyride = (data: any) => {
                     </Link>
                   </motion.div>
                 ))}
-                
+
                 <motion.div
                   variants={{
                     hidden: { opacity: 0, x: -12 },
-                    show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: easeOut } },
+                    show: {
+                      opacity: 1,
+                      x: 0,
+                      transition: { duration: 0.3, ease: easeOut },
+                    },
                   }}
                   className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2"
                 >
                   <button
-                    onClick={() => { router.push("/en/Community"); setMobileOpen(false); }}
+                    onClick={() => {
+                      router.push("/en/Community");
+                      setMobileOpen(false);
+                    }}
                     className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-200 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100"
                   >
                     <Globe size={16} /> Community
@@ -393,25 +438,37 @@ const handleJoyride = (data: any) => {
                   {!loading && user ? (
                     <>
                       <button
-                        onClick={() => { router.push("/en/profile"); setMobileOpen(false); }}
+                        onClick={() => {
+                          router.push("/en/profile");
+                          setMobileOpen(false);
+                        }}
                         className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
                       >
                         <User size={16} /> Profile
                       </button>
                       <button
-                        onClick={() => { router.push("/en/settings"); setMobileOpen(false); }}
+                        onClick={() => {
+                          router.push("/en/settings");
+                          setMobileOpen(false);
+                        }}
                         className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
                       >
                         <Settings size={16} /> Settings
                       </button>
                       <button
-                        onClick={() => { handleLogout(); setMobileOpen(false); }}
+                        onClick={() => {
+                          handleLogout();
+                          setMobileOpen(false);
+                        }}
                         className="w-full flex justify-center items-center gap-2 rounded-full border border-neutral-800 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
                       >
                         <LogOut size={16} /> Logout
                       </button>
                       <button
-                        onClick={() => { handleDeleteAccount(); setMobileOpen(false); }}
+                        onClick={() => {
+                          handleDeleteAccount();
+                          setMobileOpen(false);
+                        }}
                         className="w-full flex justify-center items-center gap-2 rounded-full border border-red-500 px-5 py-2.5 text-sm font-bold text-red-500 transition hover:bg-red-500 hover:text-white mt-2"
                       >
                         <Trash2 size={16} /> Delete Account
@@ -420,13 +477,19 @@ const handleJoyride = (data: any) => {
                   ) : !loading ? (
                     <>
                       <button
-                        onClick={() => { router.push("/en/login"); setMobileOpen(false); }}
+                        onClick={() => {
+                          router.push("/en/login");
+                          setMobileOpen(false);
+                        }}
                         className="w-full rounded-full border border-neutral-200 px-5 py-2.5 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100"
                       >
                         Login
                       </button>
                       <button
-                        onClick={() => { router.push("/en/register"); setMobileOpen(false); }}
+                        onClick={() => {
+                          router.push("/en/register");
+                          setMobileOpen(false);
+                        }}
                         className="w-full rounded-full bg-[#1b2620] text-[#c8e639] px-5 py-2.5 text-sm font-medium transition hover:bg-black"
                       >
                         Register
@@ -434,7 +497,6 @@ const handleJoyride = (data: any) => {
                     </>
                   ) : null}
                 </motion.div>
-
               </motion.div>
             </motion.div>
           )}

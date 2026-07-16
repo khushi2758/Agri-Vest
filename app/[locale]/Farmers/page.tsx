@@ -4,14 +4,69 @@ import { motion } from "motion/react";
 import { MapPin, Search, Navigation } from "lucide-react";
 import NavBar from "../navbar";
 import Footer from "../Footer";
-
+import ScreenReaderButton from "../ScreenReaderButton";
+import HelpTourButton from "@/app/[locale]/HelpTourButton";
 export default function FarmersDirectory() {
   const [farmers, setFarmers] = useState<any[]>([]);
   const [filteredFarmers, setFilteredFarmers] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [nearMeActive, setNearMeActive] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+const farmerDirectorySteps = [
+  {
+    target: "#farmer-header",
+    content:
+      "👋 Welcome to the Farmer Directory. Browse verified farmers, discover agricultural partners, and explore sustainable farming opportunities.",
+  },
 
+  {
+    target: "#screen-reader",
+    content:
+      "🔊 Click this button to hear a complete description of this page for improved accessibility.",
+  },
+
+  {
+    target: "#search-section",
+    content:
+      "🔍 Use the search tools below to quickly find farmers by name or location.",
+  },
+
+  {
+    target: "#search-input",
+    content:
+      "Type a farmer's name, crop, or region to filter the directory instantly.",
+  },
+
+  {
+    target: "#near-me",
+    content:
+      "📍 Enable 'Near Me' to view farmers located close to your current location.",
+  },
+
+  {
+    target: "#farmer-cards",
+    content:
+      "🌱 These cards display verified farmers. Click any card to learn more about their farm, crops, and available investment opportunities.",
+  },
+];
+const farmerDirectorySpeech = [
+    {
+      target: "#farmer-header",
+      text: "Welcome to the Farmer Directory. This page helps you discover verified farmers across our global agricultural network.",
+    },
+    {
+      target: "#search-section",
+      text: "Use the search bar to find farmers by name or location.",
+    },
+    {
+      target: "#near-me",
+      text: "Click Near Me to display farmers close to your current location.",
+    },
+    {
+      target: "#farmer-cards",
+      text: "These cards display verified farmers along with their location and farming expertise.",
+    },
+  ]
   useEffect(() => {
     async function fetchFarmers() {
       try {
@@ -60,23 +115,38 @@ export default function FarmersDirectory() {
   return (
     <div className="min-h-screen bg-[#f7f9f2] font-sans">
       <NavBar />
+      <HelpTourButton
+  steps={farmerDirectorySteps}
+  title="Farmer Directory"
+  speechSections=  {farmerDirectorySpeech}
+/>
+      
+    
 
       <main className="mx-auto max-w-6xl px-6 py-12 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-10 text-center"
-        >
-          <h1 className="text-4xl font-black text-[#1b2620] tracking-tight uppercase md:text-5xl">
+          id="farmer-header" className="mb-10 text-center"
+        > <div className="flex flex-row justify-center gap-5 items-center"> 
+          <h1 className="text-4xl font-black text-[#1b2620] tracking-tight uppercase md:text-5xl ">
             Farmer Directory
+
           </h1>
+          <div id="screen-reader">
+          <ScreenReaderButton 
+  title="Farmer Directory"
+  description="Discover verified agricultural producers within our global network. Find local partners and invest in sustainable farming.."
+   size={26}
+  />
+</div>    </div>
           <p className="mt-4 max-w-2xl mx-auto text-[#1b2620]/60 font-medium">
             Discover verified agricultural producers within our global network. Find local partners and invest in sustainable farming.
           </p>
         </motion.div>
 
-        <motion.div
+        <motion.div  id="search-section"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -84,7 +154,7 @@ export default function FarmersDirectory() {
         >
           <div className="relative flex-1 w-full">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
+            <input  id="search-input"
               type="text"
               placeholder="Search farmers or regions..."
               value={search}
@@ -93,7 +163,7 @@ export default function FarmersDirectory() {
             />
           </div>
 
-          <button
+          <button  id="near-me"
             onClick={() => setNearMeActive(!nearMeActive)}
             className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all w-full sm:w-auto justify-center ${
               nearMeActive
@@ -106,9 +176,10 @@ export default function FarmersDirectory() {
           </button>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 "  id="farmer-cards">
           {filteredFarmers.map((farmer, idx) => (
             <motion.div
+             id={`farmer-card-${farmer.id}`}
               key={farmer.id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
