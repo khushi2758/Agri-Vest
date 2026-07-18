@@ -15,6 +15,8 @@ import {
   Filter,
   Search
 } from "lucide-react";
+import HelpTourButton from "../HelpTourButton";
+import { exploreSteps } from "./exploreSteps";
 
 const FARMLANDS = [
   {
@@ -117,7 +119,9 @@ export default function ExploreCatalog() {
   });
 
   return (
+
     <div className="min-h-screen bg-[#b8cb8a] font-sans relative">
+        <HelpTourButton steps={exploreSteps}/>    
       <div className="fixed inset-0 z-0 pointer-events-none">
          <Image src="/bga.jpg" alt="" fill priority className="object-cover object-bottom opacity-30" />
          <div className="absolute inset-0 bg-linear-to-b from-[#8c8c81]/70 via-[#749a86]/90 to-[#374f42]" />
@@ -125,16 +129,16 @@ export default function ExploreCatalog() {
 
       <div className="relative z-10">
         <NavBar />
-
+       
         <div className="mx-auto max-w-350 px-6 pt-12 pb-24 md:px-14">
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: easeOut }}
-            className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl mb-12 shadow-2xl flex flex-col xl:flex-row gap-6 items-start xl:items-center justify-between"
+          id="explore-header"  className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl mb-12 shadow-2xl flex flex-col xl:flex-row gap-6 items-start xl:items-center justify-between"
           >
-            <div className="relative w-full xl:w-96">
+            <div id="search-farm" className="relative w-full xl:w-96">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={20} />
               <input 
                 type="text" 
@@ -145,7 +149,7 @@ export default function ExploreCatalog() {
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+            <div id="filters" className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
               <div className="flex items-center gap-2 mr-2 text-white/80 text-sm font-semibold uppercase tracking-wider">
                 <Filter size={16} /> Filters:
               </div>
@@ -189,7 +193,8 @@ export default function ExploreCatalog() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence mode="popLayout">
               {filteredFarms.map((farm, index) => (
-                <motion.div 
+               <motion.div
+                   id={index === 0 ? "farm-card" : undefined}
                   key={farm.id}
                   layout
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -246,7 +251,7 @@ export default function ExploreCatalog() {
                       </div>
                     </div>
 
-                    <div className="mb-6 grow">
+                    <div  id={index === 0 ? "farm-tech" : undefined} className="mb-6 grow">
                       <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-2 flex items-center gap-1"><Cpu size={12}/> Applied Tech</span>
                       <div className="flex flex-wrap gap-2">
                         {farm.tech.map((t) => (
@@ -257,7 +262,7 @@ export default function ExploreCatalog() {
                       </div>
                     </div>
 
-                    <div className="mb-6">
+                    <div className="mb-6" id={index === 0 ? "funding-progress" : undefined}>
                       <div className="flex justify-between text-xs font-semibold mb-2">
                         <span className="text-gray-600">Funded: {farm.fundedPct}%</span>
                         <span className="text-gray-900">{farm.totalGoal} Goal</span>
@@ -273,7 +278,7 @@ export default function ExploreCatalog() {
                       </div>
                     </div>
 
-                    <Link href={`/property/${farm.id}`} className="block w-full mt-auto">
+                    <Link id={index === 0 ? "view-details" : undefined} href={`/property/${farm.id}`} className="block w-full mt-auto">
                       <button className="w-full bg-[#1b2620] hover:bg-black text-[#c8e639] font-bold py-3.5 px-4 rounded-2xl transition-colors duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg">
                         View Details <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                       </button>

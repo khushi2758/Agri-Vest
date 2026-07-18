@@ -14,6 +14,9 @@ import RSIChart from "@/components/chart/RSIChart";
 import DonutGauge from "@/components/chart/DonutGauge";
 import PerformanceTable from "@/components/chart/PerformanceTable";
 import { calculateSMA, calculateBollingerBands, calculateRSI } from "@/lib/technicalIndicators";
+import HelpTourButton from "../../HelpTourButton";
+import { markRouteEntryAsDynamicRewrite } from "next/dist/client/components/segment-cache/cache";
+import { marketAnalysisSteps } from "./marketAnalysisSteps";
 
 export default function StockTradingView({ params }: { params: Promise<{ plotId: string, locale: string }> }) {
   const router = useRouter();
@@ -102,7 +105,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
   return (
     <div className="min-h-screen bg-[#f7f9f2] text-[#1b2620] font-sans selection:bg-[#c8e639] selection:text-black pb-20">
       <NavBar />
-      
+      <HelpTourButton steps={marketAnalysisSteps}/>
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 border-b border-gray-200 pb-6">
@@ -110,14 +113,14 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
             <Link href={`/${resolvedParams.locale}/property/${resolvedParams.plotId}`} className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-neutral-600 hover:bg-[#1b2620] hover:text-[#c8e639] shadow-sm border border-gray-200 transition-colors">
               <ArrowLeft size={24} />
             </Link>
-            <div>
+           <div id="market-header">
               <h1 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3 text-[#1b2620]">
                 {data.name} TRADING
               </h1>
             </div>
           </div>
           
-          <div className="flex items-center gap-8">
+          <div  id="market-summary" className="flex items-center gap-8">
             <div className="flex flex-col">
               <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Asset Value</span>
               <span className="text-2xl font-black font-mono text-[#1b2620]">{currentPrice.toFixed(2)} AGV <span className="text-sm text-neutral-400 font-bold ml-1 font-sans">(~${currentPrice.toFixed(2)})</span></span>
@@ -140,7 +143,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           <div className="lg:col-span-3 flex flex-col gap-6">
-            <div className="h-64">
+          <div id="yield-gauge" className="h-64">
               <DonutGauge score={yieldProb} label="Yield Probability" sublabel="Projected" />
             </div>
 
@@ -150,7 +153,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                 <div className="w-12 h-12 bg-[#c8e639]/20 rounded-lg flex items-center justify-center font-black text-[#8da514]">
                   AG
                 </div>
-                <div>
+                <div id="asset-summary">
                   <h4 className="font-bold text-sm">Agriculture Yield</h4>
                   <p className="text-xs text-neutral-500 font-bold uppercase tracking-widest">Property Futures</p>
                 </div>
@@ -188,16 +191,16 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
 
           <div className="lg:col-span-9 flex flex-col gap-6">
             
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col relative overflow-hidden h-[400px]">
+            <div  className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col relative overflow-hidden h-[400px]">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-extrabold text-[#1b2620] uppercase tracking-widest">Position Analysis</h3>
-                <div className="flex items-center gap-4">
+                <div id="drawing-tools" className="flex items-center gap-4">
                   <DrawingToolbar 
                     activeTool={activeTool} 
                     setActiveTool={setActiveTool} 
                     onClear={handleClearDrawings} 
                   />
-                  <div className="flex items-center gap-1 bg-gray-50 px-1 py-1 rounded-lg border border-gray-100">
+                   <div id="technical-indicators" className="flex items-center gap-1 bg-gray-50 px-1 py-1 rounded-lg border border-gray-100">
                     <button onClick={() => setShowSMA(!showSMA)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showSMA ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-gray-200'}`}>SMA</button>
                     <button onClick={() => setShowBollinger(!showBollinger)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showBollinger ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-gray-200'}`}>BB</button>
                     <button onClick={() => setShowRSI(!showRSI)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showRSI ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-gray-200'}`}>RSI</button>
@@ -205,7 +208,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                 </div>
               </div>
               
-              <div className="relative w-full flex-1 flex items-end">
+              <div id="candlestick-chart" className="relative w-full flex-1 flex items-end">
                 <CandlestickChart 
                   data={stockData} 
                   smaData={smaData} 
@@ -222,7 +225,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               {showRSI ? (
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col relative overflow-hidden h-48">
+                <div id="rsi-chart" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col relative overflow-hidden h-48">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#1b2620]">RSI Analysis</h3>
                     {hoverIndex !== null && rsiData[hoverIndex] !== null && (
@@ -244,7 +247,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                 </div>
               )}
 
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col h-48">
+              <div id="market-drivers" className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col h-48">
                 <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#1b2620] mb-4">Market Drivers</h3>
                 <div className="flex flex-col gap-4 flex-1 justify-center">
                   <div className="flex items-center justify-between">
@@ -278,11 +281,11 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2">
+            <div  className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div id="performance-table" className="md:col-span-2">
                 <PerformanceTable data={stockData} />
               </div>
-              <div className="md:col-span-1">
+              <div id="roi-calculator" className="md:col-span-1">
                 <ROICalculator currentPrice={currentPrice} />
               </div>
             </div>

@@ -29,6 +29,8 @@ import {
   Layers,
   Map
 } from "lucide-react";
+import HelpTourButton from "../../HelpTourButton";
+import { propertyDetailsSteps } from "./propertyDetailsSteps";
 
 const FARMLANDS = [
   { id: "sundance-corn-estate", name: "Sundance Corn", location: "Nebraska, USA", yield: "12.4%", risk: "Low", minInvestment: "$500", totalGoal: "$2.3M", fundedPct: 82, image: "/farm.jpg", initials: "SC", area_ha: 150.5, soil_type: "loamy", water_source: "borewell", status: "active" },
@@ -78,9 +80,9 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
       <NavBar />
       
       <div className="mx-auto max-w-350 px-6 pt-8">
-        
+        <HelpTourButton steps={propertyDetailsSteps}/>
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <div>
+          <div id="property-header">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
               <Link href={`/${locale}/Explore`} className="hover:text-neutral-900 transition-colors">Catalog</Link>
               <span>/</span>
@@ -91,7 +93,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
             </h1>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div  id="property-actions" className="flex items-center gap-3">
             <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-neutral-700 rounded-xl shadow-sm hover:bg-gray-50 transition-colors">
               <Share2 size={16} />
             </button>
@@ -115,10 +117,10 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div id="property-overview" className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-48 relative overflow-hidden">
-            <div>
+          <div >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Target Yield</span>
                 <Target size={16} className="text-[#c8e639]" />
@@ -188,7 +190,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-          <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+          <div id="property-tabs" className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
             <span className="text-sm font-bold text-[#1b2620] whitespace-nowrap">Property Sections</span>
             <div className="h-4 w-px bg-gray-300 mx-2"></div>
             <button 
@@ -217,7 +219,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
           <div className="flex-1 bg-linear-to-br from-[#c8e639] to-[#a0bd0f] rounded-4xl p-8 flex flex-col justify-between shadow-inner relative overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             
-            <div className="relative z-10 flex-1">
+            <div   id="asset-details" className="relative z-10 flex-1">
               <div className="flex items-center justify-between mb-8 border-b border-[#1b2620]/10 pb-6">
                 <div>
                   <p className="text-xs font-bold text-[#1b2620]/60 uppercase tracking-widest mb-2">Asset Details</p>
@@ -230,7 +232,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
 
               {activeTab === "Overview" && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                  <div className="relative h-72 rounded-3xl overflow-hidden border-4 border-white/40 shadow-lg">
+                  <div  id="property-image" className="relative h-72 rounded-3xl overflow-hidden border-4 border-white/40 shadow-lg">
                       <Image src={property.image} alt={property.name} fill className="object-cover" />
                   </div>
                   
@@ -338,7 +340,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
               )}
             </div>
 
-            <div className="relative z-10 border-t border-[#1b2620]/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-6 mt-4">
+            <div  id="investment-summary" className="relative z-10 border-t border-[#1b2620]/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-6 mt-4">
               <div className="flex gap-12 w-full sm:w-auto">
                 <div>
                   <p className="text-xs font-bold text-[#1b2620]/60 uppercase tracking-widest mb-1">Target Yield</p>
@@ -352,7 +354,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
 
               <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
                 {isAgronomist ? (
-                  <button onClick={handleAnalyze} disabled={analyzing} className="bg-[#1b2620] hover:bg-black text-[#c8e639] font-extrabold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap disabled:opacity-50 disabled:hover:scale-100">
+                  <button  onClick={handleAnalyze} disabled={analyzing} className="bg-[#1b2620] hover:bg-black text-[#c8e639] font-extrabold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap disabled:opacity-50 disabled:hover:scale-100">
                     <Sprout size={16} /> {analyzing ? "Loading..." : "Analyze Land"}
                   </button>
                 ) : (
@@ -363,7 +365,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                     <Link href={`/${locale}/prospectus/${property.id}`} className="bg-white/30 hover:bg-white/50 text-[#1b2620] font-extrabold px-6 py-3.5 rounded-full transition-colors whitespace-nowrap">
                       View Prospectus
                     </Link>
-                    <button onClick={() => setIsTradeModalOpen(true)} className="bg-[#1b2620] hover:bg-black text-white font-extrabold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap">
+                    <button  id="invest-button" onClick={() => setIsTradeModalOpen(true)} className="bg-[#1b2620] hover:bg-black text-white font-extrabold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 whitespace-nowrap">
                       Invest Now <ArrowUpRight size={16} />
                     </button>
                   </>

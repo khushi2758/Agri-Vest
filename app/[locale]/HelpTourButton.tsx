@@ -13,12 +13,14 @@ type Props = {
   steps: Step[];
   title?: string;
   description?: string;
+  placement?:string;
   speechSections?: SpeechSection[];
 };
 
 export default function HelpTourButton({
   steps,
   title ="",
+  placement ="",
   description ="",
   speechSections = [],
 }: Props) {
