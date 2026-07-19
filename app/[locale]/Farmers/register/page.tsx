@@ -506,7 +506,7 @@ export default function RegisterLand() {
           <div id="register-header" className="mx-auto mt-3 m text-sm text-neutral-600  border-b-2 border-[#c1ed7a] p-3  w-full text-6xl font-extrabold
     text-transparent
     [-webkit-text-stroke:1.5px_theme(colors.neutral.900)] ">
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex  justify-between">
               <h1 className="text-3xl max-w-[45px]  font-extrabold uppercase tracking-tight   text-[#c1ed7a] md:text-4xl p-2 bg-neutral-900 m-2 rounded-2xl">Register Your Land</h1>
               <button
                 type="button"
