@@ -8,7 +8,7 @@ import { cookies } from 'next/headers';
 import { ObjectId } from 'mongodb';
 import "./globals.css";
 import { TourProvider } from '../context/TourContext';
-import Tour from '@/components/Tour';
+
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
