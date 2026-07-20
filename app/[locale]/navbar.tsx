@@ -24,6 +24,7 @@ const NAV_LINKS = [
   { label: "Agronomist", href: "/Agronomist" },
   { label: "Wallet", href: "/Wallet" },
   { label: "Portfolio", href: "/Portfolio" },
+    { label: "About", href: "/About" },
 ];
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
