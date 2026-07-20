@@ -25,6 +25,7 @@ const NAV_LINKS = [
   { label: "Wallet", href: "/Wallet" },
   { label: "Portfolio", href: "/Portfolio" },
     { label: "About", href: "/About" },
+   
 ];
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
@@ -278,7 +279,7 @@ export default function NavBar() {
                     <button
                       onClick={() => {
                         setDropdownOpen(false);
-                        router.push("/en/profile");
+                        router.push("/en/profileF");
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                     >
@@ -287,7 +288,7 @@ export default function NavBar() {
                     <button
                       onClick={() => {
                         setDropdownOpen(false);
-                        router.push("/en/settings");
+                        router.push("/en/profile");
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                     >
