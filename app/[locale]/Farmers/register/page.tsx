@@ -38,7 +38,7 @@ const LANGUAGES: { code: LangCode; label: string; ttsLang: string }[] = [
 
 ];
 
-const STRINGS: Record<
+const STRINGS: Record <
   LangCode,
   {
     header: string;

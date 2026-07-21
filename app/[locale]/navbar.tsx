@@ -12,6 +12,7 @@ import {
   Trash2,
   Globe,
   Bold,
+  Bell,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -31,6 +32,8 @@ const NAV_LINKS = [
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
 export default function NavBar() {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+const profileRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const [active, setActive] = useState(pathname);
@@ -259,7 +262,7 @@ export default function NavBar() {
             <Globe size={20} />
           </button>
           {!loading && user ? (
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative" ref={dropdownRef} >
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 id="profile-link"
@@ -276,15 +279,17 @@ export default function NavBar() {
                     exit={{ opacity: 0, y: -10 }}
                     className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2"
                   >
-                    <button
-                      onClick={() => {
-                        setDropdownOpen(false);
-                        router.push("/en/profileF");
-                      }}
-                      className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                    >
-                      <User size={14} /> Profile
-                    </button>
+  <button
+    onClick={() => setIsProfileOpen(!isProfileOpen)}
+    className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"
+  >
+   Profile
+  </button>
+  {isProfileOpen && (
+    <div className="absolute z-50 top-14 right-0 w-72 wallet-card-soft rounded-2xl p-5 z-50 flex flex-col animate-in fade-in slide-in-from-top-4 duration-300">
+      <p>hi</p>
+    </div>
+  )}
                     <button
                       onClick={() => {
                         setDropdownOpen(false);

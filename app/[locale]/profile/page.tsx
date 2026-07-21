@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import NavBar from "../navbar";
 
+
 export default function AccountSettingsPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -115,6 +116,9 @@ export default function AccountSettingsPage() {
   }
 
   if (!user) return null;
+
+  function handleKYC() { router.push('/en/profile/KYC'); }
+
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] font-sans selection:bg-[#c8e639] selection:text-black">
@@ -324,7 +328,7 @@ export default function AccountSettingsPage() {
                     : 'To comply with financial regulations and unlock investments, please complete your identity verification.'}
                 </p>
                 {!user.kyc?.verified && (
-                  <button className="bg-[#c8e639] text-[#1b2620] px-8 py-3.5 rounded-lg text-sm font-extrabold shadow-md hover:opacity-90 transition-opacity">
+                  <button onClick={handleKYC} className="bg-[#c8e639] text-[#1b2620] px-8 py-3.5 rounded-lg text-sm font-extrabold shadow-md hover:opacity-90 transition-opacity">
                     Start Verification Process
                   </button>
                 )}
