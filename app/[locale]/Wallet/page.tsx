@@ -250,7 +250,7 @@ export default function WalletDashboard() {
                <Bell size={16} />
                <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#c1ed7a] rounded-full border border-white"></span>
             </button>
-            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><Moon size={16} /></button>
+            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><Moon size={6} /></button>
             
             <div id="profile-menu" className="relative" ref={profileRef}>
               <div 
