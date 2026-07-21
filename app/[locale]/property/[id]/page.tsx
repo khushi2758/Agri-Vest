@@ -32,6 +32,59 @@ import {
 import HelpTourButton from "../../HelpTourButton";
 import { propertyDetailsSteps } from "./propertyDetailsSteps";
 
+// ---- shared keyframes / soft-UI utility classes (same language as the wallet dashboard) ----
+function SoftUIStyles() {
+  return (
+    <style jsx global>{`
+      @keyframes wallet-fade-up {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes wallet-fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes wallet-grow-up {
+        from { transform: scaleY(0); }
+        to { transform: scaleY(1); }
+      }
+
+      /* plain transparent glass: translucent surface, soft neutral warm shadow, no glow/blur aura */
+      .wallet-card-soft {
+        background: rgba(255, 252, 244, 0.55);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 24px rgba(120, 100, 70, 0.10);
+      }
+
+      .wallet-fade-up { animation: wallet-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+      .wallet-fade-in { animation: wallet-fade-in 0.6s ease both; }
+
+      .wallet-hover-lift {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      }
+      .wallet-hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 32px rgba(120, 100, 70, 0.14);
+      }
+
+      .wallet-bar-grow {
+        transform-origin: bottom;
+        animation: wallet-grow-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .wallet-fade-up, .wallet-fade-in, .wallet-hover-lift, .wallet-bar-grow {
+          animation: none !important;
+          transition: none !important;
+        }
+        .wallet-hover-lift:hover { transform: none; }
+      }
+    `}</style>
+  );
+}
+
 const FARMLANDS = [
   { id: "sundance-corn-estate", name: "Sundance Corn", location: "Nebraska, USA", yield: "12.4%", risk: "Low", minInvestment: "$500", totalGoal: "$2.3M", fundedPct: 82, image: "/farm.jpg", initials: "SC", area_ha: 150.5, soil_type: "loamy", water_source: "borewell", status: "active" },
   { id: "blue-ridge-orchard", name: "Blue Ridge", location: "Virginia, USA", yield: "14.1%", risk: "Medium", minInvestment: "$1,000", totalGoal: "$1.5M", fundedPct: 65, image: "/farm.jpg", initials: "BR", area_ha: 85.2, soil_type: "red", water_source: "rainfed", status: "listed" },
@@ -76,12 +129,13 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9f2] font-sans pb-20 selection:bg-[#c8e639] selection:text-black">
+    <div className="min-h-screen bg-[#ece4d6] font-sans pb-20 selection:bg-[#c8e639] selection:text-black relative">
+      <SoftUIStyles />
       <NavBar />
       
-      <div className="mx-auto max-w-350 px-6 pt-8">
+      <div className="mx-auto max-w-350 px-6 pt-8 relative z-10">
         <HelpTourButton steps={propertyDetailsSteps}/>
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 wallet-fade-up">
           <div id="property-header">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
               <Link href={`/${locale}/Explore`} className="hover:text-neutral-900 transition-colors">Catalog</Link>
@@ -94,22 +148,22 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
           </div>
           
           <div  id="property-actions" className="flex items-center gap-3">
-            <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-neutral-700 rounded-xl shadow-sm hover:bg-gray-50 transition-colors">
+            <button className="flex items-center justify-center w-10 h-10 wallet-card-soft text-neutral-700 rounded-xl hover:bg-gray-50 hover:scale-110 transition-all">
               <Share2 size={16} />
             </button>
-            <button className="flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-neutral-700 rounded-xl shadow-sm hover:bg-gray-50 transition-colors">
+            <button className="flex items-center justify-center w-10 h-10 wallet-card-soft text-neutral-700 rounded-xl hover:bg-gray-50 hover:scale-110 transition-all">
               <Bookmark size={16} />
             </button>
             {isAgronomist ? (
-              <button onClick={handleAnalyze} disabled={analyzing} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-[#c8e639] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-black transition-all disabled:opacity-50">
+              <button onClick={handleAnalyze} disabled={analyzing} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-[#c8e639] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-black hover:scale-[1.03] transition-all disabled:opacity-50 disabled:hover:scale-100">
                 <Sprout size={16} /> {analyzing ? "Loading..." : "Analyze Land"}
               </button>
             ) : (
               <>
-                <Link href={`/${locale}/stock/${property.id}`} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-white px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-black transition-all">
+                <Link href={`/${locale}/stock/${property.id}`} className="flex items-center gap-2 text-sm font-extrabold bg-[#1b2620] text-white px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.03] hover:bg-black transition-all">
                   <Activity size={16} className="text-[#c8e639]" /> Market Analysis
                 </Link>
-                <button onClick={() => setIsTradeModalOpen(true)} className="flex items-center gap-2 text-sm font-extrabold bg-[#c8e639] text-[#1b2620] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-[#b0cc2f] transition-all">
+                <button onClick={() => setIsTradeModalOpen(true)} className="flex items-center gap-2 text-sm font-extrabold bg-[#c8e639] text-[#1b2620] px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.03] hover:bg-[#b0cc2f] transition-all">
                   Invest Now <ArrowUpRight size={16} />
                 </button>
               </>
@@ -119,7 +173,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
 
         <div id="property-overview" className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-48 relative overflow-hidden">
+          <div className="wallet-card-soft wallet-hover-lift rounded-3xl p-6 flex flex-col justify-between h-48 relative overflow-hidden wallet-fade-up" style={{ animationDelay: "60ms" }}>
           <div >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Target Yield</span>
@@ -133,7 +187,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
             <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gray-50 rounded-full border-8 border-white z-0 opacity-50"></div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-48 relative">
+          <div className="wallet-card-soft wallet-hover-lift rounded-3xl p-6 flex flex-col justify-between h-48 relative wallet-fade-up" style={{ animationDelay: "120ms" }}>
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Funding Goal</span>
@@ -146,12 +200,12 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
             </div>
             <div className="flex items-end gap-2 mt-4 h-12 w-full">
               {[30, 40, 20, 50, 45, 70, 85].map((h, i) => (
-                <div key={i} className="w-full bg-[#c8e639]/40 rounded-t-sm" style={{ height: `${h}%` }}></div>
+                <div key={i} className="w-full bg-[#c8e639]/40 rounded-t-sm wallet-bar-grow" style={{ height: `${h}%`, animationDelay: `${180 + i * 60}ms` }}></div>
               ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-48">
+          <div className="wallet-card-soft wallet-hover-lift rounded-3xl p-6 flex flex-col justify-between h-48 wallet-fade-up" style={{ animationDelay: "180ms" }}>
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Funded</span>
@@ -163,11 +217,11 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
               </p>
             </div>
             <div className="mt-8 h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-               <motion.div initial={{ width: 0 }} animate={{ width: `${property.fundedPct}%` }} className="h-full bg-linear-to-r from-[#8da514] to-[#c8e639]" />
+               <motion.div initial={{ width: 0 }} animate={{ width: `${property.fundedPct}%` }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} className="h-full bg-linear-to-r from-[#8da514] to-[#c8e639]" />
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-48">
+          <div className="wallet-card-soft wallet-hover-lift rounded-3xl p-6 flex flex-col justify-between h-48 wallet-fade-up" style={{ animationDelay: "240ms" }}>
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Risk Profile</span>
@@ -182,42 +236,43 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                    <span className="text-xs font-extrabold text-white">{property.minInvestment}</span>
                  </div>
                </div>
-               <Link href={`/${locale}/prospectus/${property.id}`} className="bg-[#c8e639] hover:bg-[#a0bd0f] text-[#1b2620] p-3 rounded-full transition-colors shadow-sm">
+               <Link href={`/${locale}/prospectus/${property.id}`} className="bg-[#c8e639] hover:bg-[#a0bd0f] text-[#1b2620] p-3 rounded-full transition-all hover:scale-110 shadow-sm">
                  <ArrowUpRight size={18} />
                </Link>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 wallet-fade-up" style={{ animationDelay: "100ms" }}>
           <div id="property-tabs" className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
             <span className="text-sm font-bold text-[#1b2620] whitespace-nowrap">Property Sections</span>
             <div className="h-4 w-px bg-gray-300 mx-2"></div>
             <button 
               onClick={() => setActiveTab("Overview")}
-              className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap shadow-sm transition-colors ${activeTab === "Overview" ? "text-white bg-[#1b2620] border border-[#1b2620]" : "text-neutral-600 bg-white border border-gray-200 hover:bg-gray-50"}`}
+              className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap shadow-sm transition-all hover:scale-[1.03] ${activeTab === "Overview" ? "text-white bg-[#1b2620] border border-[#1b2620]" : "text-neutral-600 bg-white border border-gray-200 hover:bg-gray-50"}`}
             >
               Overview
             </button>
             <button 
               onClick={() => setActiveTab("Telemetry")}
-              className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap shadow-sm transition-colors ${activeTab === "Telemetry" ? "text-white bg-[#1b2620] border border-[#1b2620]" : "text-neutral-600 bg-white border border-gray-200 hover:bg-gray-50"}`}
+              className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap shadow-sm transition-all hover:scale-[1.03] ${activeTab === "Telemetry" ? "text-white bg-[#1b2620] border border-[#1b2620]" : "text-neutral-600 bg-white border border-gray-200 hover:bg-gray-50"}`}
             >
               Telemetry
             </button>
             <button 
               onClick={() => setActiveTab("Financials")}
-              className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap shadow-sm transition-colors ${activeTab === "Financials" ? "text-white bg-[#1b2620] border border-[#1b2620]" : "text-neutral-600 bg-white border border-gray-200 hover:bg-gray-50"}`}
+              className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap shadow-sm transition-all hover:scale-[1.03] ${activeTab === "Financials" ? "text-white bg-[#1b2620] border border-[#1b2620]" : "text-neutral-600 bg-white border border-gray-200 hover:bg-gray-50"}`}
             >
               Financials
             </button>
           </div>
         </div>
 
-        <div className="bg-[#1b2620] rounded-[2.5rem] p-4 flex flex-col shadow-2xl overflow-hidden min-h-150">
+        <div className="bg-[#ded2bd]/50 backdrop-blur-xl border border-white/50 rounded-[2.5rem] p-4 flex flex-col shadow-lg overflow-hidden min-h-150 wallet-fade-up" style={{ animationDelay: "160ms" }}>
           
-          <div className="flex-1 bg-linear-to-br from-[#c8e639] to-[#a0bd0f] rounded-4xl p-8 flex flex-col justify-between shadow-inner relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+          <div className="flex-1 bg-gradient-to-br from-[#c8e639]/45 via-[#c8e639]/20 to-white/20 backdrop-blur-2xl border border-white/40 rounded-4xl p-8 flex flex-col justify-between shadow-sm relative overflow-hidden">
+            <div className="absolute top-8 right-10 w-8 h-8 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle at 30% 30%, #ffffff, #b7c9d9 55%, #7c8a99)", boxShadow: "0 4px 10px rgba(27,38,32,0.15)" }}></div>
+            <div className="absolute top-24 right-24 w-3 h-3 rounded-full bg-[#1b2620]/20 pointer-events-none"></div>
             
             <div   id="asset-details" className="relative z-10 flex-1">
               <div className="flex items-center justify-between mb-8 border-b border-[#1b2620]/10 pb-6">
@@ -232,12 +287,12 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
 
               {activeTab === "Overview" && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                  <div  id="property-image" className="relative h-72 rounded-3xl overflow-hidden border-4 border-white/40 shadow-lg">
+                  <div  id="property-image" className="relative h-72 rounded-3xl overflow-hidden border border-white/50 shadow-sm">
                       <Image src={property.image} alt={property.name} fill className="object-cover" />
                   </div>
                   
                   <div className="flex flex-col justify-center gap-4">
-                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40">
+                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40 transition-transform hover:-translate-y-0.5 duration-300">
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-xl font-extrabold text-[#1b2620]">{property.area_ha} HA</p>
                           <Map size={18} className="text-[#1b2620]" />
@@ -245,7 +300,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                         <p className="text-xs font-bold text-[#1b2620]/60 uppercase tracking-widest">Total Area</p>
                       </div>
 
-                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40">
+                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40 transition-transform hover:-translate-y-0.5 duration-300">
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-xl font-extrabold text-[#1b2620] capitalize">{property.soil_type}</p>
                           <Layers size={18} className="text-[#1b2620]" />
@@ -253,7 +308,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                         <p className="text-xs font-bold text-[#1b2620]/60 uppercase tracking-widest">Soil Type</p>
                       </div>
 
-                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40">
+                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40 transition-transform hover:-translate-y-0.5 duration-300">
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-xl font-extrabold text-[#1b2620] capitalize">{property.water_source}</p>
                           <Droplets size={18} className="text-[#1b2620]" />
@@ -270,7 +325,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                      <p className="text-xl font-extrabold text-[#1b2620]">Live Field Telemetry</p>
                      <p className="text-sm font-bold text-[#1b2620]/70">Real-time IoT sensor readings across all zones.</p>
                   </div>
-                  <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center">
+                  <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center transition-transform hover:-translate-y-0.5 duration-300">
                     <div className="flex justify-between items-start mb-4">
                       <p className="text-4xl font-extrabold text-[#1b2620]">32.4%</p>
                       <Droplets size={24} className="text-[#1b2620]" />
@@ -278,7 +333,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                     <p className="text-sm font-bold text-[#1b2620]/60 uppercase tracking-widest">Avg Soil Moisture</p>
                   </div>
 
-                  <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center">
+                  <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center transition-transform hover:-translate-y-0.5 duration-300">
                     <div className="flex justify-between items-start mb-4">
                       <p className="text-4xl font-extrabold text-[#1b2620]">8.2</p>
                       <Wind size={24} className="text-[#1b2620]" />
@@ -286,7 +341,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                     <p className="text-sm font-bold text-[#1b2620]/60 uppercase tracking-widest">Air Quality Index (AQI)</p>
                   </div>
 
-                  <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center">
+                  <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center transition-transform hover:-translate-y-0.5 duration-300">
                     <div className="flex justify-between items-start mb-4">
                       <p className="text-4xl font-extrabold text-[#1b2620]">18.2°C</p>
                       <Thermometer size={24} className="text-[#1b2620]" />
@@ -304,7 +359,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                   </div>
                   
                   <div className="flex flex-col justify-center gap-4">
-                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40">
+                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40 transition-transform hover:-translate-y-0.5 duration-300">
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-xl font-extrabold text-[#1b2620]">{property.totalGoal}</p>
                           <Wallet size={18} className="text-[#1b2620]" />
@@ -312,7 +367,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                         <p className="text-xs font-bold text-[#1b2620]/60 uppercase tracking-widest">Total Raise Amount</p>
                       </div>
 
-                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40">
+                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40 transition-transform hover:-translate-y-0.5 duration-300">
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-xl font-extrabold text-[#1b2620]">{property.minInvestment}</p>
                           <Target size={18} className="text-[#1b2620]" />
@@ -320,7 +375,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                         <p className="text-xs font-bold text-[#1b2620]/60 uppercase tracking-widest">Minimum Investment</p>
                       </div>
 
-                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40">
+                      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-5 border border-white/40 transition-transform hover:-translate-y-0.5 duration-300">
                         <div className="flex justify-between items-start mb-2">
                           <p className="text-xl font-extrabold text-[#1b2620]">{property.yield}</p>
                           <Percent size={18} className="text-[#1b2620]" />
@@ -329,7 +384,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                       </div>
                   </div>
 
-                  <div className="relative h-64 rounded-3xl overflow-hidden border-4 border-white/40 shadow-lg bg-[#f7f9f2] flex items-center justify-center p-6">
+                  <div className="relative h-64 rounded-3xl overflow-hidden border border-white/40 shadow-sm bg-white/40 backdrop-blur-sm flex items-center justify-center p-6">
                       <div className="text-center">
                          <Activity size={48} className="text-[#c8e639] mx-auto mb-4" />
                          <p className="text-2xl font-extrabold text-[#1b2620] mb-2">Market Condition</p>
@@ -391,21 +446,21 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl bg-[#f7f9f2] rounded-4xl shadow-2xl overflow-hidden border border-[#c8e639]/30"
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-2xl bg-[#ece4d6] rounded-4xl shadow-2xl overflow-hidden border border-[#c8e639]/30"
             >
               <div className="bg-[#1b2620] text-white px-8 py-6 flex justify-between items-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#c8e639]/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                 <h2 className="text-2xl font-extrabold flex items-center gap-2 relative z-10">
                   <Activity className="text-[#c8e639]" /> Trade Execution Details
                 </h2>
-                <button onClick={() => setIsTradeModalOpen(false)} className="text-white/60 hover:text-white transition-colors relative z-10">
+                <button onClick={() => setIsTradeModalOpen(false)} className="text-white/60 hover:text-white transition-all hover:scale-110 relative z-10">
                   <X size={24} />
                 </button>
               </div>
               
               <div className="p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                  <div className="wallet-card-soft wallet-hover-lift rounded-2xl p-5">
                     <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-[#67780f] mb-3 flex items-center gap-1.5"><BarChart3 size={14}/> Greedy Index</h3>
                     <div className="flex items-end gap-3">
                       <span className="text-4xl font-extrabold text-[#2a3307]">78</span>
@@ -416,7 +471,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                  <div className="wallet-card-soft wallet-hover-lift rounded-2xl p-5">
                     <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-[#67780f] mb-3 flex items-center gap-1.5"><Percent size={14}/> Expected ROI</h3>
                     <div className="flex flex-col">
                       <span className="text-3xl font-extrabold text-[#2a3307]">14.5% - 17.2%</span>
@@ -425,22 +480,22 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+                <div className="wallet-card-soft rounded-2xl p-6 mb-8">
                   <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#2a3307] mb-4 border-b border-gray-100 pb-2">Probable Crop Yield Analysis</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    <div className="bg-[#f7f9f2] p-3 rounded-xl border border-[#e0e8cd]">
+                    <div className="bg-white/50 backdrop-blur-sm p-3 rounded-xl border border-white/60 transition-transform hover:-translate-y-0.5 duration-300">
                       <span className="block text-[10px] font-bold uppercase text-[#67780f] mb-1">Yield Proj.</span>
                       <span className="text-lg font-extrabold text-[#2a3307]">210 bu/ac</span>
                     </div>
-                    <div className="bg-[#f7f9f2] p-3 rounded-xl border border-[#e0e8cd]">
+                    <div className="bg-white/50 backdrop-blur-sm p-3 rounded-xl border border-white/60 transition-transform hover:-translate-y-0.5 duration-300">
                       <span className="block text-[10px] font-bold uppercase text-[#67780f] mb-1">NPK Sensor</span>
                       <span className="text-sm font-extrabold text-[#2a3307]">Optimal Base</span>
                     </div>
-                    <div className="bg-[#f7f9f2] p-3 rounded-xl border border-[#e0e8cd]">
+                    <div className="bg-white/50 backdrop-blur-sm p-3 rounded-xl border border-white/60 transition-transform hover:-translate-y-0.5 duration-300">
                       <span className="block text-[10px] font-bold uppercase text-[#67780f] mb-1">Moisture</span>
                       <span className="text-sm font-extrabold text-[#2a3307]">32.4% (Ideal)</span>
                     </div>
-                    <div className="bg-[#f7f9f2] p-3 rounded-xl border border-[#e0e8cd]">
+                    <div className="bg-white/50 backdrop-blur-sm p-3 rounded-xl border border-white/60 transition-transform hover:-translate-y-0.5 duration-300">
                       <span className="block text-[10px] font-bold uppercase text-[#67780f] mb-1">Light Index</span>
                       <span className="text-sm font-extrabold text-[#2a3307]">94% (High)</span>
                     </div>
@@ -454,7 +509,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                   <button onClick={() => setIsTradeModalOpen(false)} className="flex-1 py-3.5 px-4 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
                     Cancel
                   </button>
-                  <button className="flex-2 py-3.5 px-4 rounded-xl font-extrabold text-[#1b2620] bg-[#c8e639] hover:bg-[#a8c718] transition-colors shadow-lg hover:shadow-xl">
+                  <button className="flex-2 py-3.5 px-4 rounded-xl font-extrabold text-[#1b2620] bg-[#c8e639] hover:bg-[#a8c718] hover:scale-[1.01] transition-all shadow-lg hover:shadow-xl">
                     Confirm Investment Allocation
                   </button>
                 </div>

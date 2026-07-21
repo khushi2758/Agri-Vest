@@ -29,16 +29,23 @@ const fadeUp = {
 // Note: translations below are a best-effort starting point, not reviewed by
 // native speakers — swap in verified copy before shipping to real users.
 // ---------------------------------------------------------------------------
-type LangCode = "en" | "es" | "hi" | "bn";
+type LangCode = "en" | "es" | "hi" | "de" | "it" | "ja" | "ko" | "pt" | "ru" | "zh" | "fr";
 
 const LANGUAGES: { code: LangCode; label: string; ttsLang: string }[] = [
   { code: "en", label: "English", ttsLang: "en-US" },
   { code: "es", label: "Español", ttsLang: "es-ES" },
   { code: "hi", label: "हिन्दी", ttsLang: "hi-IN" },
-
+  { code: "de", label: "Deutsch", ttsLang: "de-DE" },
+  { code: "it", label: "Italiano", ttsLang: "it-IT" },
+  { code: "ja", label: "日本語", ttsLang: "ja-JP" },
+  { code: "ko", label: "한국어", ttsLang: "ko-KR" },
+  { code: "pt", label: "Português", ttsLang: "pt-PT" },
+  { code: "ru", label: "Русский", ttsLang: "ru-RU" },
+  { code: "zh", label: "中文", ttsLang: "zh-CN" },
+  { code: "fr", label: "Français", ttsLang: "fr-FR" },
 ];
 
-const STRINGS: Record <
+const STRINGS: Record<
   LangCode,
   {
     header: string;
@@ -140,7 +147,206 @@ const STRINGS: Record <
     iotDesc: (t, d) => `${t}. ${d}`,
     uploading: (n) => `${n} फ़ाइलें अपलोड हो रही हैं। कृपया प्रतीक्षा करें।`,
   },
-
+  de: {
+    header:
+      "Willkommen. Mit diesem Formular registrieren Sie Ihr Land zur Überprüfung und Investition. Tippen Sie auf ein Feld, um Anweisungen zu hören. Tippen Sie jederzeit auf das Lautsprechersymbol, um die Sprachführung auszuschalten.",
+    farmName: "Geben Sie hier den Namen Ihres Bauernhofs ein.",
+    ownerName: "Geben Sie hier den vollständigen gesetzlichen Namen des Grundstückseigentümers ein.",
+    location: "Geben Sie den Landkreis und das Bundesland an, in dem sich Ihr Land befindet.",
+    acreage: "Geben Sie hier die Gesamtfläche Ihres Landes in Acres ein.",
+    farmBasicsSection: "Geben Sie die Informationen zu Ihrem Bauernhof ein: Name, Eigentümer, Standort und Gesamtfläche.",
+    cropsCertsSection: "Wählen Sie die angebauten Pflanzen und die Zertifizierungen Ihres Betriebs aus.",
+    uploadZone: "Tippen Sie hier, um Ihre Grundstücksdokumente wie Eigentumsurkunde oder Besitznachweis hochzuladen.",
+    iotSection: "Wählen Sie die Sensoren aus, die auf Ihrem Bauernhof installiert werden sollen. Einige sind bereits enthalten.",
+    timeline: "Hier sehen Sie, wie lange Registrierung, Zertifizierung und Veröffentlichung normalerweise dauern.",
+    submitReady: "Alles sieht gut aus. Tippen Sie auf die schwarze Schaltfläche unten, um Ihren Antrag einzureichen.",
+    submitBlocked: "Bitte geben Sie den Namen des Bauernhofs, den Eigentümernamen und die Fläche ein, bevor Sie den Antrag absenden.",
+    submitted: "Ihr Antrag wurde eingereicht. Unser Team wird Ihren Bauernhof prüfen und sich bald bei Ihnen melden.",
+    languageChanged: "Die Sprachführung ist jetzt auf Deutsch.",
+    cropAdded: (c) => `${c} hinzugefügt.`,
+    cropRemoved: (c) => `${c} entfernt.`,
+    certSelected: (l) => `${l} ausgewählt.`,
+    certRemoved: (l) => `${l} entfernt.`,
+    iotAdded: (t) => `${t} hinzugefügt.`,
+    iotRemoved: (t) => `${t} entfernt.`,
+    iotDesc: (t, d) => `${t}. ${d}`,
+    uploading: (n) => `${n} Datei${n > 1 ? "en" : ""} wird hochgeladen. Bitte warten.`,
+  },
+  it: {
+    header:
+      "Benvenuto. Questo modulo registra il tuo terreno per la verifica e gli investimenti. Tocca qualsiasi campo per ascoltare le istruzioni. Tocca l'icona dell'altoparlante in qualsiasi momento per disattivare la guida vocale.",
+    farmName: "Inserisci qui il nome della tua fattoria.",
+    ownerName: "Inserisci qui il nome legale completo del proprietario del terreno.",
+    location: "Inserisci la contea e lo stato in cui si trova il tuo terreno.",
+    acreage: "Inserisci la superficie totale del terreno in acri.",
+    farmBasicsSection: "Inserisci le informazioni della tua fattoria: nome, proprietario, posizione e superficie totale.",
+    cropsCertsSection: "Seleziona le colture che coltivi e le certificazioni della tua fattoria.",
+    uploadZone: "Tocca qui per caricare i documenti del terreno, come l'atto di proprietà o il certificato di proprietà.",
+    iotSection: "Scegli i sensori agricoli che desideri installare. Alcuni sono già inclusi.",
+    timeline: "Questa sezione mostra il tempo normalmente necessario per registrazione, certificazione e pubblicazione.",
+    submitReady: "È tutto pronto. Tocca il pulsante nero qui sotto per inviare la domanda.",
+    submitBlocked: "Compila il nome della fattoria, il nome del proprietario e la superficie prima di inviare.",
+    submitted: "La tua domanda è stata inviata. Il nostro team esaminerà la tua fattoria e ti contatterà presto.",
+    languageChanged: "La guida vocale è ora in italiano.",
+    cropAdded: (c) => `${c} aggiunto.`,
+    cropRemoved: (c) => `${c} rimosso.`,
+    certSelected: (l) => `${l} selezionato.`,
+    certRemoved: (l) => `${l} rimosso.`,
+    iotAdded: (t) => `${t} aggiunto.`,
+    iotRemoved: (t) => `${t} rimosso.`,
+    iotDesc: (t, d) => `${t}. ${d}`,
+    uploading: (n) => `Caricamento di ${n} file. Attendere.`,
+  },
+  ja: {
+    header:
+      "ようこそ。このフォームでは、確認と投資のために土地を登録します。各項目をタップすると説明が読み上げられます。音声ガイドはいつでもスピーカーアイコンをタップしてオフにできます。",
+    farmName: "農場名を入力してください。",
+    ownerName: "土地所有者の正式な氏名を入力してください。",
+    location: "土地が所在する都道府県・地域を入力してください。",
+    acreage: "土地の総面積（エーカー）を入力してください。",
+    farmBasicsSection: "農場情報（名前、所有者、所在地、総面積）を入力してください。",
+    cropsCertsSection: "栽培している作物と認証を選択してください。",
+    uploadZone: "所有権証明書などの土地書類をアップロードしてください。",
+    iotSection: "設置する農業センサーを選択してください。一部は既に含まれています。",
+    timeline: "登録、認証、掲載までのおおよその期間を表示します。",
+    submitReady: "入力内容は問題ありません。下の黒いボタンを押して申請してください。",
+    submitBlocked: "送信する前に農場名、所有者名、面積を入力してください。",
+    submitted: "申請が送信されました。担当チームが確認し、後ほどご連絡します。",
+    languageChanged: "音声ガイドは日本語になりました。",
+    cropAdded: (c) => `${c} を追加しました。`,
+    cropRemoved: (c) => `${c} を削除しました。`,
+    certSelected: (l) => `${l} を選択しました。`,
+    certRemoved: (l) => `${l} を削除しました。`,
+    iotAdded: (t) => `${t} を追加しました。`,
+    iotRemoved: (t) => `${t} を削除しました。`,
+    iotDesc: (t, d) => `${t}。${d}`,
+    uploading: (n) => `${n} 件のファイルをアップロード中です。お待ちください。`,
+  },
+  ko: {
+    header:
+      "환영합니다. 이 양식은 토지 검증 및 투자를 위해 토지를 등록합니다. 각 항목을 눌러 안내를 들을 수 있습니다. 언제든지 스피커 아이콘을 눌러 음성 안내를 끌 수 있습니다.",
+    farmName: "농장 이름을 입력하세요.",
+    ownerName: "토지 소유자의 법적 성명을 입력하세요.",
+    location: "토지가 위치한 지역과 주를 입력하세요.",
+    acreage: "총 토지 면적(에이커)을 입력하세요.",
+    farmBasicsSection: "농장 정보(이름, 소유자, 위치, 총 면적)를 입력하세요.",
+    cropsCertsSection: "재배하는 작물과 농장 인증을 선택하세요.",
+    uploadZone: "토지 소유 증명서와 같은 문서를 업로드하세요.",
+    iotSection: "설치할 농장 센서를 선택하세요. 일부는 이미 포함되어 있습니다.",
+    timeline: "등록, 인증 및 게시에 걸리는 일반적인 기간을 보여줍니다.",
+    submitReady: "모든 준비가 완료되었습니다. 아래 검은색 버튼을 눌러 신청서를 제출하세요.",
+    submitBlocked: "제출하기 전에 농장 이름, 소유자 이름 및 면적을 입력하세요.",
+    submitted: "신청서가 제출되었습니다. 저희 팀이 검토한 후 곧 연락드리겠습니다.",
+    languageChanged: "음성 안내가 한국어로 변경되었습니다.",
+    cropAdded: (c) => `${c} 추가되었습니다.`,
+    cropRemoved: (c) => `${c} 제거되었습니다.`,
+    certSelected: (l) => `${l} 선택되었습니다.`,
+    certRemoved: (l) => `${l} 제거되었습니다.`,
+    iotAdded: (t) => `${t} 추가되었습니다.`,
+    iotRemoved: (t) => `${t} 제거되었습니다.`,
+    iotDesc: (t, d) => `${t}. ${d}`,
+    uploading: (n) => `${n}개의 파일을 업로드 중입니다. 잠시만 기다려 주세요.`,
+  },
+  pt: {
+    header:
+      "Bem-vindo. Este formulário registra sua terra para verificação e investimento. Toque em qualquer campo para ouvir as instruções. Toque no ícone do alto-falante a qualquer momento para desligar a orientação por voz.",
+    farmName: "Digite o nome da sua fazenda aqui.",
+    ownerName: "Digite o nome completo do proprietário da terra.",
+    location: "Digite o estado e a região onde sua terra está localizada.",
+    acreage: "Digite o tamanho total da terra em acres.",
+    farmBasicsSection: "Informe o nome, proprietário, localização e área total da fazenda.",
+    cropsCertsSection: "Escolha as culturas que você planta e as certificações da fazenda.",
+    uploadZone: "Toque aqui para enviar os documentos da terra, como escritura ou certificado de propriedade.",
+    iotSection: "Escolha os sensores agrícolas que deseja instalar. Alguns já estão incluídos.",
+    timeline: "Mostra quanto tempo normalmente leva o registro, certificação e publicação.",
+    submitReady: "Tudo está pronto. Toque no botão preto abaixo para enviar sua solicitação.",
+    submitBlocked: "Preencha o nome da fazenda, nome do proprietário e área antes de enviar.",
+    submitted: "Sua solicitação foi enviada. Nossa equipe analisará sua fazenda e entrará em contato em breve.",
+    languageChanged: "A orientação por voz agora está em português.",
+    cropAdded: (c) => `${c} adicionado.`,
+    cropRemoved: (c) => `${c} removido.`,
+    certSelected: (l) => `${l} selecionado.`,
+    certRemoved: (l) => `${l} removido.`,
+    iotAdded: (t) => `${t} adicionado.`,
+    iotRemoved: (t) => `${t} removido.`,
+    iotDesc: (t, d) => `${t}. ${d}`,
+    uploading: (n) => `Enviando ${n} arquivo${n > 1 ? "s" : ""}. Aguarde.`,
+  },
+  ru: {
+    header:
+      "Добро пожаловать. Эта форма предназначена для регистрации вашей земли для проверки и инвестирования. Нажмите на любое поле, чтобы прослушать инструкции. Нажмите на значок динамика, чтобы отключить голосовое сопровождение.",
+    farmName: "Введите название вашей фермы.",
+    ownerName: "Введите полное официальное имя владельца земли.",
+    location: "Введите регион и область, где находится ваша земля.",
+    acreage: "Введите общую площадь земли в акрах.",
+    farmBasicsSection: "Введите информацию о ферме: название, владелец, местоположение и общая площадь.",
+    cropsCertsSection: "Выберите выращиваемые культуры и сертификаты вашей фермы.",
+    uploadZone: "Нажмите здесь, чтобы загрузить документы на землю, например свидетельство о собственности.",
+    iotSection: "Выберите сельскохозяйственные датчики, которые вы хотите установить.",
+    timeline: "Здесь показано, сколько обычно занимает регистрация, сертификация и публикация.",
+    submitReady: "Все готово. Нажмите черную кнопку ниже, чтобы отправить заявку.",
+    submitBlocked: "Перед отправкой заполните название фермы, имя владельца и площадь.",
+    submitted: "Ваша заявка отправлена. Наша команда рассмотрит её и скоро свяжется с вами.",
+    languageChanged: "Голосовое сопровождение теперь на русском языке.",
+    cropAdded: (c) => `${c} добавлено.`,
+    cropRemoved: (c) => `${c} удалено.`,
+    certSelected: (l) => `${l} выбрано.`,
+    certRemoved: (l) => `${l} удалено.`,
+    iotAdded: (t) => `${t} добавлено.`,
+    iotRemoved: (t) => `${t} удалено.`,
+    iotDesc: (t, d) => `${t}. ${d}`,
+    uploading: (n) => `Загрузка ${n} файлов. Подождите.`,
+  },
+  zh: {
+    header:
+      "欢迎。此表单用于注册您的土地以进行验证和投资。点击任何输入框即可收听说明。您可以随时点击扬声器图标关闭语音指导。",
+    farmName: "请输入您的农场名称。",
+    ownerName: "请输入土地所有者的法定全名。",
+    location: "请输入土地所在的地区和省份。",
+    acreage: "请输入土地总面积（英亩）。",
+    farmBasicsSection: "请输入农场信息：名称、所有者、位置和总面积。",
+    cropsCertsSection: "请选择您种植的作物以及农场认证。",
+    uploadZone: "点击此处上传土地文件，例如土地证或所有权证明。",
+    iotSection: "请选择要安装的农业传感器，其中部分已默认包含。",
+    timeline: "此处显示注册、认证和发布通常需要的时间。",
+    submitReady: "一切准备就绪。点击下方黑色按钮提交申请。",
+    submitBlocked: "提交前请填写农场名称、所有者姓名和土地面积。",
+    submitted: "您的申请已提交。我们的团队将审核您的农场，并尽快与您联系。",
+    languageChanged: "语音指导已切换为中文。",
+    cropAdded: (c) => `已添加 ${c}。`,
+    cropRemoved: (c) => `已移除 ${c}。`,
+    certSelected: (l) => `已选择 ${l}。`,
+    certRemoved: (l) => `已移除 ${l}。`,
+    iotAdded: (t) => `已添加 ${t}。`,
+    iotRemoved: (t) => `已移除 ${t}。`,
+    iotDesc: (t, d) => `${t}。${d}`,
+    uploading: (n) => `正在上传 ${n} 个文件，请稍候。`,
+  },
+  fr: {
+    header:
+      "Bienvenue. Ce formulaire permet d'enregistrer votre terrain pour vérification et investissement. Appuyez sur un champ pour entendre les instructions. Appuyez à tout moment sur l'icône du haut-parleur pour désactiver le guide vocal.",
+    farmName: "Saisissez ici le nom de votre ferme.",
+    ownerName: "Saisissez le nom légal complet du propriétaire du terrain.",
+    location: "Indiquez le département et la région où se trouve votre terrain.",
+    acreage: "Saisissez la superficie totale de votre terrain en acres.",
+    farmBasicsSection: "Saisissez les informations de votre ferme : nom, propriétaire, emplacement et superficie totale.",
+    cropsCertsSection: "Choisissez les cultures que vous produisez ainsi que les certifications de votre ferme.",
+    uploadZone: "Appuyez ici pour téléverser les documents de votre terrain, comme l'acte de propriété.",
+    iotSection: "Choisissez les capteurs agricoles que vous souhaitez installer. Certains sont déjà inclus.",
+    timeline: "Cette section indique le temps habituel nécessaire pour l'enregistrement, la certification et la publication.",
+    submitReady: "Tout est prêt. Appuyez sur le bouton noir ci-dessous pour envoyer votre demande.",
+    submitBlocked: "Veuillez renseigner le nom de la ferme, le nom du propriétaire et la superficie avant d'envoyer.",
+    submitted: "Votre demande a été envoyée. Notre équipe examinera votre ferme et vous contactera prochainement.",
+    languageChanged: "Le guide vocal est maintenant en français.",
+    cropAdded: (c) => `${c} ajouté.`,
+    cropRemoved: (c) => `${c} supprimé.`,
+    certSelected: (l) => `${l} sélectionné.`,
+    certRemoved: (l) => `${l} supprimé.`,
+    iotAdded: (t) => `${t} ajouté.`,
+    iotRemoved: (t) => `${t} supprimé.`,
+    iotDesc: (t, d) => `${t}. ${d}`,
+    uploading: (n) => `Téléversement de ${n} fichier${n > 1 ? "s" : ""}. Veuillez patienter.`,
+  },
 };
 
 function StepLabel({
@@ -457,17 +663,17 @@ export default function RegisterLand() {
   return (
     <div className="min-h-screen bg-[#f7f9f2] px-6 pb-20 font-sans md:px-14  ">
       <NavBar />
-      <HelpTourButton steps={registerLandSteps}  />
+      <HelpTourButton steps={registerLandSteps} />
 
       {/* Voice guide controls — fixed so they're reachable from anywhere on the page */}
       <div className="fixed right-20 bottom-7 z-40 flex flex-col items-end gap-2">
         {langMenuOpen && (
-          <div className="flex flex-row gap-1 rounded-2xl bg-white p-2 shadow-lg border border-neutral-200">
+          <div className="grid grid-cols-2 gap-1 rounded-2xl bg-white p-2 shadow-lg border border-neutral-200 max-h-72 overflow-y-auto">
             {LANGUAGES.map((l) => (
               <button
                 key={l.code}
                 onClick={() => changeLanguage(l.code)}
-                className={`flex items-center justify-between gap-4 rounded-xl px-3.5 py-2 text-xs font-bold transition-colors ${
+                className={`flex items-center justify-between gap-3 rounded-xl px-3.5 py-2 text-xs font-bold transition-colors whitespace-nowrap ${
                   language === l.code ? "bg-neutral-900 text-[#c8e639]" : "text-neutral-600 hover:bg-neutral-100"
                 }`}
               >
