@@ -13,6 +13,8 @@ import {
   Globe,
   Bold,
   Bell,
+  ShieldCheck,
+  ShieldAlert,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -33,7 +35,7 @@ const easeOut = [0.16, 1, 0.3, 1] as const;
 
 export default function NavBar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-const profileRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const [active, setActive] = useState(pathname);
@@ -106,6 +108,8 @@ const profileRef = useRef<HTMLDivElement>(null);
     checkAuth();
   }, []);
 
+  // Closes BOTH the account menu and the profile card when clicking outside
+  // either of them — they share the same dropdownRef wrapper.
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -113,6 +117,7 @@ const profileRef = useRef<HTMLDivElement>(null);
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
+        setIsProfileOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -262,34 +267,33 @@ const profileRef = useRef<HTMLDivElement>(null);
             <Globe size={20} />
           </button>
           {!loading && user ? (
-            <div className="relative" ref={dropdownRef} >
+            <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 id="profile-link"
                 className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
               >
-                <User size={16} /> 
+             Profile | <User size={16} />  
               </button>
 
+              {/* account menu: Profile / Settings / Logout / Delete Account */}
               <AnimatePresence>
                 {dropdownOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2"
+                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2 z-40"
                   >
-  <button
-    onClick={() => setIsProfileOpen(!isProfileOpen)}
-    className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"
-  >
-   Profile
-  </button>
-  {isProfileOpen && (
-    <div className="absolute z-50 top-14 right-0 w-72 wallet-card-soft rounded-2xl p-5 z-50 flex flex-col animate-in fade-in slide-in-from-top-4 duration-300">
-      <p>hi</p>
-    </div>
-  )}
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        setIsProfileOpen(true);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    >
+                      <User size={14} /> Profile
+                    </button>
                     <button
                       onClick={() => {
                         setDropdownOpen(false);
@@ -311,6 +315,76 @@ const profileRef = useRef<HTMLDivElement>(null);
                       className="w-full text-left px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 mt-1"
                     >
                       <Trash2 size={14} /> Delete Account
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* profile card: opened by the "Profile" item above */}
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute z-50 top-14 bg-yellow-50 right-0 w-72 wallet-card-soft rounded-2xl p-5 flex flex-col"
+                  >
+                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-black/5 ">
+                      <div className="w-12 h-12 rounded-full bg-[#c1ed7a]/20 text-[#1b2620] flex items-center justify-center font-extrabold uppercase text-lg">
+                        {user?.name ? user.name.substring(0, 2) : "?"}
+                      </div>
+                      <div>
+                        <p className="font-bold text-[#1b2620]">{user?.name ?? "Unnamed user"}</p>
+                        <p className="text-xs text-[#1b2620]/60">{user?.email ?? "—"}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 mb-4">
+                      <div className="flex justify-between items-center bg-black/[0.03] p-3 rounded-xl border border-black/5">
+                        <span className="text-xs font-bold text-[#1b2620]/60">Total Balance</span>
+                        <span className="text-sm font-extrabold text-[#1b2620]">
+                          {user?.totalBalance != null ? (
+                            <>
+                              {user.totalBalance} AGV{" "}
+                              <span className="text-[10px] text-neutral-400 font-medium ml-1">
+                                (~${user.totalBalance})
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-[#1b2620]/40 font-medium">—</span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center bg-black/[0.03] p-3 rounded-xl border border-black/5">
+                        <span className="text-xs font-bold text-[#1b2620]/60">KYC Status</span>
+                        {user?.kyc_verified ? (
+                          <span className="flex items-center gap-1 text-xs font-bold text-[#c1ed7a] bg-[#c1ed7a]/10 px-2 py-1 rounded">
+                            <ShieldCheck size={12} /> Verified
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-xs font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded">
+                            <ShieldAlert size={12} /> Pending
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/en/profile"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="w-full bg-[#1b2620] text-white text-center text-sm font-bold py-2.5 rounded-xl hover:bg-black transition-colors mb-2"
+                    >
+                      Edit Profile 
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full bg-red-50 text-red-600 text-center text-sm font-bold py-2.5 rounded-xl hover:bg-red-100 transition-colors"
+                    >
+                      Sign Out
                     </button>
                   </motion.div>
                 )}
