@@ -18,6 +18,56 @@ import HelpTourButton from "../../HelpTourButton";
 import { markRouteEntryAsDynamicRewrite } from "next/dist/client/components/segment-cache/cache";
 import { marketAnalysisSteps } from "./marketAnalysisSteps";
 
+// ---- shared glass / motion utility classes (same warm language as PropertyDetail & Prospectus) ----
+function SoftUIStyles() {
+  return (
+    <style jsx global>{`
+      @keyframes wallet-fade-up {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes wallet-fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      /* plain transparent glass: translucent surface, soft neutral warm shadow, no glow/blur aura */
+      .wallet-card-soft {
+        background: rgba(255, 252, 244, 0.6);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 24px rgba(120, 100, 70, 0.08);
+      }
+      .wallet-pill {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+      }
+
+      .wallet-fade-up { animation: wallet-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+      .wallet-fade-in { animation: wallet-fade-in 0.6s ease both; }
+
+      .wallet-hover-lift {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      }
+      .wallet-hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 32px rgba(120, 100, 70, 0.12);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .wallet-fade-up, .wallet-fade-in, .wallet-hover-lift {
+          animation: none !important;
+          transition: none !important;
+        }
+        .wallet-hover-lift:hover { transform: none; }
+      }
+    `}</style>
+  );
+}
+
 export default function StockTradingView({ params }: { params: Promise<{ plotId: string, locale: string }> }) {
   const router = useRouter();
   const resolvedParams = use(params);
@@ -56,21 +106,27 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f7f9f2] flex items-center justify-center">
-        <Loader2 className="w-12 h-12 text-[#c8e639] animate-spin" />
+      <div className="min-h-screen bg-[#ece4d6] flex items-center justify-center">
+        <SoftUIStyles />
+        <div className="wallet-card-soft rounded-3xl p-8 wallet-fade-in">
+          <Loader2 className="w-12 h-12 text-[#8da514] animate-spin" />
+        </div>
       </div>
     );
   }
 
   if (!data || !data.data || data.data.length === 0) {
     return (
-      <div className="min-h-screen bg-[#f7f9f2] text-[#1b2620] flex flex-col font-sans">
+      <div className="min-h-screen bg-[#ece4d6] text-[#1b2620] flex flex-col font-sans">
+        <SoftUIStyles />
         <NavBar />
         <div className="flex-1 flex flex-col items-center justify-center">
-          <Activity size={48} className="text-[#1b2620] mb-4 opacity-30" />
-          <h2 className="text-2xl font-extrabold mb-2 text-[#1b2620]">No Market Data Available</h2>
-          <p className="text-neutral-500 font-medium">This agricultural asset does not have enough performance snapshots to generate a trading chart.</p>
-          <Link href={`/${resolvedParams.locale}/Explore`} className="mt-6 bg-[#1b2620] text-white px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl font-extrabold hover:bg-black transition-all">Back to Explore</Link>
+          <div className="wallet-card-soft rounded-3xl p-10 flex flex-col items-center wallet-fade-up">
+            <Activity size={48} className="text-[#1b2620] mb-4 opacity-30" />
+            <h2 className="text-2xl font-extrabold mb-2 text-[#1b2620]">No Market Data Available</h2>
+            <p className="text-neutral-500 font-medium text-center max-w-sm">This agricultural asset does not have enough performance snapshots to generate a trading chart.</p>
+            <Link href={`/${resolvedParams.locale}/Explore`} className="mt-6 bg-[#1b2620] text-white px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg font-extrabold hover:bg-black transition-all">Back to Explore</Link>
+          </div>
         </div>
       </div>
     );
@@ -103,14 +159,15 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
   const yieldProb = hoveredData?.probabilityPercent || stockData[stockData.length-1].probabilityPercent || 92;
 
   return (
-    <div className="min-h-screen bg-[#f7f9f2] text-[#1b2620] font-sans selection:bg-[#c8e639] selection:text-black pb-20">
+    <div className="min-h-screen bg-[#ece4d6] text-[#1b2620] font-sans selection:bg-[#c8e639] selection:text-black pb-20">
+      <SoftUIStyles />
       <NavBar />
       <HelpTourButton steps={marketAnalysisSteps}/>
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
         
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 border-b border-gray-200 pb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 border-b border-black/10 pb-6 wallet-fade-up">
           <div className="flex items-center gap-4">
-            <Link href={`/${resolvedParams.locale}/property/${resolvedParams.plotId}`} className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-neutral-600 hover:bg-[#1b2620] hover:text-[#c8e639] shadow-sm border border-gray-200 transition-colors">
+            <Link href={`/${resolvedParams.locale}/property/${resolvedParams.plotId}`} className="w-12 h-12 rounded-xl wallet-card-soft flex items-center justify-center text-neutral-600 hover:bg-[#1b2620] hover:text-[#c8e639] transition-all hover:scale-105">
               <ArrowLeft size={24} />
             </Link>
            <div id="market-header">
@@ -121,17 +178,17 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
           </div>
           
           <div  id="market-summary" className="flex items-center gap-8">
-            <div className="flex flex-col">
+            <div className="flex flex-col  wallet-card-soft wallet-hover-lift rounded-2xl p-6 flex-1 wallet-fade-up bg-amber-100" style={{ animationDelay: "120ms" }}>
               <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Asset Value</span>
               <span className="text-2xl font-black font-mono text-[#1b2620]">{currentPrice.toFixed(2)} AGV <span className="text-sm text-neutral-400 font-bold ml-1 font-sans">(~${currentPrice.toFixed(2)})</span></span>
             </div>
-            <div className="flex flex-col">
+<div className="flex flex-col  wallet-card-soft wallet-hover-lift rounded-2xl p-6 flex-1 wallet-fade-up bg-amber-100" style={{ animationDelay: "120ms" }}>
               <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">24h P/L</span>
               <span className={`text-2xl font-black font-mono flex items-center gap-1 ${priceChange >= 0 ? 'text-[#8da514]' : 'text-red-500'}`}>
                 {priceChange >= 0 ? '+' : '-'}{Math.abs(priceChange).toFixed(2)} AGV <span className="text-sm opacity-60 font-bold ml-1 font-sans">(~${Math.abs(priceChange).toFixed(2)})</span>
               </span>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col  wallet-card-soft wallet-hover-lift rounded-2xl p-6 h-[120px]  flex-1 wallet-fade-up bg-amber-100" style={{ animationDelay: "120ms" }}>
               <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Growth Rate</span>
               <span className={`text-2xl font-black font-mono ${priceChangePct >= 0 ? 'text-[#c8e639]' : 'text-red-500'}`}>
                 {priceChangePct >= 0 ? '+' : ''}{priceChangePct.toFixed(2)}%
@@ -143,11 +200,11 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           <div className="lg:col-span-3 flex flex-col gap-6">
-          <div id="yield-gauge" className="h-64">
+          <div id="yield-gauge" className="h-64 wallet-card-soft wallet-hover-lift rounded-2xl wallet-fade-up" style={{ animationDelay: "60ms" }}>
               <DonutGauge score={yieldProb} label="Yield Probability" sublabel="Projected" />
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex-1">
+            <div className="wallet-card-soft wallet-hover-lift rounded-2xl p-6 flex-1 wallet-fade-up" style={{ animationDelay: "120ms" }}>
               <h3 className="text-sm font-extrabold text-[#1b2620] mb-6 uppercase tracking-widest">Asset Summary</h3>
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-[#c8e639]/20 rounded-lg flex items-center justify-center font-black text-[#8da514]">
@@ -161,23 +218,23 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
               </div>
               
               <div className="space-y-4">
-                <div className="flex justify-between items-center border-b border-gray-50 pb-3">
+                <div className="flex justify-between items-center border-b border-black/5 pb-3">
                   <span className="text-xs font-bold text-neutral-500">Property ID</span>
                   <span className="text-xs font-bold text-[#1b2620]">{resolvedParams.plotId.substring(0,8)}...</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-50 pb-3">
+                <div className="flex justify-between items-center border-b border-black/5 pb-3">
                   <span className="text-xs font-bold text-neutral-500">Current Price</span>
                   <span className="text-xs font-bold font-mono text-[#1b2620]">{currentPrice.toFixed(2)} AGV <span className="text-[10px] text-neutral-400 font-sans ml-1">(~${currentPrice.toFixed(2)})</span></span>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-50 pb-3">
+                <div className="flex justify-between items-center border-b border-black/5 pb-3">
                   <span className="text-xs font-bold text-neutral-500">Crop Type</span>
                   <span className="text-xs font-bold text-[#1b2620]">Rice / Kharif</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-50 pb-3">
+                <div className="flex justify-between items-center border-b border-black/5 pb-3">
                   <span className="text-xs font-bold text-neutral-500">Target Yield</span>
                   <span className="text-xs font-bold text-[#1b2620]">6.5 Tonnes</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-50 pb-3">
+                <div className="flex justify-between items-center border-b border-black/5 pb-3">
                   <span className="text-xs font-bold text-neutral-500">Risk/Reward</span>
                   <span className="text-xs font-black text-[#c8e639]">3.00</span>
                 </div>
@@ -191,7 +248,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
 
           <div className="lg:col-span-9 flex flex-col gap-6">
             
-            <div  className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col relative overflow-hidden h-[400px]">
+            <div  className="wallet-card-soft rounded-2xl p-6 flex flex-col relative overflow-hidden h-[400px] wallet-fade-up" style={{ animationDelay: "80ms" }}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-extrabold text-[#1b2620] uppercase tracking-widest">Position Analysis</h3>
                 <div id="drawing-tools" className="flex items-center gap-4">
@@ -200,10 +257,10 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                     setActiveTool={setActiveTool} 
                     onClear={handleClearDrawings} 
                   />
-                   <div id="technical-indicators" className="flex items-center gap-1 bg-gray-50 px-1 py-1 rounded-lg border border-gray-100">
-                    <button onClick={() => setShowSMA(!showSMA)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showSMA ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-gray-200'}`}>SMA</button>
-                    <button onClick={() => setShowBollinger(!showBollinger)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showBollinger ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-gray-200'}`}>BB</button>
-                    <button onClick={() => setShowRSI(!showRSI)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showRSI ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-gray-200'}`}>RSI</button>
+                   <div id="technical-indicators" className="flex items-center gap-1 wallet-pill px-1 py-1 rounded-lg">
+                    <button onClick={() => setShowSMA(!showSMA)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showSMA ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-white/60'}`}>SMA</button>
+                    <button onClick={() => setShowBollinger(!showBollinger)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showBollinger ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-white/60'}`}>BB</button>
+                    <button onClick={() => setShowRSI(!showRSI)} className={`px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest transition-colors ${showRSI ? 'bg-[#1b2620] text-white' : 'text-neutral-500 hover:bg-white/60'}`}>RSI</button>
                   </div>
                 </div>
               </div>
@@ -225,7 +282,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               {showRSI ? (
-                <div id="rsi-chart" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col relative overflow-hidden h-48">
+                <div id="rsi-chart" className="wallet-card-soft wallet-hover-lift rounded-2xl p-6 flex flex-col relative overflow-hidden h-48 wallet-fade-up" style={{ animationDelay: "140ms" }}>
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#1b2620]">RSI Analysis</h3>
                     {hoverIndex !== null && rsiData[hoverIndex] !== null && (
@@ -242,12 +299,12 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                   </div>
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center justify-center h-48">
+                <div className="wallet-card-soft rounded-2xl p-6 flex items-center justify-center h-48 wallet-fade-up" style={{ animationDelay: "140ms" }}>
                   <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">RSI Disabled</span>
                 </div>
               )}
 
-              <div id="market-drivers" className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col h-48">
+              <div id="market-drivers" className="wallet-card-soft wallet-hover-lift rounded-2xl p-6 flex flex-col h-48 wallet-fade-up" style={{ animationDelay: "180ms" }}>
                 <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#1b2620] mb-4">Market Drivers</h3>
                 <div className="flex flex-col gap-4 flex-1 justify-center">
                   <div className="flex items-center justify-between">
@@ -255,7 +312,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                       <Droplets size={14} className="text-blue-500" />
                       <span className="text-xs font-bold text-neutral-600">Soil Moisture</span>
                     </div>
-                    <div className="w-32 bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-32 bg-black/5 h-1.5 rounded-full overflow-hidden">
                       <div className="h-full bg-blue-500 w-[85%]"></div>
                     </div>
                   </div>
@@ -264,7 +321,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                       <Thermometer size={14} className="text-orange-500" />
                       <span className="text-xs font-bold text-neutral-600">Temperature</span>
                     </div>
-                    <div className="w-32 bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-32 bg-black/5 h-1.5 rounded-full overflow-hidden">
                       <div className="h-full bg-orange-500 w-[60%]"></div>
                     </div>
                   </div>
@@ -273,7 +330,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
                       <Sun size={14} className="text-yellow-500" />
                       <span className="text-xs font-bold text-neutral-600">Light Index</span>
                     </div>
-                    <div className="w-32 bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-32 bg-black/5 h-1.5 rounded-full overflow-hidden">
                       <div className="h-full bg-yellow-500 w-[90%]"></div>
                     </div>
                   </div>
@@ -281,7 +338,7 @@ export default function StockTradingView({ params }: { params: Promise<{ plotId:
               </div>
             </div>
 
-            <div  className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div  className="grid grid-cols-1 md:grid-cols-3 gap-6 wallet-fade-up" style={{ animationDelay: "220ms" }}>
               <div id="performance-table" className="md:col-span-2">
                 <PerformanceTable data={stockData} />
               </div>

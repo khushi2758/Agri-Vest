@@ -268,7 +268,7 @@ const profileRef = useRef<HTMLDivElement>(null);
                 id="profile-link"
                 className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
               >
-                <User size={16} /> Profile
+                <User size={16} /> 
               </button>
 
               <AnimatePresence>
