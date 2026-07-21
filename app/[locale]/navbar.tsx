@@ -269,7 +269,10 @@ export default function NavBar() {
           {!loading && user ? (
             <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                  onClick={() => {
+    setDropdownOpen(!dropdownOpen);
+    setIsProfileOpen(false);
+  }}
                 id="profile-link"
                 className="flex items-center gap-2 rounded-full border border-neutral-800 px-5 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white"
               >
