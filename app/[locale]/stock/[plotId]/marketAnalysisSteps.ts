@@ -1,4 +1,4 @@
-export const marketAnalysisSteps = [
+export const marketAnalysisSteps: any = [
   {
     target: "#market-header",
     content:

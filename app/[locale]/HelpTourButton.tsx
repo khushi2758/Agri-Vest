@@ -113,7 +113,6 @@ export default function HelpTourButton({
     showProgress: true,
     overlayClickAction: false,
     primaryColor: "#c8e639",
-    primaryColor: "#c8e639",
       backgroundColor: "#ffffff",
       textColor: "#1f2937",
       overlayColor: "rgba(0,0,0,0.45)",
@@ -124,7 +123,7 @@ export default function HelpTourButton({
 
 />
 
-      <div className="fixed bottom-6 right-6 z-[9999]">
+      <div className="fixed bottom-6 right-6 z-9999">
         {open && (
           <div className="absolute bottom-16 right-0 w-64 rounded-2xl border border-gray-200 bg-white shadow-2xl overflow-hidden">
             <button

@@ -1,4 +1,4 @@
-export const propertyDetailsSteps = [
+export const propertyDetailsSteps: any = [
   {
     target: "#property-header",
     content:

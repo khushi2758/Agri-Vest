@@ -1,4 +1,4 @@
-export const exploreSteps = [
+export const exploreSteps: any = [
   {
     target: "#explore-header",
     content:
