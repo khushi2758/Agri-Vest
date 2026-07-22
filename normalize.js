@@ -1,6 +1,6 @@
 const { MongoClient } = require('mongodb');
 async function run() {
-  const uri = 'mongodb+srv://royrishita744_db_user:Ma92kXURJKmab7Za@cluster0.kzfs2rf.mongodb.net/?appName=Cluster0';
+  const uri = 'mongodb uri';
   const client = new MongoClient(uri, { tlsAllowInvalidCertificates: true });
   await client.connect();
   const db = client.db('agrivest_db');
