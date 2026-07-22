@@ -6,7 +6,6 @@ async function run() {
   try {
     db = await connect();
 
-    // Define consistent ObjectIds to maintain references
     const landownerId = new ObjectId("60d5ec423d538e1b1078d461");
     const investorId = new ObjectId("60d5ec423d538e1b1078d462");
     const parcelId = new ObjectId("60d5ec423d538e1b1078d463");
@@ -16,7 +15,6 @@ async function run() {
     const sensorReadingId = new ObjectId("60d5ec423d538e1b1078d467");
     const snapshotId = new ObjectId("60d5ec423d538e1b1078d468");
 
-    // Clean up collections to ensure a clean run
     await db.collection('users').deleteMany({});
     await db.collection('land_parcels').deleteMany({});
     await db.collection('plots').deleteMany({});

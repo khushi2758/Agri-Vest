@@ -64,7 +64,7 @@ export async function addTransaction(
   if (receiver !== "SYSTEM_FEE_POOL" && receiver !== "SYSTEM_MINT") {
     const userRef = await db.collection("users").findOne({ email: receiver });
     if (userRef) {
-      const currentBal = parseFloat(userRef.wallet?.balance || "0");
+      const currentBal = parseFloat(userRef.wallet?.balance?.toString().replace(/,/g, '') || "0");
       await db.collection("users").updateOne(
         { email: receiver },
         { $set: { "wallet.balance": (currentBal + amountAGV).toFixed(2), "wallet.currency": "AGV" } }
@@ -75,7 +75,7 @@ export async function addTransaction(
   if (sender !== "SYSTEM_MINT") {
     const userRef = await db.collection("users").findOne({ email: sender });
     if (userRef) {
-      const currentBal = parseFloat(userRef.wallet?.balance || "0");
+      const currentBal = parseFloat(userRef.wallet?.balance?.toString().replace(/,/g, '') || "0");
       await db.collection("users").updateOne(
         { email: sender },
         { $set: { "wallet.balance": (currentBal - amountAGV).toFixed(2), "wallet.currency": "AGV" } }
