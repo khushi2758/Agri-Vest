@@ -20,9 +20,11 @@ const STATUS_STYLES: Record<string, string> = {
 
 export function DataTableWidget({ lands, onSelectLand }: { lands: any[]; onSelectLand: (id: string) => void }) {
   const displayData = lands.length > 0 ? lands.map(l => ({
-    id: l.id,
-    title: l.title || l.id,
-    location: l.location || "Unknown",
+    id: l._id || l.id,
+    title: l.title || l.id || l._id,
+    location: (typeof l.location === 'object' && l.location?.coordinates) 
+      ? `Lat: ${l.location.coordinates[1].toFixed(2)}, Lng: ${l.location.coordinates[0].toFixed(2)}` 
+      : (l.location || "Unknown"),
     crop: l.crop || "Mixed",
     area: l.area || "N/A",
     moisture: l.telemetry?.moisturePct ? `${l.telemetry.moisturePct}%` : "N/A",
@@ -51,8 +53,8 @@ export function DataTableWidget({ lands, onSelectLand }: { lands: any[]; onSelec
             </tr>
           </thead>
           <tbody>
-            {displayData.map((field) => (
-              <tr key={field.id} onClick={() => onSelectLand(field.id)} className="border-b border-gray-50 hover:bg-[#f8fdf6] transition-colors cursor-pointer group">
+            {displayData.map((field, idx) => (
+              <tr key={field.id || field._id || idx} onClick={() => onSelectLand(field.id || field._id)} className="border-b border-gray-50 hover:bg-[#f8fdf6] transition-colors cursor-pointer group">
                 <td className="py-3 px-2">
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">

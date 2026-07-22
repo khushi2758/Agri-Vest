@@ -156,6 +156,53 @@ export default function WalletDashboard() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [isAddCardOpen, setIsAddCardOpen] = useState(false);
+  const [isViewAllOpen, setIsViewAllOpen] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionSuccess, setActionSuccess] = useState("");
+  const [actionError, setActionError] = useState("");
+
+  const resetActions = () => {
+    setAmount("");
+    setActionError("");
+    setActionSuccess("");
+    setActionLoading(false);
+  };
+
+  const handleAction = async (type: "deposit" | "withdraw") => {
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      setActionError("Please enter a valid amount");
+      return;
+    }
+    setActionLoading(true);
+    setActionError("");
+    try {
+      const res = await fetch(`/api/wallet/${type}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: parseFloat(amount) })
+      });
+      const d = await res.json();
+      if(res.ok) {
+        setActionSuccess(`${type === "deposit" ? "Deposit" : "Withdrawal"} successful!`);
+        setTimeout(() => {
+          setIsDepositOpen(false);
+          setIsWithdrawOpen(false);
+          window.location.reload();
+        }, 1000);
+      } else {
+        setActionError(d.error || "Action failed");
+      }
+    } catch(e) {
+      setActionError("An error occurred");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   useEffect(() => {
     async function fetchWalletData() {
       try {
@@ -453,7 +500,7 @@ export default function WalletDashboard() {
                <div id="wallet-card" className="wallet-card-soft rounded-3xl p-6 relative overflow-hidden h-[420px] flex flex-col wallet-fade-up" style={{ animationDelay: "120ms" }}>
                   <div className="flex justify-between items-center mb-8 relative z-10">
                      <h3 className="text-[#1b2620] font-extrabold text-sm tracking-wide uppercase">My cards</h3>
-                     <button className="bg-white hover:bg-[#c1ed7a]/20 text-[#1b2620] text-xs font-bold px-4 py-2 rounded-full transition-colors flex items-center gap-1 shadow-sm">
+                     <button onClick={() => { resetActions(); setIsAddCardOpen(true); }} className="bg-white hover:bg-[#c1ed7a]/20 text-[#1b2620] text-xs font-bold px-4 py-2 rounded-full transition-colors flex items-center gap-1 shadow-sm">
                         + Add new
                      </button>
                   </div>
@@ -478,11 +525,11 @@ export default function WalletDashboard() {
                   </div>
 
                   <div className="flex gap-4 mt-6 relative z-10">
-                     <button className="flex-1 bg-white hover:bg-black/[0.02] border border-black/5 text-[#1b2620] font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
-                        <ArrowDownLeft size={16} /> Request
+                     <button onClick={() => { resetActions(); setIsDepositOpen(true); }} className="flex-1 bg-white hover:bg-black/[0.02] border border-black/5 text-[#1b2620] font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
+                        <ArrowDownLeft size={16} /> Deposit
                      </button>
-                     <button className="flex-1 bg-[#1b2620] hover:bg-black text-white font-extrabold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-                        <ArrowUpRight size={16} className="text-[#c1ed7a]" /> Reveal details
+                     <button onClick={() => { resetActions(); setIsWithdrawOpen(true); }} className="flex-1 bg-[#1b2620] hover:bg-black text-white font-extrabold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                        <ArrowUpRight size={16} className="text-[#c1ed7a]" /> Withdraw
                      </button>
                   </div>
                </div>
@@ -490,7 +537,7 @@ export default function WalletDashboard() {
                <div id="recent-transactions" className="wallet-card-soft wallet-hover-lift rounded-3xl p-6 flex-1 min-h-[300px] wallet-fade-up" style={{ animationDelay: "260ms" }}>
                   <div className="flex justify-between items-center mb-6">
                      <h3 className="text-[#1b2620] font-extrabold text-sm tracking-wide uppercase">Recent Transactions</h3>
-                     <button className="text-[#1b2620]/40 hover:text-[#1b2620] text-xs font-bold transition-colors">View All</button>
+                     <button onClick={() => setIsViewAllOpen(true)} className="text-[#1b2620]/40 hover:text-[#1b2620] text-xs font-bold transition-colors">View All</button>
                   </div>
 
                   <div className="flex gap-2 mb-4">
@@ -499,7 +546,8 @@ export default function WalletDashboard() {
                      <button className="px-3 py-1 rounded-full text-xs font-bold wallet-pill text-[#1b2620]/50">Filters</button>
                   </div>
                   
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 overflow-y-auto max-h-[250px]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                     <style dangerouslySetInnerHTML={{__html: `::-webkit-scrollbar { display: none; }`}} />
                      {data.transactions.map((tx: any, index: number) => {
                         const palette = TX_COLORS[index % TX_COLORS.length];
                         return (
@@ -532,6 +580,111 @@ export default function WalletDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Modals */}
+      {(isDepositOpen || isWithdrawOpen) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1b2620]/40 backdrop-blur-sm">
+          <div className="wallet-card-soft w-[400px] rounded-3xl p-8 relative">
+            <h3 className="text-xl font-extrabold text-[#1b2620] mb-6">
+              {isDepositOpen ? "Deposit Funds" : "Withdraw Funds"}
+            </h3>
+            
+            <div className="flex flex-col gap-4 mb-6">
+              <label className="text-sm font-bold text-[#1b2620]/60">Amount (AGV)</label>
+              <input 
+                type="number" 
+                value={amount} 
+                onChange={(e) => setAmount(e.target.value)} 
+                placeholder="Enter amount" 
+                className="w-full bg-black/5 border-none rounded-xl p-4 text-xl font-bold text-[#1b2620] outline-none"
+              />
+            </div>
+
+            {actionError && <p className="text-red-500 text-xs font-bold mb-4">{actionError}</p>}
+            {actionSuccess && <p className="text-[#c1ed7a] text-xs font-bold mb-4 bg-[#1b2620] px-3 py-2 rounded-lg">{actionSuccess}</p>}
+
+            <div className="flex gap-4">
+              <button disabled={actionLoading} onClick={() => { setIsDepositOpen(false); setIsWithdrawOpen(false); }} className="flex-1 py-3.5 px-4 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50">
+                Cancel
+              </button>
+              <button disabled={actionLoading} onClick={() => handleAction(isDepositOpen ? "deposit" : "withdraw")} className="flex-2 py-3.5 px-4 rounded-xl font-extrabold text-[#1b2620] bg-[#c8e639] hover:bg-[#a8c718] transition-all shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center justify-center">
+                {actionLoading ? "Processing..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isAddCardOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1b2620]/40 backdrop-blur-sm">
+          <div className="wallet-card-soft w-[400px] rounded-3xl p-8 relative">
+            <h3 className="text-xl font-extrabold text-[#1b2620] mb-6">Link New Card / Account</h3>
+            
+            <div className="flex flex-col gap-4 mb-6">
+              <input type="text" placeholder="Card / Account Number" className="w-full bg-black/5 border-none rounded-xl p-4 text-sm font-bold text-[#1b2620] outline-none" />
+              <div className="flex gap-4">
+                <input type="text" placeholder="MM/YY" className="w-1/2 bg-black/5 border-none rounded-xl p-4 text-sm font-bold text-[#1b2620] outline-none" />
+                <input type="text" placeholder="CVV" className="w-1/2 bg-black/5 border-none rounded-xl p-4 text-sm font-bold text-[#1b2620] outline-none" />
+              </div>
+            </div>
+
+            {actionSuccess && <p className="text-[#c1ed7a] text-xs font-bold mb-4 bg-[#1b2620] px-3 py-2 rounded-lg">{actionSuccess}</p>}
+
+            <div className="flex gap-4">
+              <button onClick={() => setIsAddCardOpen(false)} className="flex-1 py-3.5 px-4 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
+                Cancel
+              </button>
+              <button onClick={() => {
+                setActionSuccess("Card added securely!");
+                setTimeout(() => { setIsAddCardOpen(false); setActionSuccess(""); }, 1500);
+              }} className="flex-2 py-3.5 px-4 rounded-xl font-extrabold text-[#1b2620] bg-[#c8e639] hover:bg-[#a8c718] transition-all shadow-lg flex items-center justify-center">
+                Save Securely
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isViewAllOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1b2620]/40 backdrop-blur-sm">
+          <div className="wallet-card-soft w-[500px] max-h-[80vh] flex flex-col rounded-3xl p-8 relative">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-extrabold text-[#1b2620]">All Transactions</h3>
+              <button onClick={() => setIsViewAllOpen(false)} className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors">
+                <span className="text-[#1b2620] font-bold text-sm">✕</span>
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+               {data.transactions.map((tx: any, index: number) => {
+                  const palette = TX_COLORS[index % TX_COLORS.length];
+                  return (
+                  <div key={`modal-${tx.id}`} className="flex items-center justify-between p-3 rounded-2xl hover:bg-black/[0.02] transition-colors cursor-pointer border border-transparent hover:border-black/5">
+                     <div className="flex items-center gap-4">
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-extrabold ${palette.bg} ${palette.text}`}>
+                           {tx.name.substring(0, 1)}
+                        </div>
+                        <div>
+                           <p className="text-[#1b2620] font-bold text-sm mb-0.5">{tx.name}</p>
+                           <p className="text-[#1b2620]/40 text-[11px] font-bold">{tx.date}</p>
+                        </div>
+                     </div>
+                     <div className="flex items-center gap-3">
+                        <span className={`font-extrabold text-sm ${tx.type === 'in' ? 'text-[#c1ed7a]' : 'text-[#1b2620]'}`}>
+                           {tx.type === 'in' ? '+' : '-'}{tx.rawAmount.toLocaleString('en-US', {minimumFractionDigits: 2})} AGV
+                        </span>
+                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${tx.type === 'in' ? 'bg-[#c1ed7a] text-[#1b2620]' : 'bg-black/5 text-[#1b2620]/60'}`}>
+                           {tx.type === 'in' ? 'Received' : 'Sent'}
+                        </span>
+                     </div>
+                  </div>
+                  );
+               })}
+            </div>
+          </div>
+        </div>
+      )}
+
       </div>
     </div>
   );

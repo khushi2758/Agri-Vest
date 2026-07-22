@@ -22,38 +22,41 @@ export async function POST(request: Request) {
     const userEmail = decoded.email;
     const userId = decoded.sub;
     const body = await request.json();
-    const fiatAmount = parseFloat(body.amount?.toString().replace(/,/g, ''));
+    const amount = parseFloat(body.amount?.toString().replace(/,/g, ''));
 
-    if (isNaN(fiatAmount) || fiatAmount <= 0) {
+    if (isNaN(amount) || amount <= 0) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
     }
-
-    const FEE_PERCENTAGE = 0.02;
-    const feeAmount = fiatAmount * FEE_PERCENTAGE;
-    const netAGV = fiatAmount - feeAmount;
-
-    await addTransaction("SYSTEM_MINT", userEmail, netAGV, "DEPOSIT");
-    await addTransaction("SYSTEM_MINT", "SYSTEM_FEE_POOL_EDUCATION", feeAmount, "FEE");
 
     const client = await clientPromise;
     const db = client.db("agrivest_db");
     
+    const user = await db.collection("users").findOne({ _id: new ObjectId(userId) });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const currentBalance = parseFloat(user.wallet?.balance?.toString().replace(/,/g, '') || "0");
+    if (currentBalance < amount) {
+      return NextResponse.json({ error: "Insufficient balance" }, { status: 400 });
+    }
+
+    await addTransaction(userEmail, "SYSTEM_WITHDRAWAL", amount, "WITHDRAWAL");
+
     await db.collection("transactions").insertOne({
       user_id: new ObjectId(userId),
-      type: "deposit",
-      amount: netAGV.toString(),
+      type: "withdrawal",
+      amount: amount.toString(),
       currency: "AGV",
-      direction: "credit",
+      direction: "debit",
       status: "completed",
-      note: "Wallet deposit",
+      note: "Withdrawal to bank account",
       created_at: new Date()
     });
 
     return NextResponse.json({ 
       success: true, 
-      depositedAGV: netAGV,
-      feeAGV: feeAmount,
-      totalFiatCharged: fiatAmount
+      withdrawnAGV: amount
     }, { status: 200 });
 
   } catch (err: any) {

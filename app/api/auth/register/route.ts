@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     const client = await clientPromise;
     const db = client.db("agrivest_db");
     
-    const existing = await db.collection("users").findOne({ email });
+    const normalizedEmail = email.toLowerCase().trim();
+    const existing = await db.collection("users").findOne({ email: normalizedEmail });
     if (existing) {
       return NextResponse.json({ error: "Email already exists" }, { status: 409 });
     }
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
     const now = new Date();
 
     const newUser = {
-      email,
+      email: normalizedEmail,
       name,
       role: roles.includes("agronomist") ? "agronomist" : (roles.includes("farmer") ? "farmer" : "investor"),
       roles: roles,

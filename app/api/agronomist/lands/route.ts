@@ -21,19 +21,25 @@ export async function GET() {
     const db = client.db("agrivest_db");
 
     const lands = await db.collection("land_parcels").find({}).toArray();
-    const telemetries = await db.collection("sensor_readings").find({}).toArray();
 
     const data = lands.map(land => {
-      const telemetry = telemetries.find(t => t.propertyId === land.id) || {
-        npkIndex: Math.floor(Math.random() * 40) + 40,
-        moisturePct: Math.floor(Math.random() * 40) + 20,
-        tempCelsius: Math.floor(Math.random() * 20) + 10
-      };
+      let lat = 39.5;
+      let lng = -98.35;
+      if (land.location && typeof land.location === 'object' && land.location.coordinates) {
+        lng = land.location.coordinates[0];
+        lat = land.location.coordinates[1];
+      }
       
       return {
-        ...land,
         _id: land._id.toString(),
-        telemetry
+        id: land.id || land._id.toString(),
+        title: land.title || land.id || "Unknown Land",
+        crop: land.crop || "Mixed",
+        area: land.area || (land.area_ha ? `${land.area_ha} ha` : "N/A"),
+        status: land.status || "active",
+        locationStr: typeof land.location === 'string' ? land.location : `Lat: ${lat.toFixed(2)}, Lng: ${lng.toFixed(2)}`,
+        lat,
+        lng
       };
     });
 

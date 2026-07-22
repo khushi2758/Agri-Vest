@@ -1,13 +1,4 @@
 "use client";
-import { Canvas } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Environment,
-  AccumulativeShadows,
-  RandomizedLight,
-} from "@react-three/drei";
-import { ACESFilmicToneMapping } from "three";
-import Model from "@/public/Tree";
 import { Suspense } from "react";
 import Image from "next/image";
 import crops from "@/public/fild2.jpg";
@@ -44,7 +35,6 @@ const scaleIn = {
   show: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: easeOut } },
 };
 
-// ---- Per-language style maps (used ONLY for non-English languages) ----
 const HEADING_SIZE: Record<string, string> = {
   hi: "text-5xl md:text-6xl pl-2.5",
   
@@ -97,8 +87,7 @@ const YIELD_LABEL_SIZE: Record<string, string> = {
   ko: "text-sm",
   zh: "text-sm",
 };
-// Paragraph in the bottom "Modern farming solutions..." block.
-// English stays untouched at text-xl / max-w-xs.
+
 const INTRO_TEXT_SIZE: Record<string, string> = {
   hi: "max-w-sm text-lg",
   fr: "max-w-sm text-lg",
@@ -111,8 +100,7 @@ const INTRO_TEXT_SIZE: Record<string, string> = {
   ko: "max-w-xs text-lg",
   zh: "max-w-xs text-lg",
 };
-// Width/height for the 95% circle, per language.
-// English stays untouched at a fixed h-[150px].
+
 const STAT_CIRCLE_SIZE: Record<string, string> = {
   hi: "h-full min-h-[150px] w-[15px] ",
   fr: "h-full min-h-[150px] w-[150px]",
@@ -159,7 +147,7 @@ function introTextClass(lang: string) {
   if (lang === "en") return `${EN_INTRO_TEXT} ${base}`;
   return `${INTRO_TEXT_SIZE[lang] ?? "max-w-sm text-lg"} ${base}`;
 }
-// English keeps the EXACT original classes untouched.
+
 const EN_HEADING =
   "text-6xl font-extrabold uppercase leading-[0.95] tracking-tight text-white drop-shadow-sm md:text-7xl";
 const EN_BUTTON_GAP = "mt-8 flex flex-row items-center gap-4";
@@ -360,13 +348,6 @@ export default function page() {
               />
             </div>
 
-            {/*
-              STATS BLOCK
-              English (isEnglish === true): EXACT original markup —
-                fixed h-[150px] / h-[250px] circles, original classes, untouched.
-              Other languages: items-stretch + h-full so the circles grow
-                with the translated text instead of overflowing.
-            */}
             {isEnglish ? (
               <motion.div
                 className="relative flex flex-row gap-8 text-2xl font-bold text-white drop-shadow-sm md:items-end"

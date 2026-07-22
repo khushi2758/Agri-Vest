@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import HelpTourButton from "../HelpTourButton";
-import {portfolioSteps} from "./tourp"
+import { portfolioSteps } from "./tourp";
 import { 
-  Search, Home, LayoutDashboard, BarChart2, Wallet, 
-  Briefcase, Calendar, Settings, LogOut, Loader2, Plus, 
-  TrendingUp, Activity, CheckCircle2, DollarSign, Clock, Users 
+  Search, LayoutDashboard, BarChart2, Wallet, 
+  Settings, TrendingUp, Info, RefreshCw, Filter, 
+  ChevronRight, TriangleAlert, MinusCircle, FileText, 
+  Briefcase, Loader2
 } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function PortfolioPage() {
   const router = useRouter();
@@ -37,231 +39,251 @@ export default function PortfolioPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f7f9f2] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#c8e639] animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#1b2620] animate-spin" />
       </div>
     );
   }
 
   if (!data) return null;
 
-   return (
+  // Mocked chart data mapping to the mockup's visual
+  const chartData = [
+    { name: "Jul, 2020", invested: 10000, released: 5000 },
+    { name: "Oct, 2020", invested: 20000, released: 15000 },
+    { name: "Jan, 2021", invested: 30000, released: 35000 },
+    { name: "Apr, 2021", invested: 50000, released: 45000 },
+    { name: "Now", invested: 67000, released: 50000 },
+  ];
+
+  return (
     <div className="min-h-screen bg-[#f7f9f2] text-[#1b2620] flex overflow-hidden font-sans selection:bg-[#c8e639] selection:text-black">
       <HelpTourButton steps={portfolioSteps} />
 
-      <aside  className="w-64 bg-white border-r border-gray-100 flex flex-col py-6 shrink-0 z-20 shadow-sm">
+      {/* Sidebar Navigation */}
+      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col py-6 shrink-0 z-20 shadow-sm">
         <div className="px-8 mb-8 flex items-center gap-3">
-          <div  className="w-8 h-8 rounded-lg bg-[#1b2620] flex items-center justify-center" >
+          <div className="w-8 h-8 rounded-lg bg-[#1b2620] flex items-center justify-center">
             <Briefcase size={16} strokeWidth={2} className="text-[#c8e639]" />
           </div>
           <span className="font-extrabold tracking-widest text-lg">AGRI-VEST</span>
         </div>
         
-        <div id="portfolio-search" className="px-6 mb-8">
+        <div className="px-6 mb-8">
           <div className="flex items-center bg-[#f7f9f2] border border-gray-200 rounded-lg px-3 py-2 w-full">
             <Search size={14} strokeWidth={2} className="text-gray-400 mr-2" />
             <input type="text" placeholder="Search" className="bg-transparent border-none outline-none text-xs w-full text-[#1b2620] placeholder-gray-400" />
           </div>
         </div>
 
-        <div  className="flex flex-col gap-2 w-full px-4 flex-1">
-          <Link id="nav-products" href="/en/Explore" aria-label="Products" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+        <div className="flex flex-col gap-2 w-full px-4 flex-1">
+          <Link href="/en/Explore" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
             <LayoutDashboard size={16} strokeWidth={2} /> Products
           </Link>
-          <Link id="nav-portfolio" href="/en/Portfolio" aria-label="Portfolio" className="px-4 py-2.5 rounded-lg bg-[#f7f9f2] border border-gray-200 text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold relative shadow-sm">
+          <Link href="/en/Portfolio" className="px-4 py-2.5 rounded-lg bg-[#f7f9f2] border border-gray-200 text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold relative shadow-sm">
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#c8e639] rounded-r"></div>
-            <BarChart2 size={16} strokeWidth={2.5} className="text-[#1b2620]" /> Portfolio
+            <BarChart2 size={16} strokeWidth={2.5} /> Portfolio
           </Link>
-          <Link id="nav-wallet" href="/en/Wallet" aria-label="Wallet" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+          <Link href="/en/Wallet" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
             <Wallet size={16} strokeWidth={2} /> Wallet
           </Link>
-          <Link id="nav-achievement" href="/en/Investor" aria-label="Achievement" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+          <Link href="/en/Investor" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
             <TrendingUp size={16} strokeWidth={2} /> Achievement
           </Link>
-          <Link id="nav-settings" href="/en/profile" aria-label="Settings" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
+          <Link href="/en/profile" className="px-4 py-2.5 rounded-lg hover:bg-[#f7f9f2] text-gray-500 hover:text-[#1b2620] transition-all flex items-center gap-3 text-sm font-bold">
             <Settings size={16} strokeWidth={2} /> Settings
           </Link>
         </div>
-        
-        <div className="px-4 mt-auto">
-          <div className="bg-[#f7f9f2] rounded-xl p-4 border border-gray-200">
-            <p className="text-xs font-bold text-gray-500 mb-3">All members</p>
-            <div className="flex -space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gray-200 border-2 border-[#f7f9f2] flex items-center justify-center text-[10px] font-bold">JD</div>
-              <div className="w-8 h-8 rounded-full bg-gray-300 border-2 border-[#f7f9f2] flex items-center justify-center text-[10px] font-bold">AB</div>
-              <div className="w-8 h-8 rounded-full bg-[#1b2620] border-2 border-[#f7f9f2] flex items-center justify-center text-[10px] font-bold text-[#c8e639]">+2</div>
-            </div>
-          </div>
-        </div>
       </aside>
 
+      {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-screen overflow-y-auto p-8 relative">
-        <div id="portfolio-header" className="flex justify-between items-end mb-10">
-          <div>
-            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">{new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl font-extrabold text-[#1b2620]">Investment Roadmap {new Date().getFullYear()}</h1>
-              <span className="text-xs font-bold text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">Show: All Projects ▾</span>
+        <div className="max-w-7xl mx-auto w-full flex flex-col xl:flex-row gap-6">
+          
+          {/* Left Column (Main Dashboard) */}
+          <div className="flex-1 flex flex-col gap-6">
+            
+            {/* Header */}
+            <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h1 className="text-3xl font-extrabold text-[#1b2620]">My Portfolio</h1>
+              <div className="flex items-center gap-2 text-sm font-bold text-gray-400">
+                <span>Valuation date as for <span className="text-[#1b2620]">{new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</span></span>
+                <RefreshCw size={16} className="text-[#1b2620] ml-1 cursor-pointer hover:rotate-180 transition-transform duration-500" />
+              </div>
             </div>
-          </div>
-          <button id="add-project" className="flex items-center gap-2 bg-[#1b2620] hover:bg-[#0a0f0c] text-white px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-md">
-            <Plus size={16} strokeWidth={2.5} className="text-[#c8e639]" /> Add new
-          </button>
-        </div>
 
-        {!data.hasInvestments ? (
-          <div id="portfolio-stats" className="flex-1 flex flex-col  items-center justify-center border-2 border-dashed border-gray-200 bg-white rounded-2xl shadow-sm">
-            <div className="w-16 h-16 bg-[#f7f9f2] rounded-full flex items-center justify-center mb-4 border border-gray-100">
-              <Briefcase className="text-[#1b2620]" size={32} strokeWidth={2} />
-            </div>
-            <h2 className="text-xl font-extrabold text-[#1b2620] mb-2">No Portfolio Events Yet</h2>
-            <p className="text-gray-500 text-sm font-bold max-w-sm text-center">Your portfolio roadmap will automatically populate here once you make your first investment.</p>
-            <Link href="/en/Explore" className="mt-6 bg-[#1b2620] text-[#c8e639] px-6 py-2.5 rounded-lg text-sm font-extrabold hover:opacity-90 transition-opacity shadow-md">Explore Opportunities</Link>
-          </div>
-        ) : (
-          <>
-            <div  className="grid grid-cols-5 gap-4 mb-10">
+            {/* Dashboard Grid */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-6">
               
-              <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm relative overflow-hidden flex flex-col justify-between h-32">
-                <div className="flex items-end gap-1 mb-2">
-                   {[40, 70, 45, 90, 60, 80, 50, 100, 70, 85].map((h, i) => (
-                     <div key={i} className="w-2 bg-[#1b2620] rounded-t-sm" style={{height: `${h}%`, opacity: 0.3 + (i * 0.07)}}></div>
-                   ))}
+              {/* KPI Cards Column */}
+              <div className="col-span-1 flex flex-col gap-4">
+                <div className="bg-[#1b2620] rounded-2xl p-5 text-white flex flex-col justify-between h-32 shadow-md relative overflow-hidden">
+                  <div className="flex justify-between items-start z-10">
+                    <span className="text-xs font-bold text-white/70">Portfolio Value</span>
+                    <Info size={16} className="text-white/50" />
+                  </div>
+                  <div className="z-10">
+                    <h2 className="text-3xl font-extrabold">${((data.portfolioValue || 0) / 1000).toFixed(1)}k</h2>
+                    <p className="text-xs font-bold text-white/70 mt-1">Net Value: ${((data.totalInvested || 0) / 1000).toFixed(1)}k</p>
+                  </div>
+                  <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
                 </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Dynamics</p>
-                  <div className="flex items-end justify-between">
-                    <span className="text-xl font-extrabold">{data.kpi.totalTasks} task</span>
-                    <span className="text-green-600 bg-green-50 px-1.5 py-0.5 rounded text-xs font-bold">+4.5%</span>
+
+                <div className="bg-white rounded-2xl p-5 border border-gray-100 flex flex-col justify-between h-32 shadow-sm">
+                  <div className="flex justify-between items-start">
+                    <span className="text-xs font-bold text-gray-500">Total Invested</span>
+                    <Info size={16} className="text-gray-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-extrabold">${((data.totalInvested || 0) / 1000).toFixed(1)}k</h2>
+                    <p className="text-xs font-bold text-gray-500 mt-1">{data.investmentsList?.length || 0} investments · {data.investmentsList?.length || 0} fields</p>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-5 border border-gray-100 flex flex-col justify-between h-32 shadow-sm">
+                  <div className="flex justify-between items-start">
+                    <span className="text-xs font-bold text-gray-500">Net Multiple</span>
+                    <Info size={16} className="text-gray-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-extrabold">{data.netMultiple || 1.5}x</h2>
+                    <p className="text-xs font-bold text-gray-500 mt-1">+{( (data.netMultiple || 1.5) * 100 - 100).toFixed(0)}%</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm relative overflow-hidden flex flex-col justify-between h-32">
-                <div className="flex items-end gap-1 mb-2">
-                   {[60, 40, 80, 50, 70, 90, 60, 100, 50, 75].map((h, i) => (
-                     <div key={i} className="w-2 bg-[#c8e639] rounded-t-sm" style={{height: `${h}%`}}></div>
-                   ))}
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Progress</p>
-                  <div className="flex items-end justify-between">
-                    <span className="text-xl font-extrabold">{data.kpi.completedTasks} complete</span>
+              {/* Chart Column */}
+              <div className="col-span-1 md:col-span-2 flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <select className="bg-gray-50 border border-gray-200 text-sm font-bold rounded-lg px-3 py-1.5 outline-none">
+                    <option>All Time</option>
+                    <option>This Year</option>
+                  </select>
+                  <div className="flex items-center gap-4 text-xs font-bold">
+                    <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full border-2 border-gray-300"></div> Invested</div>
+                    <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[#f3e8dd]"></div> Released</div>
+                    <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[#1b2620]"></div> Last 90 days</div>
                   </div>
                 </div>
-              </div>
-
-              <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex flex-col justify-between h-32">
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 mb-1 tracking-wider">01.01.{new Date().getFullYear()}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-extrabold">${data.kpi.spentThisMonth.toLocaleString()}</span>
-                  </div>
-                  <span className="text-green-600 bg-green-50 px-1.5 py-0.5 rounded text-xs font-bold">+1.5%</span>
-                </div>
-                <div className="flex items-center gap-2 mt-auto">
-                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><DollarSign size={10} strokeWidth={2} className="text-[#1b2620]"/></div>
-                  <span className="text-[10px] font-bold text-gray-500 leading-tight">Spent on projects<br/>this month</span>
+                <div className="flex-1 min-h-62.5 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: "bold", fill: "#9ca3af" }} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: "bold", fill: "#9ca3af" }} tickFormatter={(val) => `$${val/1000}k`} />
+                      <Tooltip />
+                      <Area type="step" dataKey="released" stroke="none" fill="#f3e8dd" />
+                      <Area type="step" dataKey="invested" stroke="none" fill="#1b2620" />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-
-              <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex flex-col justify-between h-32">
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 mb-1 tracking-wider">01.01.{new Date().getFullYear()}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-extrabold">${data.kpi.spentThisYear.toLocaleString()}</span>
-                  </div>
-                  <span className="text-green-600 bg-green-50 px-1.5 py-0.5 rounded text-xs font-bold">+3.1%</span>
-                </div>
-                <div className="flex items-center gap-2 mt-auto">
-                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><Activity size={10} strokeWidth={2} className="text-[#1b2620]"/></div>
-                  <span className="text-[10px] font-bold text-gray-500 leading-tight">Spent on projects<br/>this year</span>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex flex-col justify-between h-32">
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 mb-1 tracking-wider">01.01.{new Date().getFullYear()}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-extrabold">{data.kpi.timeBeforeDeadlineAvg} month</span>
-                  </div>
-                  <span className="text-green-600 bg-green-50 px-1.5 py-0.5 rounded text-xs font-bold">+4.3%</span>
-                </div>
-                <div className="flex items-center gap-2 mt-auto">
-                  <div className="w-5 h-5 rounded-full bg-[#f7f9f2] flex items-center justify-center border border-gray-200"><Clock size={10} strokeWidth={2} className="text-[#1b2620]"/></div>
-                  <span className="text-[10px] font-bold text-gray-500 leading-tight">Time left before<br/>project deadline</span>
-                </div>
-              </div>
-
             </div>
 
-            <div id="roadmap-timeline" className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 overflow-x-auto custom-scrollbar">
-              <div className="min-w-[800px]">
-                
-                <div className="flex mb-6 border-b border-gray-100 pb-4">
-                  <div className="w-48 shrink-0"><span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Projects</span></div>
-                  <div className="flex-1 flex justify-between px-4">
-                    {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(day => (
-                      <div key={day} className="flex flex-col items-center">
-                        <span className="text-sm font-extrabold text-[#1b2620]">{day}</span>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase">Day</span>
-                      </div>
-                    ))}
-                  </div>
+            {/* Investments Table */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-1">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-extrabold text-[#1b2620]">Investments</h2>
+                <div className="flex items-center gap-3">
+                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"><Search size={16} /></button>
+                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"><Filter size={16} /></button>
+                  <button className="px-4 py-2 rounded-xl border border-gray-200 text-sm font-bold hover:bg-gray-50 transition-colors">Export CSV</button>
+                  <Link href="/en/Explore" className="px-4 py-2 rounded-xl bg-[#1b2620] text-white text-sm font-bold hover:bg-black transition-colors">Add Investment</Link>
                 </div>
+              </div>
 
-                <div id="project-progress" className="flex flex-col gap-6 relative">
-                  
-                  <div className="absolute top-0 bottom-0 left-48 right-0 flex justify-between px-4 pointer-events-none">
-                    {[...Array(18)].map((_, i) => (
-                      <div key={i} className="w-px h-full bg-gray-100"></div>
-                    ))}
-                  </div>
-
-                  {data.timeline.map((project: any, i: number) => {
-                    const progressWidth = Math.max(project.progress, 15);
-                    const opacity = Math.max(1 - (i * 0.15), 0.5);
-                    
-                    return (
-                      <div key={project.id} className="flex items-center group">
-                        <div className="w-48 shrink-0 pr-4">
-                          <span className="text-xs font-bold text-gray-600 group-hover:text-[#1b2620] transition-colors">{project.title}</span>
-                          <p className="text-[10px] text-gray-400">{new Date(project.startDate).toLocaleDateString()}</p>
-                        </div>
-                        <div className="flex-1 relative h-12">
-                          <div 
-                            className="absolute h-full rounded-lg bg-[#1b2620] border border-[#0a0f0c] flex items-center px-4 overflow-hidden shadow-sm transition-all group-hover:shadow-md"
-                            style={{ 
-                              left: `${(i % 5) * 5}%`, 
-                              width: `${40 + (Math.random() * 40)}%`,
-                              opacity: opacity
-                            }}
-                          >
-                            <div className="absolute left-0 top-0 bottom-0 bg-[#c8e639]" style={{width: `${progressWidth}%`}}></div>
-                            <div className="relative z-10 flex justify-between items-center w-full">
-                              <span className={`text-xs font-extrabold truncate max-w-[150px] ${progressWidth > 30 ? 'text-[#1b2620]' : 'text-white'}`}>{project.title}</span>
-                              <div className="flex items-center gap-4">
-                                <span className={`text-[10px] font-bold flex items-center gap-1 ${progressWidth > 80 ? 'text-[#1b2620]' : 'text-white'}`}>
-                                  <CheckCircle2 size={10} strokeWidth={2} className={progressWidth > 80 ? 'text-[#1b2620]' : 'text-[#c8e639]'}/> {project.tasksCompleted}/{project.tasksTotal}
-                                </span>
-                                <div className="flex -space-x-1.5 opacity-80">
-                                  <div className="w-4 h-4 rounded-full bg-gray-200 border border-white"></div>
-                                  <div className="w-4 h-4 rounded-full bg-gray-300 border border-white"></div>
-                                </div>
-                              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="text-[10px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                      <th className="pb-3 px-4 font-bold flex items-center gap-1 cursor-pointer hover:text-gray-600">COMPANY/FUND <div className="flex flex-col"><ChevronRight size={8} className="-rotate-90"/><ChevronRight size={8} className="rotate-90"/></div></th>
+                      <th className="pb-3 px-4 font-bold">STATUS</th>
+                      <th className="pb-3 px-4 font-bold">INVEST DATE</th>
+                      <th className="pb-3 px-4 font-bold text-right">INVESTED</th>
+                      <th className="pb-3 px-4 font-bold text-right">NET VALUE</th>
+                      <th className="pb-3 px-4 font-bold text-right">MULTIPLE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.investmentsList?.map((inv: any, idx: number) => (
+                      <tr key={inv.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors group">
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs ${idx % 2 === 0 ? 'bg-indigo-400' : 'bg-purple-500'}`}>
+                              {inv.company.charAt(0)}
                             </div>
+                            <span className="text-sm font-extrabold text-[#1b2620]">{inv.company}</span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className="text-[11px] font-extrabold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-md">{inv.status}</span>
+                        </td>
+                        <td className="py-4 px-4 text-sm font-bold text-gray-600">{inv.date}</td>
+                        <td className="py-4 px-4 text-sm font-extrabold text-[#1b2620] text-right">${inv.invested.toLocaleString()}</td>
+                        <td className="py-4 px-4 text-sm font-extrabold text-[#1b2620] text-right">${inv.netValue.toLocaleString()}</td>
+                        <td className="py-4 px-4 text-sm font-bold text-gray-600 text-right">{inv.multiple}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td className="py-4 px-4 text-xs font-bold text-gray-500">{data.investmentsList?.length || 0} Investments</td>
+                      <td colSpan={2}></td>
+                      <td className="py-4 px-4 text-sm font-extrabold text-[#1b2620] text-right">${(data.totalInvested || 0).toLocaleString()}</td>
+                      <td className="py-4 px-4 text-sm font-extrabold text-[#1b2620] text-right">${((data.totalInvested || 0) * (data.netMultiple || 1.5)).toLocaleString()}</td>
+                      <td className="py-4 px-4 text-sm font-bold text-gray-600 text-right">{data.netMultiple || 1.5}x</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column (Alerts & Activities) */}
+          <div className="w-full xl:w-80 flex flex-col gap-6 shrink-0">
+            
+            {/* Tax Alert */}
+            <div className="bg-black text-white p-5 rounded-2xl flex items-start gap-4 shadow-md">
+              <TriangleAlert size={20} className="text-yellow-400 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-sm font-extrabold mb-1">Submit Tax Information</h4>
+                <p className="text-xs text-gray-400 leading-relaxed">For timely tax documents and distributions.</p>
+              </div>
+            </div>
+
+            {/* Activities Feed */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-1 flex flex-col max-h-150">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-extrabold text-[#1b2620]">Activities</h3>
+                <span className="text-xs font-bold text-gray-500 hover:text-black cursor-pointer flex items-center gap-1">View All <ChevronRight size={14}/></span>
+              </div>
+
+              <div className="flex flex-col gap-6 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none pr-2">
+                <div>
+                  <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">LATEST TRANSACTIONS</h4>
+                  <div className="flex flex-col gap-5">
+                    {data.activitiesList?.map((act: any, i: number) => (
+                      <div key={act.id} className="flex gap-4 group cursor-pointer">
+                        <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform relative">
+                          <FileText size={16} className="text-blue-500" />
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm">
+                            <BarChart2 size={10} className="text-[#1b2620]" />
                           </div>
                         </div>
+                        <div className="flex-1 border-b border-gray-50 pb-4">
+                          <h5 className="text-sm font-extrabold text-[#1b2620] mb-0.5">{act.title}</h5>
+                          <p className="text-[11px] font-bold text-gray-500">{act.subtitle}</p>
+                          <span className="text-[10px] font-bold text-gray-400 block mt-1">{act.date}</span>
+                        </div>
                       </div>
-                    );
-                  })}
-
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </>
-        )}
+
+          </div>
+        </div>
       </main>
     </div>
   );
 }
-

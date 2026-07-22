@@ -26,28 +26,11 @@ export default async function RootLayout({
     notFound();
   }
 
-  let prefLang = "en";
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("session")?.value;
-    if (token) {
-      const decoded = verifyToken(token);
-      if (decoded && decoded.sub) {
-        const client = await clientPromise;
-        const db = client.db("agrivest_db");
-        const user = await db.collection("users").findOne({ _id: new ObjectId(decoded.sub) });
-        if (user && user.preferred_language) {
-          prefLang = user.preferred_language;
-        }
-      }
-    }
-  } catch (err) {}
-
   return (
     <html lang={locale}>
       <body>
         <NextIntlClientProvider>
-          <GoogleTranslate preferredLanguage={prefLang} />
+          <GoogleTranslate preferredLanguage="en" />
 
      
           {children}

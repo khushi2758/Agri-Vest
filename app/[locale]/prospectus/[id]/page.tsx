@@ -105,7 +105,7 @@ export default function ProspectusPage({ params }: { params: Promise<{ id: strin
       <div className="relative z-10">
         <NavBar />
         
-        <div className="mx-auto max-w-[900px] px-6 pt-12 pb-24 md:px-0">
+        <div className="mx-auto max-w-225 px-6 pt-12 pb-24 md:px-0">
           
           {/* Navigation */}
           <motion.div

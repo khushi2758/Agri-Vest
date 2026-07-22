@@ -19,7 +19,7 @@ const transactionSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ['deposit', 'withdrawal', 'return_payout', 'platform_fee', 'refund']
+    enum: ['deposit', 'withdrawal', 'investment', 'return_payout', 'platform_fee', 'refund']
   },
   amount: {
     type: mongoose.Schema.Types.Decimal128,

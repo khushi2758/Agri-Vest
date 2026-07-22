@@ -125,7 +125,22 @@ const STRINGS: Record<
     submitted: "आपका सत्यापन जमा कर दिया गया है। हम इसकी समीक्षा करेंगे और जल्द ही आपको ईमेल करेंगे।",
     languageChanged: "वॉइस गाइड अब हिन्दी में है।",
   },
- 
+  bn: {
+    header: "Identity Verification (KYC)",
+    personalSection: "Personal Details",
+    docSection: "Identity Document",
+    addressSection: "Proof of Address",
+    selfieSection: "Selfie Verification",
+    fullName: "Enter your full legal name here.",
+    dob: "Enter your date of birth here.",
+    nationality: "Enter your nationality here.",
+    phone: "Enter your phone number here.",
+    address: "Enter your home address here.",
+    submitReady: "Everything looks good. Press the button below to submit for verification.",
+    submitBlocked: "Please complete all fields and uploads before submitting.",
+    submitted: "Your verification has been submitted. We will review it and email you shortly.",
+    languageChanged: "Voice guide is now in Bengali.",
+  },
 };
 
 function StepLabel({
@@ -203,7 +218,7 @@ function Field({
 
 const DOC_TYPES = ["Passport", "Driver's License", "National ID"];
 
-type UploadFile = { id: string; name: string; progress: number; done: boolean };
+type UploadFile = { id: string; name: string; progress: number; done: boolean; url?: string };
 
 function Dropzone({
   label,
@@ -384,20 +399,31 @@ export default function KYCForm() {
         : "border-[#c7d6a0]"
     }`;
 
-  const simulateUpload = (setFiles: React.Dispatch<React.SetStateAction<UploadFile[]>>) => (fileList: FileList) => {
-    Array.from(fileList).forEach((file) => {
-      const id = `${file.name}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const handleUpload = (setFiles: React.Dispatch<React.SetStateAction<UploadFile[]>>) => (fileList: FileList) => {
+    Array.from(fileList).forEach(async (file) => {
+      const id = `${file.name}-${Date.now()}`;
       setFiles((prev) => [...prev, { id, name: file.name, progress: 0, done: false }]);
-      const interval = setInterval(() => {
-        setFiles((prev) =>
-          prev.map((f) => {
-            if (f.id !== id || f.done) return f;
-            const next = Math.min(f.progress + 20 + Math.random() * 12, 100);
-            return { ...f, progress: next, done: next >= 100 };
-          })
-        );
-      }, 200);
-      setTimeout(() => clearInterval(interval), 2000);
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+          setFiles((prev) =>
+            prev.map((f) => (f.id === id ? { ...f, progress: 100, done: true, url: data.url } : f))
+          );
+        } else {
+          setFiles((prev) => prev.filter(f => f.id !== id));
+        }
+      } catch (e) {
+        setFiles((prev) => prev.filter(f => f.id !== id));
+      }
     });
   };
 
@@ -573,7 +599,7 @@ export default function KYCForm() {
                 label={`Upload ${docType.toLowerCase()}`}
                 hint="Front and back if applicable · JPG, PNG, or PDF up to 10MB"
                 files={docFiles}
-                onUpload={simulateUpload(setDocFiles)}
+                onUpload={handleUpload(setDocFiles)}
                 onRemove={removeFile(setDocFiles)}
                 voice={t.docSection}
                 onFocusField={(text) => focusIn(SECTION_IDS.document, text)}
@@ -594,7 +620,7 @@ export default function KYCForm() {
                 label="Upload utility bill or bank statement"
                 hint="Must show your full name and address · up to 10MB"
                 files={addressFiles}
-                onUpload={simulateUpload(setAddressFiles)}
+                onUpload={handleUpload(setAddressFiles)}
                 onRemove={removeFile(setAddressFiles)}
                 voice={t.addressSection}
                 onFocusField={(text) => focusIn(SECTION_IDS.address, text)}
@@ -615,7 +641,7 @@ export default function KYCForm() {
                 label="Upload a selfie holding your ID"
                 hint="Face and ID both clearly visible · up to 10MB"
                 files={selfieFiles}
-                onUpload={simulateUpload(setSelfieFiles)}
+                onUpload={handleUpload(setSelfieFiles)}
                 onRemove={removeFile(setSelfieFiles)}
                 voice={t.selfieSection}
                 onFocusField={(text) => focusIn(SECTION_IDS.selfie, text)}

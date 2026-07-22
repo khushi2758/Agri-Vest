@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import HelpTourButton from "../../HelpTourButton";
 import { propertyDetailsSteps } from "./propertyDetailsSteps";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 // ---- shared keyframes / soft-UI utility classes (same language as the wallet dashboard) ----
 function SoftUIStyles() {
@@ -93,6 +94,15 @@ const FARMLANDS = [
   { id: "dakota-soy-fields", name: "Dakota Soy", location: "South Dakota, USA", yield: "11.2%", risk: "Medium", minInvestment: "$500", totalGoal: "$3.2M", fundedPct: 15, image: "/farm.jpg", initials: "DS", area_ha: 210.8, soil_type: "black", water_source: "river", status: "active" }
 ];
 
+const INFLOW_OUTFLOW_DATA = [
+  { name: 'Jan', inflow: 45000, outflow: 12000 },
+  { name: 'Feb', inflow: 38000, outflow: 22000 },
+  { name: 'Mar', inflow: 52000, outflow: 18000 },
+  { name: 'Apr', inflow: 61000, outflow: 25000 },
+  { name: 'May', inflow: 48000, outflow: 31000 },
+  { name: 'Jun', inflow: 74000, outflow: 15000 },
+];
+
 export default function PropertyDetail({ params }: { params: Promise<{ id: string, locale: string }> }) {
   const resolvedParams = use(params);
   const propertyId = resolvedParams.id;
@@ -104,6 +114,14 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
   const [activeTab, setActiveTab] = useState("Overview");
   const [user, setUser] = useState<any>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [isInvesting, setIsInvesting] = useState(false);
+  const [investError, setInvestError] = useState("");
+  const [investSuccess, setInvestSuccess] = useState("");
+  const [investAmountStr, setInvestAmountStr] = useState("");
+
+  useEffect(() => {
+    setInvestAmountStr(property.minInvestment.replace(/[^0-9.-]+/g,""));
+  }, [property]);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -125,6 +143,41 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
       router.push(`/${locale}/Agronomist?landId=${property.id}`);
     } catch (e) {
       setAnalyzing(false);
+    }
+  };
+
+  const handleInvest = async () => {
+    setIsInvesting(true);
+    setInvestError("");
+    setInvestSuccess("");
+    try {
+      const minReq = parseFloat(property.minInvestment.replace(/[^0-9.-]+/g,""));
+      const amount = parseFloat(investAmountStr);
+      if (isNaN(amount) || amount < minReq) {
+        setInvestError(`Minimum investment is ${property.minInvestment}`);
+        setIsInvesting(false);
+        return;
+      }
+
+      const res = await fetch("/api/invest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ propertyId: property.id, amount })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setInvestSuccess(`Successfully invested ${amount} AGV!`);
+        setTimeout(() => {
+          setIsTradeModalOpen(false);
+          router.push(`/${locale}/Wallet`);
+        }, 1500);
+      } else {
+        setInvestError(data.error || "Failed to invest");
+      }
+    } catch (e) {
+      setInvestError("An error occurred. Please try again.");
+    } finally {
+      setIsInvesting(false);
     }
   };
 
@@ -243,6 +296,27 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
+        <div className="wallet-card-soft rounded-3xl p-8 mb-8 wallet-fade-up" style={{ animationDelay: "240ms" }}>
+          <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#2a3307] mb-6 flex items-center gap-2 border-b border-gray-100 pb-2">
+            <Globe size={16} /> Global Market Flow (Last 6 Months)
+          </h3>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={INFLOW_OUTFLOW_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1b2620" opacity={0.1} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#1b2620', fontWeight: 'bold' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#1b2620', opacity: 0.6 }} tickFormatter={(val) => `$${val/1000}k`} />
+                <Tooltip 
+                  cursor={{ fill: 'rgba(27, 38, 32, 0.05)' }}
+                  contentStyle={{ backgroundColor: 'rgba(255, 252, 244, 0.9)', borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(120, 100, 70, 0.15)', fontWeight: 'bold', color: '#1b2620' }}
+                />
+                <Bar dataKey="inflow" name="Inflow" fill="#c8e639" radius={[4, 4, 0, 0]} barSize={32} />
+                <Bar dataKey="outflow" name="Outflow" fill="#1b2620" radius={[4, 4, 0, 0]} barSize={32} opacity={0.8} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 wallet-fade-up" style={{ animationDelay: "100ms" }}>
           <div id="property-tabs" className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
             <span className="text-sm font-bold text-[#1b2620] whitespace-nowrap">Property Sections</span>
@@ -270,7 +344,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
 
         <div className="bg-[#ded2bd]/50 backdrop-blur-xl border border-white/50 rounded-[2.5rem] p-4 flex flex-col shadow-lg overflow-hidden min-h-150 wallet-fade-up" style={{ animationDelay: "160ms" }}>
           
-          <div className="flex-1 bg-gradient-to-br from-[#c8e639]/45 via-[#c8e639]/20 to-white/20 backdrop-blur-2xl border border-white/40 rounded-4xl p-8 flex flex-col justify-between shadow-sm relative overflow-hidden">
+          <div className="flex-1 bg-linear-to-br from-[#c8e639]/45 via-[#c8e639]/20 to-white/20 backdrop-blur-2xl border border-white/40 rounded-4xl p-8 flex flex-col justify-between shadow-sm relative overflow-hidden">
             <div className="absolute top-8 right-10 w-8 h-8 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle at 30% 30%, #ffffff, #b7c9d9 55%, #7c8a99)", boxShadow: "0 4px 10px rgba(27,38,32,0.15)" }}></div>
             <div className="absolute top-24 right-24 w-3 h-3 rounded-full bg-[#1b2620]/20 pointer-events-none"></div>
             
@@ -478,6 +552,11 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                       <span className="text-xs font-bold text-neutral-500 mt-1">Target Annualized Return (IRR)</span>
                     </div>
                   </div>
+                  
+                  <div className="wallet-card-soft rounded-2xl p-6 md:col-span-2">
+                    <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-[#67780f] mb-3 flex items-center gap-1.5"><Wallet size={14}/> Investment Amount (AGV)</h3>
+                    <input type="number" value={investAmountStr} onChange={(e) => setInvestAmountStr(e.target.value)} className="w-full bg-white/50 border border-white/60 rounded-xl p-4 text-2xl font-extrabold text-[#1b2620] outline-none" placeholder={`Min ${property.minInvestment}`} />
+                  </div>
                 </div>
 
                 <div className="wallet-card-soft rounded-2xl p-6 mb-8">
@@ -505,12 +584,14 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                   </p>
                 </div>
 
+                {investError && <p className="text-red-500 text-xs font-bold mb-4">{investError}</p>}
+                {investSuccess && <p className="text-green-600 text-xs font-bold mb-4">{investSuccess}</p>}
                 <div className="flex gap-4">
-                  <button onClick={() => setIsTradeModalOpen(false)} className="flex-1 py-3.5 px-4 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
+                  <button onClick={() => setIsTradeModalOpen(false)} disabled={isInvesting} className="flex-1 py-3.5 px-4 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50">
                     Cancel
                   </button>
-                  <button className="flex-2 py-3.5 px-4 rounded-xl font-extrabold text-[#1b2620] bg-[#c8e639] hover:bg-[#a8c718] hover:scale-[1.01] transition-all shadow-lg hover:shadow-xl">
-                    Confirm Investment Allocation
+                  <button onClick={handleInvest} disabled={isInvesting} className="flex-2 py-3.5 px-4 rounded-xl font-extrabold text-[#1b2620] bg-[#c8e639] hover:bg-[#a8c718] hover:scale-[1.01] transition-all shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center justify-center">
+                    {isInvesting ? "Processing..." : "Confirm Investment Allocation"}
                   </button>
                 </div>
               </div>

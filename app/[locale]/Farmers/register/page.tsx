@@ -491,7 +491,7 @@ const CERTS = [
   { key: "carbon", label: "Low-carbon irrigation" },
 ];
 
-type UploadFile = { id: string; name: string; progress: number; done: boolean };
+type UploadFile = { id: string; name: string; progress: number; done: boolean; url?: string };
 type IotItem = { key: string; title: string; desc: string; cost: number; required?: boolean };
 
 const IOT_ITEMS: IotItem[] = [
@@ -621,28 +621,39 @@ export default function RegisterLand() {
 
   const estimatedCost = IOT_ITEMS.reduce((sum, item) => sum + (iot[item.key] ? item.cost : 0), 0);
 
-  const simulateUpload = (fileList: FileList) => {
+  const handleUpload = async (fileList: FileList) => {
     focusIn(SECTION_IDS.legal, t.uploading(fileList.length));
-    Array.from(fileList).forEach((file) => {
-      const id = `${file.name}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    Array.from(fileList).forEach(async (file) => {
+      const id = `${file.name}-${Date.now()}`;
       setFiles((prev) => [...prev, { id, name: file.name, progress: 0, done: false }]);
-      const interval = setInterval(() => {
-        setFiles((prev) =>
-          prev.map((f) => {
-            if (f.id !== id || f.done) return f;
-            const next = Math.min(f.progress + 18 + Math.random() * 12, 100);
-            return { ...f, progress: next, done: next >= 100 };
-          })
-        );
-      }, 220);
-      setTimeout(() => clearInterval(interval), 2200);
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+          setFiles((prev) =>
+            prev.map((f) => (f.id === id ? { ...f, progress: 100, done: true, url: data.url } : f))
+          );
+        } else {
+          setFiles((prev) => prev.filter(f => f.id !== id));
+        }
+      } catch (e) {
+        setFiles((prev) => prev.filter(f => f.id !== id));
+      }
     });
   };
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
-    if (e.dataTransfer.files?.length) simulateUpload(e.dataTransfer.files);
+    if (e.dataTransfer.files?.length) handleUpload(e.dataTransfer.files);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -834,7 +845,7 @@ export default function RegisterLand() {
                 type="file"
                 multiple
                 className="hidden"
-                onChange={(e) => e.target.files && simulateUpload(e.target.files)}
+                onChange={(e) => e.target.files && handleUpload(e.target.files)}
               />
             </div>
 

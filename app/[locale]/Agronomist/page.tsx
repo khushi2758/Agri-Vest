@@ -24,6 +24,7 @@ export default function AgronomistDashboard() {
   const [savingProgress, setSavingProgress] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [weatherData, setWeatherData] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchLands();
@@ -63,8 +64,16 @@ export default function AgronomistDashboard() {
     }
   }, [loading, lands]);
 
+  const formatLocation = (loc: any): string => {
+    if (typeof loc === 'string') return loc;
+    if (loc && typeof loc === 'object' && loc.coordinates) {
+      return `Lat: ${loc.coordinates[1].toFixed(2)}, Lng: ${loc.coordinates[0].toFixed(2)}`;
+    }
+    return "Unknown Location";
+  };
+
   const handleSelectLand = (landId: string) => {
-    let land = lands.find((l) => l.id === landId);
+    let land = lands.find((l) => l.id === landId || l._id === landId || l._id?.toString() === landId);
     if (!land) {
       land = {
         id: landId,
@@ -75,7 +84,8 @@ export default function AgronomistDashboard() {
     }
     setSelectedLand(land);
     setResult(null);
-    const saved = savedProgress.find((p) => p.propertyId === land.id);
+    const lid = land.id || land._id;
+    const saved = savedProgress.find((p) => p.propertyId === lid);
     if (saved) {
       setIsFlagged(saved.isFlagged ?? false);
       setSuggestion(saved.suggestion ?? "");
@@ -83,6 +93,7 @@ export default function AgronomistDashboard() {
       setIsFlagged(false);
       setSuggestion("");
     }
+    setIsModalOpen(false);
   };
 
   const handleValidate = async () => {
@@ -162,54 +173,101 @@ export default function AgronomistDashboard() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <TopMetrics weatherData={weatherData} />
-
-          <IndexGraphs />
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6" style={{ minHeight: "380px" }}>
+        {!selectedLand ? (
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6" style={{ minHeight: "600px" }}>
             <div className="xl:col-span-2">
-              <ChartWidget />
-            </div>
-            <div className="xl:col-span-1">
-              <ParametersWidget tempCelsius={tempCelsius} moisturePct={moisturePct} />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6" style={{ minHeight: "420px" }}>
-            <div className="xl:col-span-1">
               <DataTableWidget lands={lands} onSelectLand={handleSelectLand} />
             </div>
-            <div className="xl:col-span-1">
-              <MapWidget />
-            </div>
-            <div className="xl:col-span-1">
-              <ModulesWidget />
+            <div className="xl:col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col h-full">
+              <h3 className="font-bold text-lg text-gray-900 mb-5">Previously Analysed Lands</h3>
+              {savedProgress.length === 0 ? (
+                <p className="text-sm text-gray-400">No previous work found.</p>
+              ) : (
+                <div className="flex flex-col gap-4 overflow-y-auto">
+                  {savedProgress.map((p, idx) => {
+                    const land = lands.find(l => l.id === p.propertyId || l._id === p.propertyId) || { title: p.propertyId, location: "Unknown" };
+                    return (
+                      <div key={p.propertyId || idx} onClick={() => handleSelectLand(p.propertyId)} className="flex items-center justify-between p-4 bg-[#f8faf5] border border-gray-100 rounded-xl cursor-pointer hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
+                        <div>
+                          <p className="font-bold text-sm text-gray-900">{land.title || land.id || p.propertyId}</p>
+                          <p className="text-xs text-gray-500 mt-1">{land.location || "Unknown"}</p>
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-100 px-2 py-1 rounded-md">{p.status || "draft"}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
+        ) : (
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+              <div className="flex items-center gap-4">
+                 <button onClick={() => setSelectedLand(null)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors">
+                   ← Back to Fields
+                 </button>
+                 <div>
+                   <h2 className="text-xl font-bold text-gray-900">{selectedLand.title || selectedLand.id}</h2>
+                   <p className="text-xs text-gray-500">{formatLocation(selectedLand.location)}</p>
+                 </div>
+              </div>
+              <button onClick={() => setIsModalOpen(true)} className="px-5 py-2 bg-[#c8e639] text-gray-900 rounded-xl text-sm font-bold shadow-md hover:shadow-[0_0_15px_rgba(200,230,57,0.5)] transition-all">
+                Analyze & Suggest
+              </button>
+            </div>
 
-          <CropRotationCalendar />
-        </div>
+            <TopMetrics weatherData={weatherData} />
+
+            <IndexGraphs />
+
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6" style={{ minHeight: "380px" }}>
+              <div className="xl:col-span-2">
+                <ChartWidget />
+              </div>
+              <div className="xl:col-span-1">
+                <ParametersWidget tempCelsius={tempCelsius} moisturePct={moisturePct} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6" style={{ minHeight: "420px" }}>
+              <div className="xl:col-span-1">
+                <DataTableWidget lands={lands} onSelectLand={handleSelectLand} />
+              </div>
+              <div className="xl:col-span-1">
+                <MapWidget lands={lands} selectedLand={selectedLand} />
+              </div>
+              <div className="xl:col-span-1">
+                <ModulesWidget />
+              </div>
+            </div>
+
+            <CropRotationCalendar />
+          </div>
+        )}
       </div>
 
-      <AnalysisModal
-        selectedLand={selectedLand}
-        suggestion={suggestion}
-        isFlagged={isFlagged}
-        savingProgress={savingProgress}
-        submitting={submitting}
-        result={result}
-        setSuggestion={setSuggestion}
-        setIsFlagged={setIsFlagged}
-        handleSaveProgress={handleSaveProgress}
-        handleValidate={handleValidate}
-        onClose={() => setSelectedLand(null)}
-        onReset={() => {
-          setSelectedLand(null);
-          setResult(null);
-          fetchLands();
-        }}
-      />
+      {isModalOpen && (
+        <AnalysisModal
+          selectedLand={selectedLand}
+          suggestion={suggestion}
+          isFlagged={isFlagged}
+          savingProgress={savingProgress}
+          submitting={submitting}
+          result={result}
+          setSuggestion={setSuggestion}
+          setIsFlagged={setIsFlagged}
+          handleSaveProgress={handleSaveProgress}
+          handleValidate={handleValidate}
+          onClose={() => setIsModalOpen(false)}
+          onReset={() => {
+            setIsModalOpen(false);
+            setSelectedLand(null);
+            setResult(null);
+            fetchLands();
+          }}
+        />
+      )}
     </div>
   );
 }
