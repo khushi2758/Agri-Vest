@@ -2,7 +2,22 @@
 import { useState } from "react";
 import { Baloo_2, Plus_Jakarta_Sans } from "next/font/google";
 import NavBar from "../navbar";
-
+import HelpTourButton from "../HelpTourButton";
+export const homeSteps = [
+  {
+    target: "#home-hero",
+    disableBeacon: true,
+    content:
+      "Welcome to AgriVest. This is the Home section where you can learn about our platform's mission. AgriVest connects investors, farmers, landowners, and agronomists to promote smart, secure, and sustainable agriculture.",
+  },
+];
+export const homeSpeech = [
+  {
+    target: "#home-hero",
+    text:
+      "Welcome to AgriVest. This is the Home section. Here you can learn about our platform and how it connects investors, farmers, landowners, and agronomists through smart farmland investment and sustainable agriculture.",
+  },
+];
 const baloo = Baloo_2({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
@@ -29,7 +44,7 @@ export default function AgriVestHero() {
 
   return (
     <div className={`${baloo.variable} ${jakarta.variable}`}>
-      <main
+      <main  id="home-hero"
         className="relative min-h-screen overflow-x-hidden text-[#1b2620]"
         style={{
           fontFamily: "var(--font-jakarta), sans-serif",
@@ -39,6 +54,7 @@ export default function AgriVestHero() {
       >
         {/* side rail label */}
         <div className="fixed left-7 top-0 bottom-0 hidden md:flex items-center z-[5] pointer-events-none">
+          <HelpTourButton steps={ homeSteps} speechSections={homeSpeech}/>
           <span
             className="inline-block text-[10.5px] font-semibold tracking-[0.22em] uppercase text-[#1b2620]/50"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}

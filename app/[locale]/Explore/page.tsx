@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import Footer from "@/app/[locale]/Footer";
+
 import NavBar from "../navbar";
 import {
   MapPin,
@@ -16,7 +17,7 @@ import {
   Search
 } from "lucide-react";
 import HelpTourButton from "../HelpTourButton";
-import { exploreSteps } from "./exploreSteps";
+import { exploreSpeech, exploreSteps } from "./exploreSteps";
 
 const FARMLANDS = [
   {
@@ -316,7 +317,7 @@ export default function ExploreCatalog() {
   return (
 
     <div className="min-h-screen bg-[#b8cb8a] font-sans relative">
-        <HelpTourButton steps={exploreSteps}/>    
+        <HelpTourButton steps={exploreSteps} speechSections={exploreSpeech}/>    
       <div className="fixed inset-0 z-0 pointer-events-none">
          <Image src="/bga.jpg" alt="" fill priority className="object-cover object-bottom opacity-30" />
          <div className="absolute inset-0 bg-linear-to-b from-[#8c8c81]/70 via-[#749a86]/90 to-[#374f42]" />

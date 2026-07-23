@@ -156,15 +156,16 @@ export default function NavBar() {
     switch (user.role) {
       case "investor":
         return ["Home", "Explore", "Investor", "Portfolio", "Wallet", "About"].includes(link.label);
-      case "farmer":
+      case "farmers":
         return ["Home", "Explore", "Farmers", "Wallet", "About"].includes(link.label);
       case "landowner":
-        return ["Home", "Explore", "Wallet", "About"].includes(link.label);
+        return ["Home", "Explore", "Wallet","Farmers", "About"].includes(link.label);
       case "agronomist":
         return true; // full access
       default:
         return ["Home", "Explore", "About"].includes(link.label);
     }
+  
   });
 
   return (

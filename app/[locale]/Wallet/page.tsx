@@ -5,12 +5,63 @@ import Image from "next/image";
 import { walletSteps } from "./tourw";
 import HelpTourButton from "../HelpTourButton";
 import Link from "next/link";
+import { useAuth } from "../context/auth-context"; // adjust relative path to match this file's location
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid, Cell } from "recharts";
 import { 
   Search, RefreshCcw, Bell, Moon, Home, LayoutDashboard, 
   BarChart2, Wallet, Briefcase, Calendar, Settings, LogOut, 
-  ArrowUpRight, ArrowDownLeft, ChevronDown, User, ShieldCheck, ShieldAlert
+  ArrowUpRight, ArrowDownLeft, ChevronDown, User, ShieldCheck, ShieldAlert, Lock
 } from "lucide-react";
+
+// Per-role wallet capabilities and copy.
+// Deposit/Invest are investor-only. Everyone else can withdraw their
+// earnings and view their own payment history, just under role-specific labels.
+type WalletRoleConfig = {
+  canDeposit: boolean;
+  canWithdraw: boolean;
+  depositLabel: string;
+  withdrawLabel: string;
+  historyLabel: string;
+};
+
+const ROLE_WALLET_CONFIG: Record<string, WalletRoleConfig> = {
+  investor: {
+    canDeposit: true,
+    canWithdraw: true,
+    depositLabel: "Deposit Money",
+    withdrawLabel: "Withdraw Returns",
+    historyLabel: "Portfolio Transactions",
+  },
+  farmer: {
+    canDeposit: false,
+    canWithdraw: true,
+    depositLabel: "Deposit Money",
+    withdrawLabel: "Withdraw Farming Income",
+    historyLabel: "Payment History",
+  },
+  landowner: {
+    canDeposit: false,
+    canWithdraw: true,
+    depositLabel: "Deposit Money",
+    withdrawLabel: "Withdraw Earnings",
+    historyLabel: "Payment History",
+  },
+  agronomist: {
+    canDeposit: false,
+    canWithdraw: true,
+    depositLabel: "Deposit Money",
+    withdrawLabel: "Withdraw Earnings",
+    historyLabel: "Consultation Payment History",
+  },
+};
+
+const DEFAULT_WALLET_CONFIG: WalletRoleConfig = {
+  canDeposit: false,
+  canWithdraw: false,
+  depositLabel: "Deposit Money",
+  withdrawLabel: "Withdraw",
+  historyLabel: "Transactions",
+};
 
 // ---- shared keyframes / soft-UI utility classes ---------------------------
 function SoftUIStyles() {
@@ -151,6 +202,7 @@ const TX_COLORS = [
 
 export default function WalletDashboard() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -165,6 +217,9 @@ export default function WalletDashboard() {
   const [actionSuccess, setActionSuccess] = useState("");
   const [actionError, setActionError] = useState("");
 
+  const walletConfig: WalletRoleConfig =
+    (user?.role && ROLE_WALLET_CONFIG[user.role]) || DEFAULT_WALLET_CONFIG;
+
   const resetActions = () => {
     setAmount("");
     setActionError("");
@@ -173,6 +228,14 @@ export default function WalletDashboard() {
   };
 
   const handleAction = async (type: "deposit" | "withdraw") => {
+    if (type === "deposit" && !walletConfig.canDeposit) {
+      setActionError("Your role doesn't have permission to deposit funds.");
+      return;
+    }
+    if (type === "withdraw" && !walletConfig.canWithdraw) {
+      setActionError("Your role doesn't have permission to withdraw funds.");
+      return;
+    }
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       setActionError("Please enter a valid amount");
       return;
@@ -203,7 +266,16 @@ export default function WalletDashboard() {
     }
   };
 
+  // Redirect unauthenticated users once the shared auth state has settled
   useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/en/login");
+    }
+  }, [authLoading, user, router]);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+
     async function fetchWalletData() {
       try {
         const res = await fetch("/api/wallet");
@@ -220,7 +292,7 @@ export default function WalletDashboard() {
       }
     }
     fetchWalletData();
-  }, [router]);
+  }, [authLoading, user, router]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -232,7 +304,7 @@ export default function WalletDashboard() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-[#f3f6e6] flex items-center justify-center relative overflow-hidden">
         <SoftUIStyles />
@@ -245,7 +317,7 @@ export default function WalletDashboard() {
     );
   }
 
-  if (!data || !data.user) return null;
+  if (!user || !data || !data.user) return null;
 
   return (
     <div className="min-h-screen bg-[#f3f6e6] text-[#1b2620] flex flex-col overflow-hidden font-sans selection:bg-[#c1ed7a] selection:text-[#1b2620]"  >
@@ -355,6 +427,15 @@ export default function WalletDashboard() {
         </header>
 
         <div className="flex-1 overflow-y-auto pr-2 pb-10 custom-scrollbar relative z-10">
+
+          {!walletConfig.canDeposit && (
+            <div className="wallet-card-soft rounded-2xl p-4 mb-6 flex items-center gap-3 wallet-fade-up">
+              <Lock size={16} className="text-[#1b2620]/50 shrink-0" />
+              <p className="text-xs font-bold text-[#1b2620]/70">
+                Deposits are managed by investors. You can withdraw your earnings and view your {walletConfig.historyLabel.toLowerCase()} below.
+              </p>
+            </div>
+          )}
 
           {/* stat chips row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6 wallet-fade-up">
@@ -525,18 +606,22 @@ export default function WalletDashboard() {
                   </div>
 
                   <div className="flex gap-4 mt-6 relative z-10">
-                     <button onClick={() => { resetActions(); setIsDepositOpen(true); }} className="flex-1 bg-white hover:bg-black/[0.02] border border-black/5 text-[#1b2620] font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
-                        <ArrowDownLeft size={16} /> Deposit
-                     </button>
-                     <button onClick={() => { resetActions(); setIsWithdrawOpen(true); }} className="flex-1 bg-[#1b2620] hover:bg-black text-white font-extrabold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-                        <ArrowUpRight size={16} className="text-[#c1ed7a]" /> Withdraw
-                     </button>
+                     {walletConfig.canDeposit && (
+                       <button onClick={() => { resetActions(); setIsDepositOpen(true); }} className="flex-1 bg-white hover:bg-black/[0.02] border border-black/5 text-[#1b2620] font-bold py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
+                          <ArrowDownLeft size={16} /> {walletConfig.depositLabel}
+                       </button>
+                     )}
+                     {walletConfig.canWithdraw && (
+                       <button onClick={() => { resetActions(); setIsWithdrawOpen(true); }} className={`bg-[#1b2620] hover:bg-black text-white font-extrabold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 ${walletConfig.canDeposit ? "flex-1" : "w-full"}`}>
+                          <ArrowUpRight size={16} className="text-[#c1ed7a]" /> {walletConfig.withdrawLabel}
+                       </button>
+                     )}
                   </div>
                </div>
 
                <div id="recent-transactions" className="wallet-card-soft wallet-hover-lift rounded-3xl p-6 flex-1 min-h-[300px] wallet-fade-up" style={{ animationDelay: "260ms" }}>
                   <div className="flex justify-between items-center mb-6">
-                     <h3 className="text-[#1b2620] font-extrabold text-sm tracking-wide uppercase">Recent Transactions</h3>
+                     <h3 className="text-[#1b2620] font-extrabold text-sm tracking-wide uppercase">{walletConfig.historyLabel}</h3>
                      <button onClick={() => setIsViewAllOpen(true)} className="text-[#1b2620]/40 hover:text-[#1b2620] text-xs font-bold transition-colors">View All</button>
                   </div>
 
@@ -586,7 +671,7 @@ export default function WalletDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1b2620]/40 backdrop-blur-sm">
           <div className="wallet-card-soft w-[400px] rounded-3xl p-8 relative">
             <h3 className="text-xl font-extrabold text-[#1b2620] mb-6">
-              {isDepositOpen ? "Deposit Funds" : "Withdraw Funds"}
+              {isDepositOpen ? walletConfig.depositLabel : walletConfig.withdrawLabel}
             </h3>
             
             <div className="flex flex-col gap-4 mb-6">
@@ -649,7 +734,7 @@ export default function WalletDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1b2620]/40 backdrop-blur-sm">
           <div className="wallet-card-soft w-[500px] max-h-[80vh] flex flex-col rounded-3xl p-8 relative">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-extrabold text-[#1b2620]">All Transactions</h3>
+              <h3 className="text-xl font-extrabold text-[#1b2620]">All {walletConfig.historyLabel}</h3>
               <button onClick={() => setIsViewAllOpen(false)} className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center hover:bg-black/10 transition-colors">
                 <span className="text-[#1b2620] font-bold text-sm">✕</span>
               </button>

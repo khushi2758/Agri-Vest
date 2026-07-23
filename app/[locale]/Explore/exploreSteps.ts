@@ -48,3 +48,33 @@ export const exploreSteps: any = [
     placement: "top",
   },
 ];
+export const exploreSpeech =  [
+  {
+    target: "#explore-header",
+    text: "Welcome to the Explore page. Here you can browse verified farmland investment opportunities from different locations.",
+  },
+  {
+    target: "#search-farm",
+    text: "Use the search box to quickly find farmland by entering its name or location.",
+  },
+  {
+    target: "#filters",
+    text: "Use the available filters to narrow your search by crop type, farming technology, trending farms, or investment risk level.",
+  },
+  {
+    target: "#farm-card",
+    text: "Each farmland card provides an overview of the project, including the crop type, estimated yield, minimum investment, and risk level.",
+  },
+  {
+    target: "#farm-tech",
+    text: "This section shows the smart farming technologies being used to improve productivity and sustainability.",
+  },
+  {
+    target: "#funding-progress",
+    text: "The funding progress bar indicates how much of the investment target has already been funded.",
+  },
+  {
+    target: "#view-details",
+    text: "Select View Details to see complete information about the farmland, including its location, ownership, financial projections, and available investment options.",
+  },
+];

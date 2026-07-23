@@ -13,7 +13,7 @@ import { useAuth } from "@/app/[locale]/context/auth-context"; // adjust relativ
 
 const ALL_ROLES = [
   { id: "investor", label: "Investor" },
-  { id: "farmer", label: "Farmer" },
+  { id: "farmers", label: "Farmer" },
   { id: "landowner", label: "Landowner" },
   { id: "agronomist", label: "Agronomist" },
 ];

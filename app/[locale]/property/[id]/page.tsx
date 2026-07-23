@@ -3,6 +3,7 @@ import React, { use, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/[locale]/context/auth-context"; 
 import { motion, AnimatePresence } from "motion/react";
 import NavBar from "../../navbar";
 import {
@@ -130,7 +131,8 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
       .catch(() => {});
   }, []);
 
-  const isAgronomist = user?.roles?.includes("agronomist");
+ 
+  const isAgronomist = user?.role === "agronomist";
 
   const handleAnalyze = async () => {
     setAnalyzing(true);

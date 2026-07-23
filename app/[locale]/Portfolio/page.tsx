@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import HelpTourButton from "../HelpTourButton";
 import { portfolioSteps } from "./tourp";
+import { useAuth } from "../context/auth-context"; // adjust relative path to match this file's location
 import { 
   Search, LayoutDashboard, BarChart2, Wallet, 
   Settings, TrendingUp, Info, RefreshCw, Filter, 
@@ -11,6 +12,8 @@ import {
   Briefcase, Loader2
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+
+const PORTFOLIO_ALLOWED_ROLES = ["investor", "agronomist"];
 
 // ---- shared glass / motion utility classes (same warm language as the other redesigned pages) ----
 function SoftUIStyles() {
@@ -75,10 +78,31 @@ function SoftUIStyles() {
 
 export default function PortfolioPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const isAllowed = !!user?.role && PORTFOLIO_ALLOWED_ROLES.includes(user.role);
+
+  // Redirect unauthenticated users, and users whose role has no business here
   useEffect(() => {
+    if (authLoading) return;
+
+    if (!user) {
+      router.push("/en/login");
+      return;
+    }
+
+    if (!isAllowed) {
+      router.push("/en/HomePage");
+    }
+  }, [authLoading, user, isAllowed, router]);
+
+  useEffect(() => {
+    // Don't fetch portfolio data for a role that shouldn't see it —
+    // avoids an unnecessary request while the redirect above is in flight.
+    if (authLoading || !user || !isAllowed) return;
+
     async function fetchPortfolio() {
       try {
         const res = await fetch("/api/portfolio");
@@ -95,9 +119,9 @@ export default function PortfolioPage() {
       }
     }
     fetchPortfolio();
-  }, [router]);
+  }, [authLoading, user, isAllowed, router]);
 
-  if (loading) {
+  if (authLoading || (isAllowed && loading)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#b7d0ea] via-[#9dc0b1] to-[#6f8f5e] flex items-center justify-center">
         <SoftUIStyles />
@@ -107,6 +131,9 @@ export default function PortfolioPage() {
       </div>
     );
   }
+
+  // Not allowed or no user — redirect is already in flight above; render nothing meanwhile
+  if (!user || !isAllowed) return null;
 
   if (!data) return null;
 

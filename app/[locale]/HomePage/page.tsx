@@ -200,18 +200,30 @@ export default function page() {
   }, []);
 
   const homeSteps = [
-    {
-      target: "#explore",
-      disableBeacon: true,
-      content:
-        "Welcome to your Investment Roadmap. This page helps you track all your farmland investments, monitor progress, and stay informed about important milestones.",
-    },
-    {
-      target: "#register",
-      content:
-        "Use the search bar to quickly find projects, investments, or portfolio records.",
-    },
+  {
+    target: "#explore",
+    disableBeacon: true,
+    content:
+      "Welcome to Explore. Here you can browse verified farmland investment opportunities, compare projects, and find investments that match your interests.",
+  },
+  {
+    target: "#register",
+    content:
+      "Use Register to add your farmland to the AgriVest platform. Complete the registration process to verify your land and make it available for investment or management.",
+  },
   ];
+  const homeSpeech = [
+  {
+    target: "#explore",
+    text:
+      "Welcome to the Explore section. Here you can discover verified farmland investment opportunities, compare different projects, and choose investments that best match your financial goals.",
+  },
+  {
+    target: "#register",
+    text:
+      "This is the Register section. If you are a farmer or landowner, you can register your farmland here by providing the required details. Once verified, your land can be managed or made available for investment through the AgriVest platform.",
+  },
+];
 
   function useGoogleLanguage() {
     const [language, setLanguage] = useState("en");
@@ -237,7 +249,7 @@ export default function page() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#c7cdb9] font-sans px-14">
-      <HelpTourButton steps={homeSteps} />
+      <HelpTourButton steps={homeSteps}  speechSections={homeSpeech}/>
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0 }}
