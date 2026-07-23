@@ -53,9 +53,13 @@ export function MapWidget({ lands = [], selectedLand = null }: { lands?: any[], 
         attributionControl: false,
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        maxZoom: 19,
-      }).addTo(map);
+     L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors",
+  }
+).addTo(map);
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
       mapInstanceRef.current = map;
@@ -81,32 +85,36 @@ export function MapWidget({ lands = [], selectedLand = null }: { lands?: any[], 
     });
     markersRef.current = [];
 
-    const normalIcon = L.divIcon({
-      className: "",
-      html: '<div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;"><div style="width:12px;height:12px;background:#22c55e;border-radius:50%;border:2px solid #fff;box-shadow:0 0 12px rgba(34,197,94,0.6),0 0 24px rgba(34,197,94,0.3);"></div></div>',
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
-      popupAnchor: [0, -14],
-    });
+const normalIcon = L.divIcon({
+  className: "",
+  html: '<div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;"><div style="width:12px;height:12px;background:#4285F4;border-radius:50%;border:2px solid #fff;box-shadow:0 0 12px rgba(66,133,244,0.6),0 0 24px rgba(66,133,244,0.3);"></div></div>',
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+  popupAnchor: [0, -14],
+});
 
-    const selectedMarkerIcon = L.divIcon({
-      className: "",
-      html: '<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;"><div style="width:18px;height:18px;background:#f59e0b;border-radius:0;transform:rotate(45deg);border:3px solid #fff;box-shadow:0 0 18px rgba(245,158,11,0.9),0 0 36px rgba(245,158,11,0.5);"></div></div>',
-      iconSize: [40, 40],
-      iconAnchor: [20, 20],
-      popupAnchor: [0, -20],
-    });
+const selectedMarkerIcon = L.divIcon({
+  className: "",
+  html: `
+    <div style="width:32px;height:44px;filter:drop-shadow(0 3px 5px rgba(0,0,0,0.4));">
+      <svg width="32" height="44" viewBox="0 0 24 34" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 22 12 22s12-13 12-22C24 5.4 18.6 0 12 0z" fill="#EA4335"/>
+        <circle cx="12" cy="12" r="5.2" fill="#ffffff"/>
+      </svg>
+    </div>
+  `,
+  iconSize: [32, 44],
+  iconAnchor: [16, 44],
+  popupAnchor: [0, -42],
+});
 
     const bounds: [number, number][] = [];
 
     lands.forEach((land: any) => {
-      let lat: number | null = null;
-      let lng: number | null = null;
+    const lat = land.lat;
+const lng = land.lng;
 
-      if (land.location && typeof land.location === "object" && land.location.coordinates && Array.isArray(land.location.coordinates)) {
-        lng = land.location.coordinates[0];
-        lat = land.location.coordinates[1];
-      }
+if (lat == null || lng == null) return;
 
       if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) return;
 
@@ -155,12 +163,12 @@ export function MapWidget({ lands = [], selectedLand = null }: { lands?: any[], 
 
     if (activeView === "street") {
       L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 19,
+        maxZoom: 29,
       }).addTo(map);
       setActiveView("satellite");
     } else {
       L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        maxZoom: 19,
+        maxZoom: 29,
       }).addTo(map);
       setActiveView("street");
     }

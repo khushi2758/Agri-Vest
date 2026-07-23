@@ -32,17 +32,17 @@ export function DataTableWidget({ lands, onSelectLand }: { lands: any[]; onSelec
   })) : DEMO_FIELDS;
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-full flex flex-col">
+    <div className="bg-white/55 rounded-2xl p-6 shadow-sm border border-gray-100 h-full flex flex-col">
       <div className="flex justify-between items-center mb-5">
         <div>
           <h3 className="font-bold text-lg text-gray-900">Field Registry</h3>
-          <p className="text-xs text-gray-400 font-medium mt-0.5">{displayData.length} monitored fields</p>
+          <p className=" text-xs text-gray-400 font-medium mt-0.5">{displayData.length} monitored fields</p>
         </div>
       </div>
 
       <div className="overflow-y-auto flex-1 -mx-2">
-        <table className="w-full text-sm text-left">
-          <thead className="text-[10px] text-gray-400 font-bold uppercase tracking-wider sticky top-0 bg-white">
+        <table className=" w-full text-sm text-left">
+          <thead className=" text-[10px]   text-emerald-600 font-bold uppercase tracking-wider sticky  border-b-2 border-gray-300">
             <tr>
               <th className="pb-3 px-2">Field</th>
               <th className="pb-3 px-2">Crop</th>
@@ -59,6 +59,7 @@ export function DataTableWidget({ lands, onSelectLand }: { lands: any[]; onSelec
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
                       <MapPin size={12} />
+                        
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 text-xs">{field.title}</p>
