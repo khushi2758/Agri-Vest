@@ -8,12 +8,19 @@ import {
   Camera, Bell, Lock, ShieldAlert, ArrowLeft 
 } from "lucide-react";
 import NavBar from "../navbar";
+import { NAV_LINKS } from "../navbar";
+import { useAuth } from "@/app/[locale]/context/auth-context"; // adjust relative path to match your folder structure
 
+const ALL_ROLES = [
+  { id: "investor", label: "Investor" },
+  { id: "farmer", label: "Farmer" },
+  { id: "landowner", label: "Landowner" },
+  { id: "agronomist", label: "Agronomist" },
+];
 
 export default function AccountSettingsPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, setUser, loading } = useAuth();
   
   const [activeTab, setActiveTab] = useState("profile");
   
@@ -28,46 +35,42 @@ export default function AccountSettingsPage() {
     tax_country: "",
     address: "",
     preferred_language: "en",
-    roles: ["investor"]
+
+    // Single access role — a user has exactly one at a time
+    role: "investor",
   });
   const [saveLoading, setSaveLoading] = useState(false);
 
+  // Redirect unauthenticated users once the shared auth state has settled
   useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-          
-          const names = (data.name || "").split(" ");
-          const firstName = names[0] || "";
-          const lastName = names.slice(1).join(" ") || "";
-          
-          setEditForm({
-            firstName,
-            lastName,
-            email: data.email || "",
-            phone: data.phone || "",
-            gender: data.gender || "male",
-            id_number: data.id_number || "",
-            tax_id: data.tax_id || "",
-            tax_country: data.tax_country || "USA",
-            address: data.address || "",
-            preferred_language: data.preferred_language || "en",
-            roles: data.roles || ["investor"]
-          });
-        } else {
-          router.push("/en/login");
-        }
-      } catch (err) {
-        router.push("/en/login");
-      } finally {
-        setLoading(false);
-      }
+    if (!loading && !user) {
+      router.push("/en/login");
     }
-    fetchUser();
-  }, [router]);
+  }, [loading, user, router]);
+
+  // Populate the edit form whenever the shared user record changes
+  // (initial load, or right after a save elsewhere updates context)
+  useEffect(() => {
+    if (!user) return;
+
+    const names = (user.name || "").split(" ");
+    const firstName = names[0] || "";
+    const lastName = names.slice(1).join(" ") || "";
+
+    setEditForm({
+      firstName,
+      lastName,
+      email: user.email || "",
+      phone: user.phone || "",
+      gender: user.gender || "male",
+      id_number: user.id_number || "",
+      tax_id: user.tax_id || "",
+      tax_country: user.tax_country || "USA",
+      address: user.address || "",
+      preferred_language: user.preferred_language || "en",
+      role: user.role || "investor",
+    });
+  }, [user]);
 
   const handleSave = async () => {
     setSaveLoading(true);
@@ -81,7 +84,7 @@ export default function AccountSettingsPage() {
         tax_id: editForm.tax_id,
         tax_country: editForm.tax_country,
         address: editForm.address,
-        roles: editForm.roles
+        role: editForm.role,
       };
       const res = await fetch("/api/auth/update", {
         method: "PUT",
@@ -89,6 +92,21 @@ export default function AccountSettingsPage() {
         body: JSON.stringify(payload)
       });
       if (res.ok) {
+        // Push the saved values into the shared auth context immediately —
+        // NavBar reads from the same context, so it updates on this same click.
+        setUser((prev: any) => ({
+          ...prev,
+          name: payload.name,
+          phone: payload.phone,
+          preferred_language: payload.preferred_language,
+          gender: payload.gender,
+          id_number: payload.id_number,
+          tax_id: payload.tax_id,
+          tax_country: payload.tax_country,
+          address: payload.address,
+          role: payload.role,
+        }));
+
         if (user.preferred_language !== editForm.preferred_language) {
           const currentPath = window.location.pathname;
           const segments = currentPath.split('/');
@@ -282,23 +300,29 @@ export default function AccountSettingsPage() {
                     </select>
                   </div>
 
+                  {/* Single access role — a user has exactly one at a time */}
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-gray-700 mb-2">Account Roles (Select all that apply)</label>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                      {[
-                        { id: 'investor', label: 'Investor' },
-                        { id: 'farmer', label: 'Farmer (Producer)' },
-                        { id: 'landowner', label: 'Landowner' },
-                        { id: 'agronomist', label: 'Agronomist' }
-                      ].map(roleOption => (
-                        <label key={roleOption.id} className={`flex items-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${editForm.roles.includes(roleOption.id) ? 'bg-[#c8e639]/20 border-[#c8e639]' : 'bg-white border-gray-300 hover:border-[#c8e639]/50'}`}>
-                          <input type="checkbox" className="accent-[#1b2620] w-4 h-4 cursor-pointer" checked={editForm.roles.includes(roleOption.id)} onChange={() => {
-                            setEditForm(prev => {
-                              const newRoles = prev.roles.includes(roleOption.id) ? prev.roles.filter(r => r !== roleOption.id) : [...prev.roles, roleOption.id];
-                              return { ...prev, roles: newRoles.length ? newRoles : ['investor'] };
-                            });
-                          }} />
-                          <span className="text-sm font-bold text-[#1b2620]">{roleOption.label}</span>
+                    <label className="block text-xs font-bold text-gray-700 mb-2">
+                      Access Role
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {ALL_ROLES.map((role) => (
+                        <label
+                          key={role.id}
+                          className={`flex items-center gap-2 p-3 border rounded-xl cursor-pointer ${
+                            editForm.role === role.id
+                              ? "bg-[#c8e639]/20 border-[#c8e639]"
+                              : "border-gray-300"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="accessRole"
+                            value={role.id}
+                            checked={editForm.role === role.id}
+                            onChange={() => setEditForm({ ...editForm, role: role.id })}
+                          />
+                          <span>{role.label}</span>
                         </label>
                       ))}
                     </div>

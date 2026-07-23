@@ -4,6 +4,8 @@ import { verifyToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
+const VALID_ROLES = ["investor", "farmer", "landowner", "agronomist"];
+
 export async function PUT(request: Request) {
   try {
     const cookieStore = await cookies();
@@ -18,7 +20,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, phone, preferred_language, roles, gender, id_number, tax_id, tax_country, address } = await request.json();
+    const { name, phone, preferred_language, role, gender, id_number, tax_id, tax_country, address } = await request.json();
 
     if (!name || !phone || !preferred_language) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -35,11 +37,11 @@ export async function PUT(request: Request) {
       updated_at: new Date()
     };
 
-    if (roles && Array.isArray(roles) && roles.length > 0) {
-      updateFields.roles = roles;
-      if (roles.includes("agronomist")) updateFields.role = "agronomist";
-      else if (roles.includes("farmer")) updateFields.role = "farmer";
-      else updateFields.role = "investor";
+    if (role !== undefined) {
+      if (!VALID_ROLES.includes(role)) {
+        return NextResponse.json({ error: "Invalid role" }, { status: 400 });
+      }
+      updateFields.role = role;
     }
 
     if (gender !== undefined) updateFields.gender = gender;
@@ -53,8 +55,10 @@ export async function PUT(request: Request) {
       { $set: updateFields }
     );
 
-    if (updateResult.modifiedCount === 0) {
-      return NextResponse.json({ error: "Profile not found or no changes made" }, { status: 404 });
+    // matchedCount tells us the document exists; modifiedCount can be 0
+    // on a legitimate no-op save (values unchanged) and shouldn't be treated as an error.
+    if (updateResult.matchedCount === 0) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
     const response = NextResponse.json({ success: true, message: "Profile updated successfully" }, { status: 200 });

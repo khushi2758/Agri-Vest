@@ -17,9 +17,10 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/app/[locale]/context/auth-context"; 
 
 import { CircleQuestionMark } from "lucide-react";
-const NAV_LINKS = [
+export const NAV_LINKS = [
   { label: "Home", href: "/HomePage" },
   { label: "Explore", href: "/Explore" },
   { label: "Investor", href: "/Investor" },
@@ -27,8 +28,7 @@ const NAV_LINKS = [
   { label: "Agronomist", href: "/Agronomist" },
   { label: "Wallet", href: "/Wallet" },
   { label: "Portfolio", href: "/Portfolio" },
-    { label: "About", href: "/About" },
-   
+  { label: "About", href: "/About" },
 ];
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
@@ -40,8 +40,7 @@ export default function NavBar() {
   const router = useRouter();
   const [active, setActive] = useState(pathname);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [runTour, setRunTour] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -92,22 +91,6 @@ export default function NavBar() {
     setActive(pathname);
   }, [pathname]);
 
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-        }
-      } catch (e) {
-      } finally {
-        setLoading(false);
-      }
-    }
-    checkAuth();
-  }, []);
-
   // Closes BOTH the account menu and the profile card when clicking outside
   // either of them — they share the same dropdownRef wrapper.
   useEffect(() => {
@@ -145,13 +128,7 @@ export default function NavBar() {
       } catch (e) {}
     }
   };
-  useEffect(() => {
-    const completed = localStorage.getItem("agri-tour");
 
-    if (!completed) {
-      setRunTour(true);
-    }
-  }, []);
   const handleJoyride = (data: any) => {
     const { status } = data;
 
@@ -168,27 +145,26 @@ export default function NavBar() {
 
     window.speechSynthesis.speak(speech);
   };
+
+  // Single-role access model: a user has exactly one role (user.role),
+  // not a set of assigned roles.
   const filteredNavLinks = NAV_LINKS.filter((link) => {
-    if (user && user.roles) {
-      const isFarmer = user.roles.includes("farmer");
-      const isAgronomist = user.roles.includes("agronomist");
-      const isInvestor = user.roles.includes("investor");
-      if ((isFarmer || isAgronomist) && !isInvestor) {
-        if (link.label === "Investor" || link.label === "Portfolio") {
-          return false;
-        }
-      }
-      if (!isAgronomist && link.label === "Agronomist") {
-        return false;
-      }
-    } else if (
-      link.label === "Investor" ||
-      link.label === "Portfolio" ||
-      link.label === "Agronomist"
-    ) {
-      return false;
+    if (!user) {
+      return ["Home", "Explore", "About"].includes(link.label);
     }
-    return true;
+
+    switch (user.role) {
+      case "investor":
+        return ["Home", "Explore", "Investor", "Portfolio", "Wallet", "About"].includes(link.label);
+      case "farmer":
+        return ["Home", "Explore", "Farmers", "Wallet", "About"].includes(link.label);
+      case "landowner":
+        return ["Home", "Explore", "Wallet", "About"].includes(link.label);
+      case "agronomist":
+        return true; // full access
+      default:
+        return ["Home", "Explore", "About"].includes(link.label);
+    }
   });
 
   return (

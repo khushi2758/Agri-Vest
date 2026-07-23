@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+    activeRole: {
+    type: String,
+    default: "investor",
+  },
   name: {
     type: String,
     required: true,
