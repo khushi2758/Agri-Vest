@@ -40,7 +40,7 @@ export function DataTableWidget({ lands, onSelectLand }: { lands: any[]; onSelec
         </div>
       </div>
 
-      <div className="overflow-y-auto flex-1 -mx-2">
+      <div className="overflow-y-auto max-h-[500px] flex-1 -mx-2 pr-2">
         <table className=" w-full text-sm text-left">
           <thead className=" text-[10px]   text-emerald-600 font-bold uppercase tracking-wider sticky  border-b-2 border-gray-300">
             <tr>

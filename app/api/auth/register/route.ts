@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     const newUser = {
       email: normalizedEmail,
       name,
-      role: roles.includes("agronomist") ? "agronomist" : (roles.includes("farmer") ? "farmer" : "investor"),
+      role: roles.includes("admin") ? "admin" : roles.includes("agronomist") ? "agronomist" : roles.includes("agri_tech") ? "agri_tech" : (roles.includes("farmer") || roles.includes("landowner") ? "landowner" : "investor"),
       roles: roles,
       password_hash,
       phone: phone || "+10000000000",
