@@ -6,17 +6,42 @@ export async function GET(request: Request) {
     const client = await clientPromise;
     const db = client.db("agrivest_db");
 
-    // Fetch users who are farmers (agronomist) or farmers explicitly
+    const url = new URL(request.url);
+    const search = url.searchParams.get("search") || "";
+    const nearMe = url.searchParams.get("nearMe") === "true";
+
+    const query: any = {
+      $or: [
+        { role: "agronomist" },
+        { roles: "agronomist" },
+        { roles: "farmer" }
+      ],
+      is_active: true
+    };
+
+    if (search) {
+      query.$and = [
+        {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { location: { $regex: search, $options: "i" } }
+          ]
+        }
+      ];
+    }
+
+    if (nearMe) {
+      // Mocking 'Near Me' by filtering users in a specific region or country (e.g., USA)
+      if (query.$and) {
+        query.$and.push({ location: { $regex: "USA", $options: "i" } });
+      } else {
+        query.$and = [{ location: { $regex: "USA", $options: "i" } }];
+      }
+    }
+
     const farmers = await db
       .collection("users")
-      .find({
-        $or: [
-          { role: "agronomist" },
-          { roles: "agronomist" },
-          { roles: "farmer" }
-        ],
-        is_active: true
-      })
+      .find(query)
       .project({ password_hash: 0, otp: 0 })
       .toArray();
 

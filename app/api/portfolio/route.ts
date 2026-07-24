@@ -37,6 +37,7 @@ export async function GET(request: Request) {
         totalInvested: 0,
         netMultiple: 1.0,
         investmentsList: [],
+        chartData: [],
         activitiesList: transactions.map(tx => ({
           id: tx._id.toString(),
           title: `New ${tx.type}`,
@@ -49,7 +50,15 @@ export async function GET(request: Request) {
     }
 
     let totalInvested = 0;
-    const netMultiple = 1.5; 
+    
+    let oldestDate = new Date();
+    investments.forEach(inv => {
+      const d = new Date(inv.invested_at);
+      if (d < oldestDate) oldestDate = d;
+    });
+    
+    const daysSinceFirstInv = Math.max(1, (new Date().getTime() - oldestDate.getTime()) / (1000 * 60 * 60 * 24));
+    const netMultiple = Number((1.0 + (daysSinceFirstInv / 365) * 0.15).toFixed(2));
 
     const investmentsList = investments.map(inv => {
       const invAmount = parseFloat(inv.amount || "0");
@@ -64,11 +73,32 @@ export async function GET(request: Request) {
         date: investedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
         invested: invAmount,
         netValue: invAmount * netMultiple,
-        multiple: `${netMultiple}x`
+        multiple: `${netMultiple}x`,
+        rawDate: investedAt.getTime()
       };
     });
 
     const portfolioValue = totalInvested * netMultiple;
+
+    const sortedInv = [...investmentsList].sort((a, b) => a.rawDate - b.rawDate);
+    const chartData: any[] = [];
+    let runningInvested = 0;
+    
+    sortedInv.forEach(inv => {
+      runningInvested += inv.invested;
+      const d = new Date(inv.rawDate);
+      chartData.push({
+        name: d.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+        invested: runningInvested,
+        released: runningInvested * 0.4
+      });
+    });
+    
+    chartData.push({
+      name: "Now",
+      invested: runningInvested,
+      released: runningInvested * 0.6
+    });
 
     const activitiesList = transactions.map(tx => ({
       id: tx._id.toString(),
@@ -85,6 +115,7 @@ export async function GET(request: Request) {
       totalInvested,
       netMultiple,
       investmentsList,
+      chartData,
       activitiesList
     }, { status: 200 });
 

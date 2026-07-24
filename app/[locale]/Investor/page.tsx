@@ -22,7 +22,12 @@ export default function PortfolioDashboard() {
         const res = await fetch("/api/investors/top");
         if (res.ok) {
           const data = await res.json();
-          setTopInvestors(data);
+          setTopInvestors(data.topInvestors || []);
+          const followingMap: Record<string, boolean> = {};
+          if (data.following) {
+            data.following.forEach((id: string) => { followingMap[id] = true; });
+          }
+          setFollowing(followingMap);
         }
       } catch (e) {
       }
@@ -45,13 +50,26 @@ export default function PortfolioDashboard() {
     fetchTopInvestors();
   }, []);
 
-  const handleFollow = (id: string, name: string) => {
+  const handleFollow = async (id: string, name: string) => {
     const isNowFollowing = !following[id];
+    
+    
     setFollowing(prev => ({ ...prev, [id]: isNowFollowing }));
     
     if (isNowFollowing) {
       setNotification(`You are now following ${name}. Notifications enabled for new trades.`);
       setTimeout(() => setNotification(null), 4000);
+    }
+    
+    try {
+      await fetch("/api/investors/follow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetUserId: id, action: isNowFollowing ? "follow" : "unfollow" })
+      });
+    } catch (e) {
+      
+      setFollowing(prev => ({ ...prev, [id]: !isNowFollowing }));
     }
   };
 
@@ -78,7 +96,7 @@ export default function PortfolioDashboard() {
         )}
       </AnimatePresence>
      
-      <div className="mx-auto max-w-[1200px] px-6 py-10 md:px-10">
+      <div className="mx-auto max-w-300 px-6 py-10 md:px-10">
         
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -115,7 +133,7 @@ export default function PortfolioDashboard() {
                 <div key={investor.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-colors flex flex-col justify-between group">
                   <div className="flex items-start justify-between mb-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c8e639] to-[#8da514] flex items-center justify-center text-[#1b2620] font-black text-lg shadow-lg">
+                      <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#c8e639] to-[#8da514] flex items-center justify-center text-[#1b2620] font-black text-lg shadow-lg">
                         {investor.avatar}
                       </div>
                       <div>

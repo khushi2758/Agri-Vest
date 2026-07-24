@@ -70,7 +70,11 @@ const farmerDirectorySpeech = [
   useEffect(() => {
     async function fetchFarmers() {
       try {
-        const res = await fetch("/api/farmers");
+        const query = new URLSearchParams();
+        if (search) query.append("search", search);
+        if (nearMeActive) query.append("nearMe", "true");
+        
+        const res = await fetch(`/api/farmers?${query.toString()}`);
         if (res.ok) {
           const data = await res.json();
           setFarmers(data);
@@ -79,6 +83,14 @@ const farmerDirectorySpeech = [
       } catch (e) {}
     }
 
+    const delayDebounce = setTimeout(() => {
+      fetchFarmers();
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [search, nearMeActive]);
+
+  useEffect(() => {
     async function fetchCurrentUser() {
       try {
         const res = await fetch("/api/auth/me");
@@ -89,28 +101,10 @@ const farmerDirectorySpeech = [
       } catch (e) {}
     }
 
-    fetchFarmers();
     fetchCurrentUser();
   }, []);
 
-  useEffect(() => {
-    let result = farmers;
-
-    if (search.trim()) {
-      const lower = search.toLowerCase();
-      result = result.filter(
-        (f) =>
-          f.name.toLowerCase().includes(lower) ||
-          f.location.toLowerCase().includes(lower)
-      );
-    }
-
-    if (nearMeActive) {
-      result = result.filter((_, idx) => idx % 2 === 0);
-    }
-
-    setFilteredFarmers(result);
-  }, [search, nearMeActive, farmers]);
+  
 
   return (
     <div className="min-h-screen bg-[#f7f9f2] font-sans">
@@ -163,17 +157,19 @@ const farmerDirectorySpeech = [
             />
           </div>
 
-          <button  id="near-me"
-            onClick={() => setNearMeActive(!nearMeActive)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all w-full sm:w-auto justify-center ${
-              nearMeActive
-                ? "bg-[#1b2620] text-[#c8e639]"
-                : "bg-[#c8e639]/10 text-[#1b2620] hover:bg-[#c8e639]/30"
-            }`}
-          >
-            <Navigation className={`w-4 h-4 ${nearMeActive ? "animate-pulse" : ""}`} />
-            {nearMeActive ? "Showing Near You" : "Near Me"}
-          </button>
+          {currentUser?.role === "landowner" && (
+            <button  id="near-me"
+              onClick={() => setNearMeActive(!nearMeActive)}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all w-full sm:w-auto justify-center ${
+                nearMeActive
+                  ? "bg-[#1b2620] text-[#c8e639]"
+                  : "bg-[#c8e639]/10 text-[#1b2620] hover:bg-[#c8e639]/30"
+              }`}
+            >
+              <Navigation className={`w-4 h-4 ${nearMeActive ? "animate-pulse" : ""}`} />
+              {nearMeActive ? "Showing Near You" : "Near Me"}
+            </button>
+          )}
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 "  id="farmer-cards">

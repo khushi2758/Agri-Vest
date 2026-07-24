@@ -303,7 +303,7 @@ export default function page() {
                 >
                   Explore Farms
                 </motion.button>
-                {!isLandowner && (
+                {isLandowner && (
                   <motion.button
                     id="register"
                     variants={fadeUp}

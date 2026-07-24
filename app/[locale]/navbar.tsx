@@ -202,27 +202,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
 
   return (
     <>
-      {/*<Joyride
-  run={runTour}
-  steps={steps}
-  continuous = {true}
-  scrollToFirstStep= {true}
-  onEvent={handleJoyride}
-  options={{
-    buttons: ["back", "skip", "primary"],
-    showProgress: true,
-    overlayClickAction: false,
-    primaryColor: "#c8e639",
-    primaryColor: "#c8e639",
-      backgroundColor: "#ffffff",
-      textColor: "#1f2937",
-      overlayColor: "rgba(0,0,0,0.45)",
-      zIndex: 9999,
-      arrowColor: "#ffffff",
-     
-  }}
-
-/>*/}
+      
       <motion.header
         className="relative flex items-center justify-between py-3 z-30 top-0 bg-transparent backdrop-blur-sm border-b border-neutral-200 w-full px-1 sm:px-6 lg:px-8 text-[#526108] text-bold font-mono"
         initial={{ opacity: 0, y: -16 }}
@@ -288,7 +268,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
              Profile | <User size={16} />  
               </button>
 
-              {/* account menu: Profile / Settings / Logout / Delete Account */}
+             
               <AnimatePresence>
                 {dropdownOpen && (
                   <motion.div
@@ -332,7 +312,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
                 )}
               </AnimatePresence>
 
-              {/* profile card: opened by the "Profile" item above */}
+              
               <AnimatePresence>
                 {isProfileOpen && (
                   <motion.div
@@ -353,7 +333,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
                     </div>
 
                     <div className="flex flex-col gap-2 mb-4">
-                      <div className="flex justify-between items-center bg-black/[0.03] p-3 rounded-xl border border-black/5">
+                      <div className="flex justify-between items-center bg-black/3 p-3 rounded-xl border border-black/5">
                         <span className="text-xs font-bold text-[#1b2620]/60">Total Balance</span>
                         <span className="text-sm font-extrabold text-[#1b2620]">
                           {user?.totalBalance != null ? (
@@ -368,7 +348,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
                           )}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center bg-black/[0.03] p-3 rounded-xl border border-black/5">
+                      <div className="flex justify-between items-center bg-black/3 p-3 rounded-xl border border-black/5">
                         <span className="text-xs font-bold text-[#1b2620]/60">KYC Status</span>
                         {user?.kyc_verified ? (
                           <span className="flex items-center gap-1 text-xs font-bold text-[#c1ed7a] bg-[#c1ed7a]/10 px-2 py-1 rounded">

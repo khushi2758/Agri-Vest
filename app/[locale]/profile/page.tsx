@@ -18,6 +18,20 @@ const ALL_ROLES = [
   { id: "agronomist", label: "Agronomist" },
 ];
 
+const COUNTRY_FLAGS: Record<string, string> = {
+  "USA": "🇺🇸",
+  "UK": "🇬🇧",
+  "CA": "🇨🇦",
+  "AU": "🇦🇺",
+  "IN": "🇮🇳",
+  "DE": "🇩🇪",
+  "FR": "🇫🇷",
+  "ES": "🇪🇸",
+  "BR": "🇧🇷",
+  "JP": "🇯🇵",
+};
+
+
 export default function AccountSettingsPage() {
   const router = useRouter();
   const { user, setUser, loading } = useAuth();
@@ -237,8 +251,8 @@ export default function AccountSettingsPage() {
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-2">Mobile Number <span className="text-red-500">*</span></label>
                     <div className="flex border border-gray-300 rounded-lg overflow-hidden focus-within:border-[#1b2620] transition-colors">
-                      <div className="bg-gray-50 px-3 py-3 border-r border-gray-300 flex items-center justify-center">
-                        <span className="text-sm font-bold">🇺🇸 ▾</span>
+                      <div className="bg-gray-50 px-3 py-3 border-r border-gray-300 flex items-center justify-center min-w-[50px]">
+                        <span className="text-sm font-bold">{COUNTRY_FLAGS[editForm.tax_country] || "🌐"} ▾</span>
                       </div>
                       <input type="text" value={editForm.phone} onChange={e => setEditForm({...editForm, phone: e.target.value})} className="flex-1 px-4 py-3 text-sm font-bold text-[#1b2620] outline-none" placeholder="0806 123 7890" />
                     </div>
@@ -270,12 +284,19 @@ export default function AccountSettingsPage() {
                   
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-2">Tax Identification Country</label>
-                    <div className="flex border border-gray-300 rounded-lg overflow-hidden focus-within:border-[#1b2620] transition-colors">
-                      <div className="bg-gray-50 px-3 py-3 border-r border-gray-300 flex items-center justify-center">
-                        <span className="text-sm font-bold">🇺🇸 ▾</span>
-                      </div>
-                      <input type="text" value={editForm.tax_country} onChange={e => setEditForm({...editForm, tax_country: e.target.value})} className="flex-1 px-4 py-3 text-sm font-bold text-[#1b2620] outline-none" placeholder="Country" />
-                    </div>
+                    <select value={editForm.tax_country} onChange={e => setEditForm({...editForm, tax_country: e.target.value})} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-bold text-[#1b2620] outline-none focus:border-[#1b2620] transition-colors bg-white cursor-pointer">
+                      <option value="">Select Country...</option>
+                      <option value="USA">United States (USA)</option>
+                      <option value="UK">United Kingdom (UK)</option>
+                      <option value="CA">Canada (CA)</option>
+                      <option value="AU">Australia (AU)</option>
+                      <option value="IN">India (IN)</option>
+                      <option value="DE">Germany (DE)</option>
+                      <option value="FR">France (FR)</option>
+                      <option value="ES">Spain (ES)</option>
+                      <option value="BR">Brazil (BR)</option>
+                      <option value="JP">Japan (JP)</option>
+                    </select>
                   </div>
                   
                   <div className="md:col-span-2">

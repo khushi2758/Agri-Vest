@@ -137,14 +137,7 @@ export default function PortfolioPage() {
 
   if (!data) return null;
 
-  // Mocked chart data mapping to the mockup's visual
-  const chartData = [
-    { name: "Jul, 2020", invested: 10000, released: 5000 },
-    { name: "Oct, 2020", invested: 20000, released: 15000 },
-    { name: "Jan, 2021", invested: 30000, released: 35000 },
-    { name: "Apr, 2021", invested: 50000, released: 45000 },
-    { name: "Now", invested: 67000, released: 50000 },
-  ];
+  const chartData = data.chartData || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#b7d0ea] via-[#9dc0b1] to-[#6f8f5e] text-[#8fa810] flex overflow-hidden font-sans selection:bg-[#c8e639] selection:text-black">
