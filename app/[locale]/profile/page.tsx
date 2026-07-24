@@ -65,7 +65,7 @@ export default function AccountSettingsPage() {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordStatus, setPasswordStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
 
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, addToast } = useNotifications();
 
   // Redirect unauthenticated users once the shared auth state has settled
   useEffect(() => {
