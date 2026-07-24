@@ -661,14 +661,27 @@ export default function RegisterLand() {
 
   const canSubmit = farmName.trim() && ownerName.trim() && acreage.trim() && !submitted;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit) {
       speak(t.submitBlocked);
       return;
     }
-    setSubmitted(true);
-    setActiveSection(null);
-    speak(t.submitted);
+    try {
+      const res = await fetch("/api/farmland", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ farmName, acreage, ownerName })
+      });
+      if (res.ok) {
+        setSubmitted(true);
+        setActiveSection(null);
+        speak(t.submitted);
+      } else {
+        console.error("Submission failed");
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

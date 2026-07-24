@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth";
+import { FARMLANDS } from "@/lib/mock-farmlands";
 
 export async function GET() {
   try {
@@ -22,7 +23,7 @@ export async function GET() {
 
     const lands = await db.collection("land_parcels").find({}).toArray();
 
-    const data = lands.map(land => {
+    const dbLands = lands.map(land => {
       let lat = 39.5;
       let lng = -98.35;
       if (land.location && typeof land.location === 'object' && land.location.coordinates) {
@@ -43,7 +44,19 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json(data);
+    const mockLands = FARMLANDS.map(farm => ({
+      _id: farm.id,
+      id: farm.id,
+      title: farm.name,
+      crop: farm.cropType,
+      area: farm.rotationDays ? `${farm.rotationDays} d` : "N/A",
+      status: "active",
+      locationStr: farm.location,
+      lat: 39.5 + (Math.random() * 5 - 2.5),
+      lng: -98.35 + (Math.random() * 5 - 2.5)
+    }));
+
+    return NextResponse.json([...dbLands, ...mockLands]);
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
