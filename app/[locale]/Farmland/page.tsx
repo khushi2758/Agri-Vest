@@ -624,7 +624,7 @@ export default function FarmlandPage() {
     <div className="absolute inset-0 bg-gradient-to-b from-[#cdded8] via-[#e8efeb] to-transparent">
       <WaterGlassStyles />
       <NavBar />
-      <div className="min-h-screen bg-gradient-to-br from-[#b7d0ea] via-[#9dc0b1] to-[#6f8f5e] text-[#1b2620] flex overflow-hidden font-sans selection:bg-[#c8e639] selection:text-black">
+      <div className="min-h-screen bg-gradient-to-br from-[#b7eae0] via-[#cfe1a4] to-[#b7bfa8] text-[#1b2620] flex overflow-hidden font-sans selection:bg-[#c8e639] selection:text-black">
 
         {/* Farmland sidebar — every farm, always visible, independent of the main content scroll */}
         <aside className="water-glass-card water-glass-light w-72 flex flex-col shrink-0 h-screen border-r-0 rounded-none">

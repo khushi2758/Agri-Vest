@@ -10,6 +10,7 @@ import Footer from "../Footer";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import HelpTourButton from "../HelpTourButton";
+import HomeFooter from "../HomeFooter";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
@@ -248,6 +249,7 @@ export default function page() {
   const isEnglish = language === "en";
 
   return (
+    <>
     <div className="relative min-h-screen overflow-hidden bg-[#c7cdb9] font-sans px-14">
       <HelpTourButton steps={homeSteps}  speechSections={homeSpeech}/>
       <motion.div
@@ -484,6 +486,9 @@ export default function page() {
           </motion.div>
         </main>
       </div>
+    
     </div>
+      <HomeFooter/>
+      </>
   );
 }

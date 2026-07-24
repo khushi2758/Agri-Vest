@@ -58,7 +58,7 @@ const SOCIALS = [
   { icon: InstagramIcon, href: "https://instagram.com", label: "Instagram" },
 ];
 
-export default function Footer() {
+export default function HomeFooter() {
   return (
     <footer className="bg-neutral-900 px-6 py-14 text-neutral-300 md:px-10 ">
       <motion.div
@@ -120,10 +120,10 @@ export default function Footer() {
           variants={fadeUp}
           className="flex flex-col gap-3 border-t border-neutral-800 pt-6 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between"
         >
-          <p>© 2024 AgriVest Tech Ltd. All rights reserved.</p>
+          <p>© 2024 AgriVest  Ltd. All rights reserved.</p>
           <p className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-[#c8e639]" />
-            All data protected by AI audit
+            All data protected by AgriVest
           </p>
         </motion.div>
       </motion.div>
