@@ -119,10 +119,20 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
   const [investError, setInvestError] = useState("");
   const [investSuccess, setInvestSuccess] = useState("");
   const [investAmountStr, setInvestAmountStr] = useState("");
+  const [weatherData, setWeatherData] = useState<any>(null);
 
   useEffect(() => {
     setInvestAmountStr(property.minInvestment.replace(/[^0-9.-]+/g,""));
   }, [property]);
+
+  useEffect(() => {
+    if (property?.location) {
+      fetch(`/api/weather?location=${encodeURIComponent(property.location)}`)
+        .then(res => res.json())
+        .then(data => setWeatherData(data))
+        .catch(() => {});
+    }
+  }, [property?.location]);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -403,7 +413,7 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
                   </div>
                   <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center transition-transform hover:-translate-y-0.5 duration-300">
                     <div className="flex justify-between items-start mb-4">
-                      <p className="text-4xl font-extrabold text-[#1b2620]">32.4%</p>
+                      <p className="text-4xl font-extrabold text-[#1b2620]">{weatherData?.moisturePct ? `${weatherData.moisturePct}%` : '32.4%'}</p>
                       <Droplets size={24} className="text-[#1b2620]" />
                     </div>
                     <p className="text-sm font-bold text-[#1b2620]/60 uppercase tracking-widest">Avg Soil Moisture</p>
@@ -411,18 +421,18 @@ export default function PropertyDetail({ params }: { params: Promise<{ id: strin
 
                   <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center transition-transform hover:-translate-y-0.5 duration-300">
                     <div className="flex justify-between items-start mb-4">
-                      <p className="text-4xl font-extrabold text-[#1b2620]">8.2</p>
+                      <p className="text-4xl font-extrabold text-[#1b2620]">{weatherData?.windSpeed ? `${weatherData.windSpeed} km/h` : '8.2'}</p>
                       <Wind size={24} className="text-[#1b2620]" />
                     </div>
-                    <p className="text-sm font-bold text-[#1b2620]/60 uppercase tracking-widest">Air Quality Index (AQI)</p>
+                    <p className="text-sm font-bold text-[#1b2620]/60 uppercase tracking-widest">{weatherData?.windSpeed ? 'Wind Speed' : 'Air Quality Index (AQI)'}</p>
                   </div>
 
                   <div className="bg-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/40 flex flex-col justify-center transition-transform hover:-translate-y-0.5 duration-300">
                     <div className="flex justify-between items-start mb-4">
-                      <p className="text-4xl font-extrabold text-[#1b2620]">18.2°C</p>
+                      <p className="text-4xl font-extrabold text-[#1b2620]">{weatherData?.tempCelsius ? `${weatherData.tempCelsius}°C` : '18.2°C'}</p>
                       <Thermometer size={24} className="text-[#1b2620]" />
                     </div>
-                    <p className="text-sm font-bold text-[#1b2620]/60 uppercase tracking-widest">Mean Soil Temp</p>
+                    <p className="text-sm font-bold text-[#1b2620]/60 uppercase tracking-widest">Mean Air Temp</p>
                   </div>
                 </div>
               )}

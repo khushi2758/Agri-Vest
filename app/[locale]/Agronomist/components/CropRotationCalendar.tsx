@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Sprout, AlertTriangle, Check, RotateCcw, Leaf } from "lucide-react";
 import cropDatabaseData from "../data/cropDatabase.json";
 
@@ -72,16 +72,62 @@ function calculateRotationHealth(slots: RotationSlot[]): { score: number; warnin
   return { score, warnings: uniqueWarnings };
 }
 
-export function CropRotationCalendar() {
+export function CropRotationCalendar({ landId }: { landId: string | null }) {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
-  const [slots, setSlots] = useState<RotationSlot[]>([
-    { cropId: "wheat", startMonth: 0, endMonth: 5, year: currentYear },
-    { cropId: "soybean", startMonth: 5, endMonth: 9, year: currentYear },
-    { cropId: "clover", startMonth: 9, endMonth: 11, year: currentYear },
-  ]);
+  const [slots, setSlots] = useState<RotationSlot[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [showCropPicker, setShowCropPicker] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+
+  useEffect(() => {
+    if (!landId) {
+      setSlots([
+        { cropId: "wheat", startMonth: 0, endMonth: 5, year: currentYear },
+        { cropId: "soybean", startMonth: 5, endMonth: 9, year: currentYear },
+        { cropId: "clover", startMonth: 9, endMonth: 11, year: currentYear },
+      ]);
+      return;
+    }
+    
+    fetch(`/api/agronomist/calendar?landId=${landId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.slots && data.slots.length > 0) {
+          setSlots(data.slots);
+        } else {
+          setSlots([]);
+        }
+      })
+      .catch(err => console.error("Failed to fetch calendar", err));
+  }, [landId, currentYear]);
+
+  const handleSaveCalendar = async () => {
+    if (!landId) {
+      setSaveMessage("No land selected");
+      return;
+    }
+    setIsSaving(true);
+    setSaveMessage("");
+    try {
+      const res = await fetch("/api/agronomist/calendar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ landId, slots })
+      });
+      if (res.ok) {
+        setSaveMessage("Saved successfully");
+        setTimeout(() => setSaveMessage(""), 3000);
+      } else {
+        setSaveMessage("Failed to save");
+      }
+    } catch (e) {
+      setSaveMessage("Error saving");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const health = useMemo(() => calculateRotationHealth(slots), [slots]);
 
@@ -161,6 +207,14 @@ export function CropRotationCalendar() {
             <button onClick={handleClearAll} className="text-xs font-bold text-gray-400 hover:text-red-500 transition px-3 py-2 rounded-lg hover:bg-red-50">
               Clear Year
             </button>
+            <button 
+              onClick={handleSaveCalendar} 
+              disabled={!landId || isSaving}
+              className={`text-xs font-bold transition px-4 py-2 rounded-lg text-white ${(!landId || isSaving) ? 'bg-emerald-300' : 'bg-emerald-600 hover:bg-emerald-700'}`}
+            >
+              {isSaving ? "Saving..." : "Save Calendar"}
+            </button>
+            {saveMessage && <span className="text-xs text-emerald-600 font-bold">{saveMessage}</span>}
           </div>
         </div>
       </div>

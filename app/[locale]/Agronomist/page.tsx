@@ -12,6 +12,8 @@ import { MapWidget } from "./components/MapWidget";
 import { ModulesWidget } from "./components/ModulesWidget";
 import { CropRotationCalendar } from "./components/CropRotationCalendar";
 import { AnalysisModal } from "./components/AnalysisModal";
+import { PestPredictionWidget } from "./components/PestPredictionWidget";
+import { StickyNotepadWidget } from "./components/StickyNotepadWidget";
 import { DEMO_FIELDS } from "./components/DEMO_FIELDS";
 
 // ---- shared glass / motion utility classes (same language as the other redesigned pages) ----
@@ -122,14 +124,16 @@ export default function AgronomistDashboard() {
         setLands(landsData);
         setSavedProgress(progressData.progress || []);
 
-        const location = landsData.length > 0 ? landsData[0].location : "Nebraska, USA";
-        try {
-          const wRes = await fetch(`/api/weather?location=${encodeURIComponent(location)}`);
-          if (wRes.ok) {
-            const wData = await wRes.json();
-            setWeatherData(wData);
-          }
-        } catch (we) {}
+        const firstLand = landsData.length > 0 ? landsData[0] : null;
+        if (firstLand) {
+          try {
+            const wRes = await fetch(`/api/weather?lat=${firstLand.lat}&lng=${firstLand.lng}`);
+            if (wRes.ok) {
+              const wData = await wRes.json();
+              setWeatherData(wData);
+            }
+          } catch (we) {}
+        }
       }
     } catch (e) {} finally {
       setLoading(false);
@@ -155,7 +159,7 @@ export default function AgronomistDashboard() {
     return "Unknown Location";
   };
 
-  const handleSelectLand = (landId: string) => {
+  const handleSelectLand = async (landId: string) => {
     let land = lands.find((l) => l.id === landId || l._id === landId || l._id?.toString() === landId);
     if (!land) {
       land = {
@@ -177,6 +181,16 @@ export default function AgronomistDashboard() {
       setSuggestion("");
     }
     setIsModalOpen(false);
+
+    if (land.lat && land.lng) {
+      try {
+        const wRes = await fetch(`/api/weather?lat=${land.lat}&lng=${land.lng}`);
+        if (wRes.ok) {
+          const wData = await wRes.json();
+          setWeatherData(wData);
+        }
+      } catch (we) {}
+    }
   };
 
   const handleValidate = async () => {
@@ -230,7 +244,7 @@ export default function AgronomistDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#b7d0ea] via-[#9dc0b1] to-[#6f8f5e] flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-[#b7d0ea] via-[#9dc0b1] to-[#6f8f5e] flex items-center justify-center">
         <SoftUIStyles />
         <div className="wallet-card-soft rounded-3xl p-8 wallet-fade-in">
           <Loader2 className="w-12 h-12 text-emerald-600 animate-spin" />
@@ -314,22 +328,22 @@ export default function AgronomistDashboard() {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 wallet-fade-up" style={{ minHeight: "420px", animationDelay: "180ms" }}>
-              <div className="xl:col-span-1">
-                <DataTableWidget lands={lands} onSelectLand={handleSelectLand} />
-              </div>
-              <div className="xl:col-span-1">
-               <MapWidget
-  lands={lands.length > 0 ? lands : DEMO_FIELDS}
-  selectedLand={selectedLand}
-/>
-              </div>
-              <div className="xl:col-span-1">
-                <ModulesWidget />
+              {!selectedLand && (
+                <div className="xl:col-span-1 transition-all duration-300">
+                  <DataTableWidget lands={lands} onSelectLand={handleSelectLand} />
+                </div>
+              )}
+              <div className={`transition-all duration-300 ${selectedLand ? 'xl:col-span-3' : 'xl:col-span-2'}`}>
+                <MapWidget lands={lands} selectedLand={selectedLand} onClearSelection={() => setSelectedLand(null)} />
               </div>
             </div>
+            
+            <div className="wallet-fade-up mt-6" style={{ animationDelay: "220ms" }}>
+              <CropRotationCalendar landId={selectedLand?.id || selectedLand?._id || null} />
+            </div>
 
-            <div className="wallet-fade-up" style={{ animationDelay: "220ms" }}>
-              <CropRotationCalendar />
+            <div className="wallet-fade-up mt-6" style={{ animationDelay: "260ms" }}>
+              <PestPredictionWidget land={selectedLand} weatherData={weatherData} />
             </div>
           </div>
         )}
@@ -356,6 +370,13 @@ export default function AgronomistDashboard() {
           }}
         />
       )}
+
+      <StickyNotepadWidget 
+        onPasteToAnalysis={(text) => {
+          setSuggestion(prev => prev ? prev + "\n\n" + text : text);
+          if (selectedLand) setIsModalOpen(true);
+        }} 
+      />
     </div>
   );
 }
