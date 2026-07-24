@@ -28,7 +28,9 @@ export const NAV_LINKS = [
   { label: "Agronomist", href: "/Agronomist" },
   { label: "Wallet", href: "/Wallet" },
   { label: "Portfolio", href: "/Portfolio" },
-  { label: "About", href: "/About" },
+  { label: "Farmland", href: "/Farmland" },
+  { label: "About", href: "/About" }
+   
 ];
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
@@ -148,25 +150,55 @@ export default function NavBar() {
 
   // Single-role access model: a user has exactly one role (user.role),
   // not a set of assigned roles.
-  const filteredNavLinks = NAV_LINKS.filter((link) => {
-    if (!user) {
-      return ["Home", "Explore", "About"].includes(link.label);
-    }
+const filteredNavLinks = NAV_LINKS.filter((link) => {
+  if (!user) {
+    return ["Home", "Explore", "About"].includes(link.label);
+  }
 
-    switch (user.role) {
-      case "investor":
-        return ["Home", "Explore", "Investor", "Portfolio", "Wallet", "About"].includes(link.label);
-      case "farmers":
-        return ["Home", "Explore", "Farmers", "Wallet", "About"].includes(link.label);
-      case "landowner":
-        return ["Home", "Explore", "Wallet","Farmers", "About"].includes(link.label);
-      case "agronomist":
-        return true; // full access
-      default:
-        return ["Home", "Explore", "About"].includes(link.label);
-    }
-  
-  });
+  switch (user.role) {
+    case "investor":
+      return [
+        "Home",
+        "Explore",
+        "Investor",
+        "Portfolio",
+        "Wallet",
+        "About",
+      ].includes(link.label);
+
+    case "farmers":
+      return [
+        "Home",
+        "Explore",
+        "Farmers",
+        "Wallet",
+        "About",
+      ].includes(link.label);
+
+    case "landowner":
+      return [
+        "Home",
+        "Explore",
+        "Farmland",
+        "Wallet",
+        "About",
+      ].includes(link.label);
+
+    case "agronomist":
+      return [
+        "Home",
+        "Explore",
+        "Investor",
+        "Farmers",
+        "Portfolio",
+        "Wallet",
+        "About",
+      ].includes(link.label); // No "Farmland"
+
+    default:
+      return ["Home", "Explore", "About"].includes(link.label);
+  }
+});
 
   return (
     <>
