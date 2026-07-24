@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { MapPin, Layers } from "lucide-react";
 
-export function MapWidget({ lands = [], selectedLand = null }: { lands?: any[], selectedLand?: any }) {
+export function MapWidget({ lands = [], selectedLand = null, onClearSelection }: { lands?: any[], selectedLand?: any, onClearSelection?: () => void }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
@@ -182,9 +182,16 @@ if (lat == null || lng == null) return;
 
       <div className="absolute top-0 left-0 right-0 z-20 p-5">
         <div className="flex justify-between items-start">
-          <div className="bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2.5">
-            <h3 className="text-white font-bold text-sm">Field Locations</h3>
-            <p className="text-white/40 text-[10px] font-medium">Global monitoring zones</p>
+          <div className="bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
+            {selectedLand && onClearSelection && (
+              <button onClick={onClearSelection} className="text-white/70 hover:text-white bg-white/5 hover:bg-white/10 p-1.5 rounded-lg transition" title="Back to Field Registry">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+            )}
+            <div>
+              <h3 className="text-white font-bold text-sm">Field Locations</h3>
+              <p className="text-white/40 text-[10px] font-medium">Global monitoring zones</p>
+            </div>
           </div>
           <button
             onClick={toggleView}
@@ -206,18 +213,6 @@ if (lat == null || lng == null) return;
               <MapPin size={10} className="text-white/30" />
               <span className="text-[10px] text-white/60 font-bold">Global Data</span>
             </div>
-          </div>
-          <div className="flex -space-x-1.5">
-            {lands.slice(0, 5).map((loc: any) => (
-              <div key={loc.id || loc._id} className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center" title={loc.title || loc.id}>
-                <span className="text-[7px] font-black text-emerald-300">{(loc.title || loc.id || "U").charAt(0)}</span>
-              </div>
-            ))}
-            {lands.length > 5 && (
-              <div className="w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                <span className="text-[7px] font-black text-white/60">+{lands.length - 5}</span>
-              </div>
-            )}
           </div>
         </div>
       </div>

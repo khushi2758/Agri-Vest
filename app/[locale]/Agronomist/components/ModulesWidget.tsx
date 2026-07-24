@@ -3,7 +3,7 @@ import React from "react";
 import { Bug, RotateCcw, Calendar, Beaker, ArrowRight, Check } from "lucide-react";
 
 const MODULES = [
-  { id: "pest-prediction", label: "Pest Prediction", desc: "ML-based risk forecast", icon: Bug, color: "bg-red-500/10 text-red-600 border-red-300/40", ready: false },
+  { id: "pest-prediction", label: "Pest Prediction", desc: "ML-based risk forecast", icon: Bug, color: "bg-red-500/10 text-red-600 border-red-300/40", ready: true },
   { id: "pest-control", label: "Pest Control", desc: "Treatment protocols", icon: Beaker, color: "bg-purple-500/10 text-purple-600 border-purple-300/40", ready: false },
   { id: "crop-calendar", label: "Crop Calendar", desc: "Growth stage tracker", icon: Calendar, color: "bg-amber-500/10 text-amber-600 border-amber-300/40", ready: false },
 ];

@@ -4,19 +4,28 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const location = searchParams.get("location");
 
-  if (!location) {
-    return NextResponse.json({ error: "Location is required" }, { status: 400 });
-  }
+  const latParam = searchParams.get("lat");
+  const lngParam = searchParams.get("lng");
+
+  let latitude: number;
+  let longitude: number;
 
   try {
-    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`);
-    const geoData = await geoRes.json();
-
-    if (!geoData.results || geoData.results.length === 0) {
-      return NextResponse.json({ error: "Location not found" }, { status: 404 });
+    if (latParam && lngParam) {
+      latitude = parseFloat(latParam);
+      longitude = parseFloat(lngParam);
+    } else if (location) {
+      const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`);
+      const geoData = await geoRes.json();
+  
+      if (!geoData.results || geoData.results.length === 0) {
+        return NextResponse.json({ error: "Location not found" }, { status: 404 });
+      }
+      latitude = geoData.results[0].latitude;
+      longitude = geoData.results[0].longitude;
+    } else {
+      return NextResponse.json({ error: "Location or lat/lng required" }, { status: 400 });
     }
-
-    const { latitude, longitude } = geoData.results[0];
 
     const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m`);
     const weatherData = await weatherRes.json();
