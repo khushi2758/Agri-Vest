@@ -204,6 +204,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
         "Portfolio",
         "Wallet",
         "About",
+        "Agronomist",
       ].includes(link.label); // No "Farmland"
 
     default:
