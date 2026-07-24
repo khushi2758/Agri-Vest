@@ -19,6 +19,7 @@ import {
 import HelpTourButton from "../HelpTourButton";
 import { exploreSpeech, exploreSteps } from "./exploreSteps";
 import { FARMLANDS } from "@/lib/mock-farmlands";
+import HomeFooter from "../HomeFooter";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
@@ -225,7 +226,7 @@ export default function ExploreCatalog() {
           </div>
 
         </div>
-        <Footer />
+        <HomeFooter/>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Sprout,  } from "lucide-react";
+import { Sprout } from "lucide-react";
 
 function XIcon({ size = 15 }: { size?: number }) {
   return (
@@ -37,24 +37,40 @@ const COLUMNS = [
   {
     heading: "Company",
     links: [
-      { label: "About us", href: "/about" },
-      { label: "Contact", href: "/contact" },
+      { label: "About", href: "/about" },
       { label: "Careers", href: "/careers" },
+      { label: "Press", href: "/press" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
-    heading: "Legal",
+    heading: "Marketplace",
     links: [
-      { label: "Privacy policy", href: "/privacy" },
-      { label: "Terms of service", href: "/terms" },
-      { label: "Cookie settings", href: "/cookies" },
+      { label: "Browse Farms", href: "/explore" },
+      { label: "Sell Land", href: "/register" },
+      { label: "Yield Reports", href: "/reports" },
+    ],
+  },
+  {
+    heading: "Resources",
+    links: [
+      { label: "Investor FAQ", href: "/faq" },
+      { label: "Fund Passbook", href: "/passbook" },
+      { label: "Compliance", href: "/compliance" },
+    ],
+  },
+  {
+    heading: "Support",
+    links: [
+      { label: "Help Center", href: "/help" },
+      { label: "Live Chat", href: "/chat" },
+      { label: "System Status", href: "/status" },
     ],
   },
 ];
 
 const SOCIALS = [
   { icon: XIcon, href: "https://twitter.com", label: "X (Twitter)" },
-
   { icon: InstagramIcon, href: "https://instagram.com", label: "Instagram" },
 ];
 
@@ -69,15 +85,17 @@ export default function HomeFooter() {
         className="mx-auto flex max-w-[1100px] flex-col gap-10"
       >
         {/* Top: brand + link columns */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <motion.div variants={fadeUp}>
             <div className="flex items-center gap-2 text-lg font-bold tracking-tight text-white">
               <Sprout size={20} className="text-[#c8e639]" />
               AgriVest
             </div>
-            <p className="mt-3 max-w-[32ch] text-sm leading-relaxed text-neutral-400">
-              Bridging the gap between global capital and small-scale farmers
-              through transparent, blockchain-secured investment.
+            <p className="mt-3 max-w-[42ch] text-sm leading-relaxed text-neutral-400">
+              AgriVest is an AI-powered farmland investment platform that connects farmers and
+              investors. It enables secure land investments, smart farm management, real-time
+              portfolio tracking, and AI-driven insights, making agriculture more transparent,
+              accessible, and sustainable.
             </p>
           </motion.div>
 

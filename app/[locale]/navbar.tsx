@@ -26,12 +26,14 @@ export const NAV_LINKS = [
   { label: "Home", href: "/HomePage" },
   { label: "Explore", href: "/Explore" },
   { label: "Investor", href: "/Investor" },
-  { label: "Farmers", href: "/Farmers" },
+  { label: "Farmer", href: "/Farmers" },
   { label: "Agronomist", href: "/Agronomist" },
   { label: "Wallet", href: "/Wallet" },
   { label: "Portfolio", href: "/Portfolio" },
   { label: "Farmland", href: "/Farmland" },
+   { label: "FarmerDashboard", href: "/FarmerDashboard" },
   { label: "About", href: "/About" }
+ 
    
 ];
 
@@ -180,8 +182,8 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
     case "farmers":
       return [
         "Home",
-        "Explore",
-        "Farmers",
+        "FarmerDashboard",
+        
         "Wallet",
         "About",
       ].includes(link.label);
@@ -205,7 +207,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
         "Wallet",
         "About",
         "Agronomist",
-      ].includes(link.label); // No "Farmland"
+      ].includes(link.label); 
 
     default:
       return ["Home", "Explore", "About"].includes(link.label);

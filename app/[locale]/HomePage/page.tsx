@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import HelpTourButton from "../HelpTourButton";
 import HomeFooter from "../HomeFooter";
+import AboutSection from "../Aboutb/page";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
@@ -183,22 +184,15 @@ function yieldLabelClass(lang: string) {
 
 export default function page() {
   const router = useRouter();
-  const [isLandowner, setIsLandowner] = useState(false);
-
-  useEffect(() => {
-    async function checkUser() {
-      try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const user = await res.json();
-          if (user.roles && user.roles.includes("landowner")) {
-            setIsLandowner(true);
-          }
-        }
-      } catch (err) {}
-    }
-    checkUser();
-  }, []);
+    const [user,setUser ] = useState<any>(null)
+  const easeOut = [0.16, 1, 0.3, 1] as const;
+   useEffect(() => {
+      fetch("/api/auth/me")
+        .then(res => res.json())
+        .then(data => setUser(data))
+        .catch(() => {});
+    }, []);
+    const isLandowner = user?.role === "landowner";
 
   const homeSteps = [
   {
@@ -486,9 +480,11 @@ export default function page() {
           </motion.div>
         </main>
       </div>
-    
+      
     </div>
+    <AboutSection/>
       <HomeFooter/>
+      
       </>
   );
 }
