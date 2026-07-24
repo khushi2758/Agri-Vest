@@ -9,3 +9,5 @@ export function useNotifications() {
   }
   return context;
 }
+
+export type { ToastType, Toast, Notification } from "../context/NotificationContext";

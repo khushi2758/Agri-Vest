@@ -44,7 +44,8 @@ async function run() {
         wallet: {
           balance: Decimal128.fromString("0"),
           currency: "INR"
-        }
+        },
+        password_hash: "seeded_hash"
       },
       {
         _id: investorId,
@@ -65,7 +66,8 @@ async function run() {
         wallet: {
           balance: Decimal128.fromString("15000"),
           currency: "INR"
-        }
+        },
+        password_hash: "seeded_hash"
       }
     ];
     await db.collection('users').insertMany(users);

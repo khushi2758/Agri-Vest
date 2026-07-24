@@ -11,7 +11,7 @@ import NavBar from "../navbar";
 import { NAV_LINKS } from "../navbar";
 import { useAuth } from "@/app/[locale]/context/auth-context"; 
 import { useNotifications, ToastType } from "../CustomHooks/useNotifications";
-import { formatDistanceToNow } from "date-fns"; // adjust relative path to match your folder structure
+import { formatDistanceToNow } from "date-fns"; 
 
 const ALL_ROLES = [
   { id: "investor", label: "Investor" },
@@ -272,7 +272,7 @@ export default function AccountSettingsPage() {
             </button>
           </div>
 
-          <div className="flex-1 bg-white rounded-xl shadow-sm p-8 w-full min-h-[600px]">
+          <div className="flex-1 bg-white rounded-xl shadow-sm p-8 w-full min-h-150">
             {activeTab === "profile" && (
               <div className="animate-in fade-in duration-300">
                 
@@ -324,7 +324,7 @@ export default function AccountSettingsPage() {
                   <div>
                     <label className="block text-xs font-bold text-gray-700 mb-2">Mobile Number <span className="text-red-500">*</span></label>
                     <div className="flex border border-gray-300 rounded-lg overflow-hidden focus-within:border-[#1b2620] transition-colors">
-                      <div className="bg-gray-50 px-3 py-3 border-r border-gray-300 flex items-center justify-center min-w-[50px]">
+                      <div className="bg-gray-50 px-3 py-3 border-r border-gray-300 flex items-center justify-center min-w-12.5">
                         <span className="text-sm font-bold">{COUNTRY_FLAGS[editForm.tax_country] || "🌐"} ▾</span>
                       </div>
                       <input type="text" value={editForm.phone} onChange={e => setEditForm({...editForm, phone: e.target.value})} className="flex-1 px-4 py-3 text-sm font-bold text-[#1b2620] outline-none" placeholder="0806 123 7890" />
