@@ -9,6 +9,8 @@ import { ObjectId } from 'mongodb';
 import "./globals.css";
 import { TourProvider } from '../context/TourContext';
 import { AuthProvider } from "@/app/[locale]/context/auth-context";
+import { NotificationProvider } from "@/app/[locale]/context/NotificationContext";
+import ToastContainer from "@/app/[locale]/components/ToastContainer";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
@@ -33,7 +35,12 @@ export default async function RootLayout({
           <GoogleTranslate preferredLanguage="en" />
 
      
-        <AuthProvider>{children}</AuthProvider>
+         <AuthProvider>
+           <NotificationProvider>
+             <ToastContainer />
+             {children}
+           </NotificationProvider>
+         </AuthProvider>
        
         </NextIntlClientProvider>
       </body>

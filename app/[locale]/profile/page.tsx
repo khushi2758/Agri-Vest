@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
   User, LogOut, ShieldCheck, Mail, Phone, Loader2, 
-  Camera, Bell, Lock, ShieldAlert, ArrowLeft 
+  Camera, Bell, Lock, ShieldAlert, ArrowLeft, CheckCircle, AlertTriangle, Info, XCircle, CheckCheck
 } from "lucide-react";
 import NavBar from "../navbar";
 import { NAV_LINKS } from "../navbar";
-import { useAuth } from "@/app/[locale]/context/auth-context"; // adjust relative path to match your folder structure
+import { useAuth } from "@/app/[locale]/context/auth-context"; 
+import { useNotifications, ToastType } from "../CustomHooks/useNotifications";
+import { formatDistanceToNow } from "date-fns"; // adjust relative path to match your folder structure
 
 const ALL_ROLES = [
   { id: "investor", label: "Investor" },
@@ -62,6 +64,8 @@ export default function AccountSettingsPage() {
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordStatus, setPasswordStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
+
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   // Redirect unauthenticated users once the shared auth state has settled
   useEffect(() => {
@@ -129,6 +133,8 @@ export default function AccountSettingsPage() {
           role: payload.role,
         }));
 
+        addToast("Profile settings saved successfully!", "success");
+
         if (user.preferred_language !== editForm.preferred_language) {
           const currentPath = window.location.pathname;
           const segments = currentPath.split('/');
@@ -176,13 +182,26 @@ export default function AccountSettingsPage() {
       if (res.ok) {
         setPasswordStatus({ type: 'success', message: "Password updated successfully!" });
         setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+        addToast("Your password was updated securely.", "success");
       } else {
         setPasswordStatus({ type: 'error', message: data.error || "Failed to update password." });
+        addToast(data.error || "Failed to update password.", "error");
       }
     } catch (err) {
       setPasswordStatus({ type: 'error', message: "An unexpected error occurred." });
+      addToast("An unexpected error occurred.", "error");
     } finally {
       setPasswordLoading(false);
+    }
+  };
+
+  const getNotificationIcon = (type: ToastType) => {
+    switch (type) {
+      case "success": return <CheckCircle className="w-5 h-5 text-green-500" />;
+      case "error": return <XCircle className="w-5 h-5 text-red-500" />;
+      case "warning": return <AlertTriangle className="w-5 h-5 text-amber-500" />;
+      case "info":
+      default: return <Info className="w-5 h-5 text-blue-500" />;
     }
   };
 
@@ -229,9 +248,16 @@ export default function AccountSettingsPage() {
             </button>
             <button 
               onClick={() => setActiveTab("notifications")}
-              className={`w-full text-left px-6 py-4 flex items-center gap-3 text-sm font-bold transition-colors ${activeTab === 'notifications' ? 'bg-[#f7f9f2] text-[#1b2620] border-r-4 border-[#1b2620]' : 'text-gray-500 hover:bg-gray-50'}`}
+              className={`w-full text-left px-6 py-4 flex items-center justify-between transition-colors ${activeTab === 'notifications' ? 'bg-[#f7f9f2] text-[#1b2620] border-r-4 border-[#1b2620]' : 'text-gray-500 hover:bg-gray-50'}`}
             >
-              <Bell size={18} /> Notifications
+              <div className="flex items-center gap-3 text-sm font-bold">
+                <Bell size={18} /> Notifications
+              </div>
+              {unreadCount > 0 && (
+                <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                  {unreadCount}
+                </span>
+              )}
             </button>
             <button 
               onClick={() => setActiveTab("verification")}
@@ -487,8 +513,53 @@ export default function AccountSettingsPage() {
             )}
 
             {activeTab === "notifications" && (
-              <div className="animate-in fade-in duration-300 flex flex-col items-center justify-center py-20 text-center">
-                <p className="text-gray-400 font-bold">This section is currently under construction.</p>
+              <div className="animate-in fade-in duration-300">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-extrabold text-[#1b2620]">Notifications</h2>
+                  {unreadCount > 0 && (
+                    <button 
+                      onClick={markAllAsRead} 
+                      className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-200 transition-colors flex items-center gap-2"
+                    >
+                      <CheckCheck size={16} /> Mark all read
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  {notifications.length === 0 ? (
+                    <div className="py-12 text-center text-gray-400 font-bold">
+                      <Bell size={48} className="mx-auto mb-4 opacity-20" />
+                      <p>You have no notifications.</p>
+                    </div>
+                  ) : (
+                    notifications.map(notification => (
+                      <div 
+                        key={notification._id} 
+                        onClick={() => { if (!notification.isRead) markAsRead(notification._id); }}
+                        className={`flex gap-4 p-5 rounded-xl border transition-colors cursor-pointer ${notification.isRead ? 'bg-gray-50 border-gray-100 opacity-70' : 'bg-white border-[#c8e639] shadow-sm'}`}
+                      >
+                        <div className="mt-0.5">
+                          {getNotificationIcon(notification.type)}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className={`text-sm ${notification.isRead ? 'font-bold text-gray-700' : 'font-extrabold text-[#1b2620]'}`}>
+                            {notification.title}
+                          </h4>
+                          <p className="text-sm font-medium text-gray-500 mt-1">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs font-bold text-gray-400 mt-3">
+                            {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                          </p>
+                        </div>
+                        {!notification.isRead && (
+                          <div className="w-3 h-3 rounded-full bg-[#c8e639] self-center"></div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             )}
 

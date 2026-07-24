@@ -5,7 +5,9 @@ import Image from "next/image";
 import { walletSteps } from "./tourw";
 import HelpTourButton from "../HelpTourButton";
 import Link from "next/link";
-import { useAuth } from "../context/auth-context"; // adjust relative path to match this file's location
+import { useAuth } from "../context/auth-context"; 
+import NotificationDropdown from "../components/NotificationDropdown";
+import { useNotifications } from "../CustomHooks/useNotifications";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid, Cell } from "recharts";
 import { 
   Search, RefreshCcw, Bell, Moon, Home, LayoutDashboard, 
@@ -203,10 +205,15 @@ const TX_COLORS = [
 export default function WalletDashboard() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
+  const { unreadCount } = useNotifications();
+
+  // Redirect to login if unauthenticated
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
@@ -299,6 +306,9 @@ export default function WalletDashboard() {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
       }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setNotificationsOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -365,10 +375,21 @@ export default function WalletDashboard() {
           
           <div className="flex items-center gap-5 relative">
             <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><RefreshCcw size={16} /></button>
-            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110 relative">
-               <Bell size={16} />
-               <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#c1ed7a] rounded-full border border-white"></span>
-            </button>
+            <div className="relative" ref={notificationsRef}>
+              <button 
+                onClick={() => {
+                  setNotificationsOpen(!notificationsOpen);
+                  setIsProfileOpen(false);
+                }}
+                className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110 relative flex items-center justify-center p-1"
+              >
+                 <Bell size={16} />
+                 {unreadCount > 0 && (
+                   <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                 )}
+              </button>
+              <NotificationDropdown isOpen={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
+            </div>
             <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><Moon size={6} /></button>
             
             <div id="profile-menu" className="relative" ref={profileRef}>

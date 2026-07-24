@@ -6,6 +6,8 @@ import { walletSteps } from "./tourw";
 import HelpTourButton from "../HelpTourButton";
 import Link from "next/link";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid, Cell } from "recharts";
+import NotificationDropdown from "../../components/NotificationDropdown";
+import { useNotifications } from "../../CustomHooks/useNotifications";
 import { 
   Search, RefreshCcw, Bell, Moon, Home, LayoutDashboard, 
   BarChart2, Wallet, Briefcase, Calendar, Settings, LogOut, 
@@ -97,8 +99,11 @@ export default function WalletDashboard() {
   const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { unreadCount } = useNotifications();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   useEffect(() => {
     async function fetchWalletData() {
@@ -123,6 +128,9 @@ export default function WalletDashboard() {
     function handleClickOutside(event: MouseEvent) {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setNotificationsOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -183,12 +191,23 @@ export default function WalletDashboard() {
           </div>
           
           <div className="flex items-center gap-5 relative">
-            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><RefreshCcw size={18} /></button>
-            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110 relative">
-               <Bell size={18} />
-               <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#c8e639] rounded-full border border-white"></span>
-            </button>
-            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><Moon size={18} /></button>
+            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><RefreshCcw size={16} /></button>
+            <div className="relative" ref={notificationsRef}>
+              <button 
+                onClick={() => {
+                  setNotificationsOpen(!notificationsOpen);
+                  setIsProfileOpen(false);
+                }}
+                className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110 relative flex items-center justify-center p-1"
+              >
+                 <Bell size={18} />
+                 {unreadCount > 0 && (
+                   <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-white"></span>
+                 )}
+              </button>
+              <NotificationDropdown isOpen={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
+            </div>
+            <button className="text-[#1b2620]/40 hover:text-[#1b2620] transition-all hover:scale-110"><Moon size={6} /></button>
             
             <div id="profile-menu" className="relative" ref={profileRef}>
               <div 

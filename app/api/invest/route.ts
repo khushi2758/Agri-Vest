@@ -53,14 +53,13 @@ export async function POST(request: Request) {
       status: "active",
       invested_at: new Date(),
       created_at: new Date(),
-      updated_at: new Date(),
-      property_ref: propertyId // Keep string reference for frontend
+      updated_at: new Date()
     });
 
     await db.collection("transactions").insertOne({
       user_id: new ObjectId(userId),
       investment_id: investmentRes.insertedId,
-      type: "investment", 
+      type: "withdrawal", 
       amount: amount.toFixed(2),
       currency: "AGV",
       direction: "debit",

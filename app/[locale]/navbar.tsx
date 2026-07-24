@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/[locale]/context/auth-context"; 
+import NotificationDropdown from "@/app/[locale]/components/NotificationDropdown";
+import { useNotifications } from "@/app/[locale]/CustomHooks/useNotifications";
 
 import { CircleQuestionMark } from "lucide-react";
 export const NAV_LINKS = [
@@ -43,9 +45,12 @@ export default function NavBar() {
   const [active, setActive] = useState(pathname);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, loading } = useAuth();
+  const { unreadCount } = useNotifications();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [runTour, setRunTour] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
   const steps = [
     {
       target: "#home-link",
@@ -101,8 +106,14 @@ export default function NavBar() {
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setDropdownOpen(false);
         setIsProfileOpen(false);
+        setDropdownOpen(false);
+      }
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target as Node)
+      ) {
+        setNotificationsOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -255,6 +266,25 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
           >
             <Globe size={20} />
           </button>
+          {!loading && user && (
+            <div className="relative" ref={notificationsRef}>
+              <button
+                onClick={() => {
+                  setNotificationsOpen(!notificationsOpen);
+                  setIsProfileOpen(false);
+                  setDropdownOpen(false);
+                }}
+                className="flex items-center justify-center rounded-full p-2 text-neutral-900 transition hover:bg-neutral-100 relative"
+                title="Notifications"
+              >
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                )}
+              </button>
+              <NotificationDropdown isOpen={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
+            </div>
+          )}
           {!loading && user ? (
             <div className="relative" ref={dropdownRef}>
               <button
