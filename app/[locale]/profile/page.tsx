@@ -55,6 +55,14 @@ export default function AccountSettingsPage() {
   });
   const [saveLoading, setSaveLoading] = useState(false);
 
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordStatus, setPasswordStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
+
   // Redirect unauthenticated users once the shared auth state has settled
   useEffect(() => {
     if (!loading && !user) {
@@ -136,6 +144,45 @@ export default function AccountSettingsPage() {
       console.error(err);
     } finally {
       setSaveLoading(false);
+    }
+  };
+
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordStatus(null);
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordStatus({ type: 'error', message: "New passwords do not match." });
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 8) {
+      setPasswordStatus({ type: 'error', message: "New password must be at least 8 characters long." });
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const res = await fetch("/api/auth/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setPasswordStatus({ type: 'success', message: "Password updated successfully!" });
+        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      } else {
+        setPasswordStatus({ type: 'error', message: data.error || "Failed to update password." });
+      }
+    } catch (err) {
+      setPasswordStatus({ type: 'error', message: "An unexpected error occurred." });
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -380,7 +427,66 @@ export default function AccountSettingsPage() {
               </div>
             )}
 
-            {(activeTab === "password" || activeTab === "notifications") && (
+            {activeTab === "password" && (
+              <div className="animate-in fade-in duration-300">
+                <h2 className="text-xl font-extrabold text-[#1b2620] mb-6">Change Password</h2>
+                
+                {passwordStatus && (
+                  <div className={`p-4 mb-6 rounded-lg text-sm font-bold ${passwordStatus.type === 'error' ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`}>
+                    {passwordStatus.message}
+                  </div>
+                )}
+
+                <form onSubmit={handlePasswordUpdate} className="flex flex-col gap-6 max-w-md">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-2">Current Password</label>
+                    <input 
+                      type="password" 
+                      autoComplete="current-password"
+                      value={passwordForm.currentPassword} 
+                      onChange={e => setPasswordForm({...passwordForm, currentPassword: e.target.value})} 
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-bold text-[#1b2620] outline-none focus:border-[#1b2620] transition-colors" 
+                      placeholder="Enter current password" 
+                      required 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-2">New Password</label>
+                    <input 
+                      type="password" 
+                      autoComplete="new-password"
+                      value={passwordForm.newPassword} 
+                      onChange={e => setPasswordForm({...passwordForm, newPassword: e.target.value})} 
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-bold text-[#1b2620] outline-none focus:border-[#1b2620] transition-colors" 
+                      placeholder="Enter new password" 
+                      required 
+                    />
+                    <p className="text-gray-400 text-[10px] font-bold mt-1">Must be at least 8 characters long.</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-2">Confirm New Password</label>
+                    <input 
+                      type="password" 
+                      autoComplete="new-password"
+                      value={passwordForm.confirmPassword} 
+                      onChange={e => setPasswordForm({...passwordForm, confirmPassword: e.target.value})} 
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-bold text-[#1b2620] outline-none focus:border-[#1b2620] transition-colors" 
+                      placeholder="Confirm new password" 
+                      required 
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={passwordLoading} 
+                    className="bg-[#1b2620] text-white px-8 py-3.5 rounded-lg text-sm font-bold shadow-md hover:bg-[#0a0f0c] transition-colors flex items-center justify-center gap-2 mt-4 disabled:opacity-70"
+                  >
+                    {passwordLoading ? <Loader2 size={18} className="animate-spin" /> : "Update Password"}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {activeTab === "notifications" && (
               <div className="animate-in fade-in duration-300 flex flex-col items-center justify-center py-20 text-center">
                 <p className="text-gray-400 font-bold">This section is currently under construction.</p>
               </div>
