@@ -90,7 +90,7 @@ export default function Register() {
       if (res.ok) {
         setStep("success");
         setTimeout(() => {
-          router.push("/en");
+          window.location.href = "/en";
         }, 1500);
       } else {
         setError(data.error || "Registration failed");
