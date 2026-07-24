@@ -240,7 +240,7 @@ export default function AgronomistDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#b7d0ea] via-[#9dc0b1] to-[#6f8f5e] font-sans selection:bg-[#c8e639] selection:text-black">
+    <div className="min-h-screen bg-linear-to-br from-[#b7d0ea] via-[#9dc0b1] to-[#6f8f5e] font-sans selection:bg-[#c8e639] selection:text-black">
       <SoftUIStyles />
       <NavBar />
 
@@ -249,14 +249,6 @@ export default function AgronomistDashboard() {
           <div>
             <h1 className="text-3xl font-black text-[#1b2620] tracking-tight">Agronomist Dashboard</h1>
             <p className="text-sm text-[#1b2620]/50 font-medium mt-1">Real-time field monitoring & agronomic analysis</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="w-10 h-10 rounded-xl wallet-card-soft wallet-hover-lift flex items-center justify-center text-[#1b2620]/60 hover:text-[#1b2620] transition-colors">
-              <Bell size={18} />
-            </button>
-            <button className="w-10 h-10 rounded-xl wallet-card-soft wallet-hover-lift flex items-center justify-center text-[#1b2620]/60 hover:text-[#1b2620] transition-colors">
-              <Settings size={18} />
-            </button>
           </div>
         </div>
 

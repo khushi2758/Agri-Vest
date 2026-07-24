@@ -13,6 +13,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 82,
     totalGoal: "$2.3M",
+    lat: 41.5,
+    lng: -99.79
   },
   {
     id: "blue-ridge-orchard",
@@ -28,6 +30,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 65,
     totalGoal: "$1.5M",
+    lat: 37.43,
+    lng: -78.65
   },
   {
     id: "golden-wheat-coop",
@@ -43,6 +47,8 @@ export const FARMLANDS = [
     trending: false,
     fundedPct: 95,
     totalGoal: "$4.0M",
+    lat: 39.01,
+    lng: -98.48
   },
   {
     id: "emerald-vineyards",
@@ -58,6 +64,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 40,
     totalGoal: "$8.5M",
+    lat: 36.77,
+    lng: -119.41
   },
   {
     id: "dakota-soy-fields",
@@ -73,6 +81,8 @@ export const FARMLANDS = [
     trending: false,
     fundedPct: 15,
     totalGoal: "$3.2M",
+    lat: 44.29,
+    lng: -99.43
   },
   {
     id: "cascade-hops-farm",
@@ -88,6 +98,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 55,
     totalGoal: "$1.8M",
+    lat: 47.75,
+    lng: -120.74
   },
   {
     id: "delta-rice-co",
@@ -103,6 +115,8 @@ export const FARMLANDS = [
     trending: false,
     fundedPct: 20,
     totalGoal: "$5.0M",
+    lat: 35.2,
+    lng: -91.83
   },
   {
     id: "peach-grove-ga",
@@ -118,6 +132,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 88,
     totalGoal: "$2.1M",
+    lat: 32.16,
+    lng: -82.9
   },
   {
     id: "montana-barley-fields",
@@ -133,6 +149,8 @@ export const FARMLANDS = [
     trending: false,
     fundedPct: 42,
     totalGoal: "$6.2M",
+    lat: 46.87,
+    lng: -110.36
   },
   {
     id: "florida-citrus-orchard",
@@ -148,6 +166,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 70,
     totalGoal: "$3.5M",
+    lat: 27.66,
+    lng: -81.51
   },
   {
     id: "pampas-soy-fields",
@@ -163,6 +183,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 60,
     totalGoal: "$5.5M",
+    lat: -34.6,
+    lng: -58.38
   },
   {
     id: "bordeaux-vineyards",
@@ -178,6 +200,8 @@ export const FARMLANDS = [
     trending: false,
     fundedPct: 85,
     totalGoal: "$12.0M",
+    lat: 44.83,
+    lng: -0.57
   },
   {
     id: "mekong-delta-rice",
@@ -193,6 +217,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 92,
     totalGoal: "$1.2M",
+    lat: 10.04,
+    lng: 105.74
   },
   {
     id: "rift-valley-coffee",
@@ -208,6 +234,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 45,
     totalGoal: "$2.8M",
+    lat: -0.02,
+    lng: 37.9
   },
   {
     id: "punjab-wheat-coop",
@@ -223,6 +251,8 @@ export const FARMLANDS = [
     trending: false,
     fundedPct: 98,
     totalGoal: "$4.5M",
+    lat: 31.14,
+    lng: 75.34
   },
   {
     id: "cerrado-coffee-estate",
@@ -238,6 +268,8 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 30,
     totalGoal: "$8.0M",
+    lat: -14.23,
+    lng: -51.92
   },
   {
     id: "andalusia-olive-groves",
@@ -253,6 +285,8 @@ export const FARMLANDS = [
     trending: false,
     fundedPct: 77,
     totalGoal: "$6.0M",
+    lat: 37.54,
+    lng: -4.72
   },
   {
     id: "queensland-sugarcane",
@@ -268,5 +302,7 @@ export const FARMLANDS = [
     trending: true,
     fundedPct: 50,
     totalGoal: "$3.8M",
+    lat: -20.91,
+    lng: 142.7
   }
 ];

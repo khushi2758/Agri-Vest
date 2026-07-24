@@ -42,6 +42,7 @@ export async function POST(request: Request) {
           20.5937 + (Math.random() * 2 - 1)
         ]
       },
+      location_name: "Global Farm Network",
       address: {
         village: "Unknown",
         district: "Unknown",
