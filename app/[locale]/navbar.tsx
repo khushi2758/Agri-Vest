@@ -181,7 +181,6 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
       return [
         "Home",
         "FarmerDashboard",
-        
         "Wallet",
       ].includes(link.label);
 

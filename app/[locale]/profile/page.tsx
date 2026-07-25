@@ -15,7 +15,7 @@ import { formatDistanceToNow } from "date-fns";
 
 const ALL_ROLES = [
   { id: "investor", label: "Investor" },
-  { id: "farmers", label: "Farmer" },
+  { id: "farmer", label: "Farmer" },
   { id: "landowner", label: "Landowner" },
   { id: "agronomist", label: "Agronomist" },
 ];
@@ -51,8 +51,6 @@ export default function AccountSettingsPage() {
     tax_country: "",
     address: "",
     preferred_language: "en",
-
-    // Single access role — a user has exactly one at a time
     role: "investor",
   });
   const [saveLoading, setSaveLoading] = useState(false);
