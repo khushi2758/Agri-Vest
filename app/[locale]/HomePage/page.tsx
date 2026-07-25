@@ -5,7 +5,6 @@ import crops from "@/public/fild2.jpg";
 import { Poppins } from "next/font/google";
 import { motion } from "motion/react";
 import NavBar from "@/app/[locale]/navbar";
-import { useTranslations } from "next-intl";
 import Footer from "../Footer";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -259,177 +258,158 @@ export default function page() {
           priority
           className="object-cover object-bottom opacity-90"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#bbd2ee] via-[#88c0e8] to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#bbd2ee] via-[#88c0e8] to-transparent" />
       </motion.div>
 
-      <div className="relative z-10 mx-auto max-w-[1400px] px-10">
+      <div className="relative z-10 mx-auto max-w-350 px-10">
         <NavBar />
 
         <main className="relative pt-5">
-          <motion.div
-            className="grid grid-cols-1 pb-15 gap-8 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-center"
-            variants={container}
-            initial="hidden"
-            animate="show"
-          >
-            <motion.div className="relative z-30" variants={fadeUp}>
-              <h1 className={headingClass(language)}>
-                Smart
-                <br />
-                Farming
-              </h1>
-
+          <div className="relative pb-15">
+            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
               <motion.div
-                className={buttonGapClass(language)}
-                variants={container}
-                initial="hidden"
-                animate="show"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, ease: "easeOut" }}
+                className="w-[55%] max-w-[700px]"
               >
-                <motion.button
-                  id="explore"
-                  variants={fadeUp}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.96 }}
-                  onClick={() => router.push("/en/Explore")}
-                  className={`rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 ${
-                    isEnglish ? "" : "whitespace-nowrap"
-                  }`}
+                <Image
+                  src="/ag-2.png"
+                  alt="Floating island with tree"
+                  width={700}
+                  height={540}
+                  style={{ width: "100%", height: "auto" }}
+                  className="object-contain drop-shadow-2xl"
+                  priority
+                />
+              </motion.div>
+            </div>
+
+            <motion.div
+              className="relative z-20 grid grid-cols-1 gap-8 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-center min-h-[420px]"
+              variants={container}
+              initial="hidden"
+              animate="show"
+            >
+              <motion.div className="relative z-30" variants={fadeUp}>
+                <h1 className={headingClass(language)}>
+                  Smart
+                  <br />
+                  Farming
+                </h1>
+
+                <motion.div
+                  className={buttonGapClass(language)}
+                  variants={container}
+                  initial="hidden"
+                  animate="show"
                 >
-                  Explore Farms
-                </motion.button>
-                {isLandowner && (
                   <motion.button
-                    id="register"
+                    id="explore"
                     variants={fadeUp}
-                    onClick={() => router.push("/en/Farmers/register")}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.96 }}
-                    className={`flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100 ${
+                    onClick={() => router.push("/en/Explore")}
+                    className={`rounded-full bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 ${
                       isEnglish ? "" : "whitespace-nowrap"
                     }`}
                   >
-                    Register Farmland
+                    Explore Farms
                   </motion.button>
-                )}
+                  {isLandowner && (
+                    <motion.button
+                      id="register"
+                      variants={fadeUp}
+                      onClick={() => router.push("/en/Farmers/register")}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.96 }}
+                      className={`flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100 ${
+                        isEnglish ? "" : "whitespace-nowrap"
+                      }`}
+                    >
+                      Register Farmland
+                    </motion.button>
+                  )}
+                </motion.div>
               </motion.div>
+
+              <div />
+
+              {isEnglish ? (
+                <motion.div
+                  className="relative flex flex-row gap-8 text-2xl font-bold text-white drop-shadow-sm md:items-end z-30"
+                  variants={container}
+                  initial="hidden"
+                  animate="show"
+                >
+                  <div className="relative flex flex-row gap-0 text-2xl font-bold text-white drop-shadow-sm md:items-end pl-24">
+                    <motion.div variants={fadeUp}>
+                      <p className={statLabelClass(language)}>
+                        10,000+
+                        <br />
+                        Farmers
+                        <br />
+                        Benefited
+                      </p>
+                    </motion.div>
+
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ scale: 1.06 }}
+                      className={statCircleClass(language)}
+                    >
+                      95%
+                    </motion.div>
+
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ scale: 1.06 }}
+                      className="mx-auto flex z-10 bg-[#121212] h-62.5 p-0 justify-center items-center rounded-b-full rounded-tl-full text-bold"
+                    >
+                      <p className={yieldLabelClass(language)}>
+                        increased yields
+                      </p>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  className="relative flex flex-row items-stretch gap-8 text-2xl font-bold text-white drop-shadow-sm z-30"
+                  variants={container}
+                  initial="hidden"
+                  animate="show"
+                >
+                  <div className="relative flex flex-row items-stretch gap-0 pl-24 w-full">
+                    <motion.div variants={fadeUp} className="flex items-center py-4">
+                      <p className={statLabelClass(language)}>
+                        10,000+
+                        <br />
+                        Farmers
+                        <br />
+                        Benefited
+                      </p>
+                    </motion.div>
+
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ scale: 1.06 }}
+                      className="shrink-0 flex z-10 bg-[#c8e639] w-37.5 h-full min-h-37.5 p-4 justify-center items-center rounded-t-full rounded-br-full text-black text-bold"
+                    >
+                      95%
+                    </motion.div>
+
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ scale: 1.06 }}
+                      className="shrink-0 flex z-10 bg-[#121212] w-20 h-full min-h-50 p-2 justify-center items-center rounded-b-full rounded-tl-full text-bold overflow-hidden"
+                    >
+                      <p className={yieldLabelClass(language)}>increased yields</p>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
-
-            <div>
-              <motion.div
-                className="absolute top-[-15%] left-0 w-full h-full flex items-center justify-center z-20"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{
-                  opacity: 1,
-                  y: [0, -14, 0],
-                }}
-                transition={{
-                  opacity: { duration: 0.8, ease: easeOut },
-                  y: {
-                    duration: 4.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.8,
-                  },
-                }}
-              >
-                <Image
-                  src="/ag.png"
-                  alt="Floating island with tree"
-                  width={550}
-                  height={400}
-                  className="object-contain drop-shadow-2xl pointer-events-none"
-                />
-              </motion.div>
-
-              <motion.div
-                className={`mx-auto flex h-[350px] w-[500px] z-10 top-0 translate-y-40 left-[50%] translate-x-[10%] bg-[#c8e639] rounded-full
-                  ${
-                     language === "en"
-      ? "bg-[#c8e639]"
-      : "bg-transparent"
-                  }
-                  `}
-                variants={scaleIn}
-                initial="hidden"
-                animate="show"
-                transition={{ delay: 0.3 }}
-              />
-            </div>
-
-            {isEnglish ? (
-              <motion.div
-                className="relative flex flex-row gap-8 text-2xl font-bold text-white drop-shadow-sm md:items-end"
-                variants={container}
-                initial="hidden"
-                animate="show"
-              >
-                <div className="relative flex flex-row gap-0 text-2xl font-bold text-white drop-shadow-sm md:items-end pl-24">
-                  <motion.div variants={fadeUp}>
-                    <p className={statLabelClass(language)}>
-                      10,000+
-                      <br />
-                      Farmers
-                      <br />
-                      Benefited
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    variants={scaleIn}
-                    whileHover={{ scale: 1.06 }}
-                     className={statCircleClass(language)}
-                  >
-                    95%
-                  </motion.div>
-
-                  <motion.div
-                    variants={scaleIn}
-                    whileHover={{ scale: 1.06 }}
-                    className="mx-auto flex z-10 bg-[#121212] h-[250px] p-0 justify-center items-center rounded-b-full rounded-tl-full text-bold"
-                  >
-                    <p className={yieldLabelClass(language)}>
-                      increased yields
-                    </p>
-                  </motion.div>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                className="relative flex flex-row items-stretch gap-8 text-2xl font-bold text-white drop-shadow-sm"
-                variants={container}
-                initial="hidden"
-                animate="show"
-              >
-                <div className="relative flex flex-row items-stretch gap-0 pl-24 w-full">
-                  <motion.div variants={fadeUp} className="flex items-center py-4">
-                    <p className={statLabelClass(language)}>
-                      10,000+
-                      <br />
-                      Farmers
-                      <br />
-                      Benefited
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    variants={scaleIn}
-                    whileHover={{ scale: 1.06 }}
-                    className="flex-shrink-0 flex z-10 bg-[#c8e639] w-[150px] h-full min-h-[150px] p-4 justify-center items-center rounded-t-full rounded-br-full text-black text-bold"
-                  >
-                    95%
-                  </motion.div>
-
-                  <motion.div
-                    variants={scaleIn}
-                    whileHover={{ scale: 1.06 }}
-                    className="flex-shrink-0 flex z-10 bg-[#121212] w-[80px] h-full min-h-[200px] p-2 justify-center items-center rounded-b-full rounded-tl-full text-bold overflow-hidden"
-                  >
-                    <p className={yieldLabelClass(language)}>increased yields</p>
-                  </motion.div>
-                </div>
-              </motion.div>
-            )}
-          </motion.div>
+          </div>
 
           <motion.div
             className="mt-5 grid grid-cols-1 gap-16 pb-16 md:grid-cols-[1fr_0.6fr_1fr]"
@@ -450,12 +430,13 @@ export default function page() {
 
               <motion.div
                 variants={fadeIn}
-                className="relative aspect-[2/2] min-h-[100px] overflow-hidden bg-[#1f2e14]"
+                className="relative aspect-2/2 min-h-25 overflow-hidden bg-[#1f2e14]"
               >
                 <Image
                   src="/tomato.jpg"
                   alt="Seedling sprouting from soil"
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover"
                 />
               </motion.div>
@@ -465,7 +446,7 @@ export default function page() {
               variants={fadeUp}
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3 }}
-              className="flex flex-col justify-center bg-white p-6 z-10 right-[300px] top-[1/2] translate-x-[350px] shadow-lg"
+              className="flex flex-col justify-center bg-white p-6 z-10 right-75 top-[1/2] translate-x-87.5 shadow-lg"
             >
               <h3 className="text-lg font-extrabold uppercase leading-tight text-neutral-900">
                 INVEST IN

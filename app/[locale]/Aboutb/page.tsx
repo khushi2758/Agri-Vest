@@ -156,38 +156,117 @@ export default function AgriVestAbout() {
     <div id="about" className="font-sans">
      
 
-      {/* ============ SECTION 1 — HOW IT WORKS (bright cream, new) ============ */}
       <section className="relative overflow-hidden text-[#0d140f]">
-        <WaveSeam color="#fbf9f0" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f2f2ec] to-[#cde38b]" />
-        <div className="absolute top-[10%] right-[-10%] w-[420px] h-[420px] rounded-full bg-[#c8e639]/25 blur-[110px] float-slow" />
-        <div className="absolute bottom-[5%] left-[-10%] w-[360px] h-[360px] rounded-full bg-[#7fb8de]/20 blur-[110px] float-slow-rev" />
+        <WaveSeam color="#c7cdb9" />
+        <div className="absolute inset-0 bg-[#c7cdb9]">
+          <Image src="/bg.jpg" alt="" fill className="object-cover object-bottom opacity-[0.15]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#c7cdb9] via-[#daddce] to-[#e8eadf] opacity-90" />
+        </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 md:py-32">
-          <Reveal className="max-w-lg mb-16">
-            <Eyebrow tone="dark">How it works</Eyebrow>
-            <h3 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight leading-[1.02] mb-3">
-              Three steps from bare field to shared harvest
+        <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 md:py-32">
+          <Reveal className="text-center mb-16">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <span className="w-8 h-px bg-[#3f7a4f]" />
+              <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#3f7a4f]">AgriVest</span>
+              <span className="w-8 h-px bg-[#3f7a4f]" />
+            </div>
+            <h3 className="text-3xl md:text-[44px] font-extrabold tracking-tight leading-[1.05] text-[#0d140f]">
+              How it works<span className="text-[#c8e639]">.</span>
             </h3>
-            <p className="text-[#0d140f]/60 font-medium">No middlemen, no quarterly black box — just the season, tracked as it happens.</p>
           </Reveal>
 
-          <div className="relative">
-            <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-px furrow-line" aria-hidden="true" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {STEPS.map((step, i) => (
-                <Reveal key={step.title} delay={i * 140} className="relative">
-                  <div className="w-16 h-16 rounded-full bg-[#0d140f] text-[#c5e71d] flex items-center justify-center font-extrabold text-lg mb-5 relative z-10 shadow-[0_10px_30px_rgba(13,20,15,0.25)]">
-                    0{i + 1}
-                  </div>
-                  <GlassCard tone="deep" className="rounded-3xl p-6 h-full">
-                    <step.icon size={20} className="text-[#3f7a4f] mb-3" />
-                    <h4 className="font-extrabold text-lg mb-2">{step.title}</h4>
-                    <p className="text-[#0d140f]/60 text-sm leading-relaxed">{step.body}</p>
-                  </GlassCard>
-                </Reveal>
-              ))}
+          <div className="hidden md:block">
+            <div className="grid grid-cols-3 gap-8">
+              <Reveal delay={0}>
+                <div className="flex flex-col items-center">
+                  <span className="text-[120px] font-black text-[#0d140f]/[0.04] leading-none select-none pointer-events-none">1</span>
+                </div>
+              </Reveal>
+              <Reveal delay={140}>
+                <div className="flex flex-col items-center">
+                  <span className="text-[120px] font-black text-[#0d140f]/[0.04] leading-none select-none pointer-events-none">2</span>
+                </div>
+              </Reveal>
+              <Reveal delay={280}>
+                <div className="flex flex-col items-center">
+                  <span className="text-[120px] font-black text-[#0d140f]/[0.04] leading-none select-none pointer-events-none">3</span>
+                </div>
+              </Reveal>
             </div>
+
+            <div className="relative -mt-12">
+              <div className="grid grid-cols-3 gap-8 relative z-20">
+                <div className="flex justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/[0.04]">
+                    <Sprout size={24} className="text-[#3f7a4f]" />
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/[0.04]">
+                    <HandCoins size={24} className="text-[#3f7a4f]" />
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/[0.04]">
+                    <TrendingUp size={24} className="text-[#3f7a4f]" />
+                  </div>
+                </div>
+              </div>
+
+              <svg
+                viewBox="0 0 900 80"
+                fill="none"
+                className="absolute top-1/2 -translate-y-1/2 left-[16%] w-[68%] h-20 pointer-events-none z-10"
+              >
+                <path
+                  d="M0 40 C100 40, 120 8, 200 8 C280 8, 300 72, 450 72 C600 72, 620 30, 700 30 C780 30, 820 40, 900 40"
+                  stroke="#3f7a4f"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  className="process-path"
+                />
+              </svg>
+            </div>
+
+            <div className="grid grid-cols-3 gap-8 mt-8">
+              <Reveal delay={0}>
+                <div className="text-center px-4">
+                  <h4 className="font-extrabold text-lg mb-2 text-[#0d140f]">{STEPS[0].title}</h4>
+                  <p className="text-[#0d140f]/45 text-[13px] leading-relaxed">{STEPS[0].body}</p>
+                </div>
+              </Reveal>
+              <Reveal delay={140}>
+                <div className="text-center px-4">
+                  <h4 className="font-extrabold text-lg mb-2 text-[#0d140f]">{STEPS[1].title}</h4>
+                  <p className="text-[#0d140f]/45 text-[13px] leading-relaxed">{STEPS[1].body}</p>
+                </div>
+              </Reveal>
+              <Reveal delay={280}>
+                <div className="text-center px-4">
+                  <h4 className="font-extrabold text-lg mb-2 text-[#0d140f]">{STEPS[2].title}</h4>
+                  <p className="text-[#0d140f]/45 text-[13px] leading-relaxed">{STEPS[2].body}</p>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+
+          <div className="md:hidden flex flex-col gap-10">
+            {STEPS.map((step, i) => (
+              <Reveal key={step.title} delay={i * 120}>
+                <div className="flex gap-5 items-start">
+                  <div className="shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-white shadow-[0_6px_24px_rgba(0,0,0,0.08)] flex items-center justify-center border border-black/[0.04]">
+                      <step.icon size={20} className="text-[#3f7a4f]" />
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#3f7a4f] tracking-widest uppercase mb-1 block">Step {i + 1}</span>
+                    <h4 className="font-extrabold text-lg mb-1 text-[#0d140f]">{step.title}</h4>
+                    <p className="text-[#0d140f]/45 text-sm leading-relaxed">{step.body}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
@@ -342,6 +421,15 @@ export default function AgriVestAbout() {
         @keyframes floatBadgeRev { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
         .float-badge { animation: floatBadge 5s ease-in-out infinite; }
         .float-badge-rev { animation: floatBadgeRev 6s ease-in-out infinite; }
+
+        .process-path {
+          stroke-dasharray: 1600;
+          stroke-dashoffset: 1600;
+          animation: drawPath 2s ease-out forwards;
+        }
+        @keyframes drawPath {
+          to { stroke-dashoffset: 0; }
+        }
 
         @media (prefers-reduced-motion: reduce) {
           .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }

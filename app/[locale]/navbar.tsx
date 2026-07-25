@@ -31,8 +31,7 @@ export const NAV_LINKS = [
   { label: "Wallet", href: "/Wallet" },
   { label: "Portfolio", href: "/Portfolio" },
   { label: "Farmland", href: "/Farmland" },
-   { label: "FarmerDashboard", href: "/FarmerDashboard" },
-  { label: "About", href: "/About" }
+   { label: "FarmerDashboard", href: "/FarmerDashboard" }
  
    
 ];
@@ -165,7 +164,7 @@ export default function NavBar() {
   // not a set of assigned roles.
 const filteredNavLinks = NAV_LINKS.filter((link) => {
   if (!user) {
-    return ["Home", "Explore", "About"].includes(link.label);
+    return ["Home", "Explore"].includes(link.label);
   }
 
   switch (user.role) {
@@ -176,7 +175,6 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
         "Investor",
         "Portfolio",
         "Wallet",
-        "About",
       ].includes(link.label);
 
     case "farmers":
@@ -185,7 +183,6 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
         "FarmerDashboard",
         
         "Wallet",
-        "About",
       ].includes(link.label);
 
     case "landowner":
@@ -194,7 +191,6 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
         "Explore",
         "Farmland",
         "Wallet",
-        "About",
       ].includes(link.label);
 
     case "agronomist":
@@ -205,12 +201,11 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
         "Farmers",
         "Portfolio",
         "Wallet",
-        "About",
         "Agronomist",
       ].includes(link.label); 
 
     default:
-      return ["Home", "Explore", "About"].includes(link.label);
+      return ["Home", "Explore"].includes(link.label);
   }
 });
 
