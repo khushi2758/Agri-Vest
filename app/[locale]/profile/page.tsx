@@ -15,7 +15,7 @@ import { formatDistanceToNow } from "date-fns";
 
 const ALL_ROLES = [
   { id: "investor", label: "Investor" },
-  { id: "farmers", label: "Farmer" },
+  { id: "farmer", label: "Farmer" },
   { id: "landowner", label: "Landowner" },
   { id: "agronomist", label: "Agronomist" },
 ];

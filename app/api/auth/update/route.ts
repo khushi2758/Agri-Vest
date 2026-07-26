@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifyToken } from "@/lib/auth";
+import { verifyToken, signToken } from "@/lib/auth";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
@@ -42,6 +42,7 @@ export async function PUT(request: Request) {
         return NextResponse.json({ error: "Invalid role" }, { status: 400 });
       }
       updateFields.role = role;
+      updateFields.roles = [role];
     }
 
     if (gender !== undefined) updateFields.gender = gender;
@@ -55,14 +56,29 @@ export async function PUT(request: Request) {
       { $set: updateFields }
     );
 
-    // matchedCount tells us the document exists; modifiedCount can be 0
-    // on a legitimate no-op save (values unchanged) and shouldn't be treated as an error.
+    
     if (updateResult.matchedCount === 0) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
     const response = NextResponse.json({ success: true, message: "Profile updated successfully" }, { status: 200 });
     
+    const updatedUser = await db.collection("users").findOne({ _id: userObjectId });
+    if (updatedUser) {
+      const newToken = signToken({
+        sub: updatedUser._id.toString(),
+        roles: updatedUser.roles || (updatedUser.role ? [updatedUser.role] : []),
+        email: updatedUser.email,
+        name: updatedUser.name
+      });
+      response.cookies.set("session", newToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/"
+      });
+    }
+
     response.cookies.set("NEXT_LOCALE", preferred_language, {
       path: "/",
       maxAge: 365 * 24 * 60 * 60,

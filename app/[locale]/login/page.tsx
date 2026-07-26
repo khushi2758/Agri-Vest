@@ -89,7 +89,7 @@ export default function Login() {
     <div className="min-h-screen bg-[#f7f9f2] flex items-center justify-center p-6 selection:bg-[#c8e639] selection:text-[#1b2620]">
       <div className="absolute top-0 left-0 w-full h-96 bg-[#c8e639]/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2"></div>
       
-      <div className="w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-[#1b2620]/5 relative z-10">
+      <div className="w-full max-w-5xl bg-white rounded-4xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-[#1b2620]/5 relative z-10">
         
         <div className="w-full md:w-1/2 p-12 lg:p-16 flex flex-col">
           <div className="mb-12">
@@ -180,7 +180,7 @@ export default function Login() {
         </div>
 
         <div className="hidden md:block w-1/2 bg-[#1b2620] relative p-12 overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#c8e639_1px,transparent_1px)] [background-size:20px_20px]"></div>
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#c8e639_1px,transparent_1px)] bg-size-[20px_20px]"></div>
           <div className="absolute top-1/4 -right-20 w-96 h-96 bg-[#c8e639]/20 rounded-full blur-[100px]"></div>
           
           <div className="relative z-10 h-full flex flex-col justify-between">

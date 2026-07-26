@@ -33,7 +33,7 @@ async function run() {
             },
             role: {
               bsonType: "string",
-              enum: ["landowner", "investor", "agronomist", "agri_tech", "admin"]
+              enum: ["landowner", "investor", "agronomist", "agri_tech", "admin", "farmer"]
             },
             is_active: {
               bsonType: "bool"

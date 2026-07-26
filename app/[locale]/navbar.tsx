@@ -177,11 +177,10 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
         "Wallet",
       ].includes(link.label);
 
-    case "farmers":
+    case "farmer":
       return [
         "Home",
-        "FarmerDashboard",
-        
+        "FarmerDashboard", 
         "Wallet",
       ].includes(link.label);
 

@@ -271,7 +271,7 @@ export default function page() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
-                className="w-[55%] max-w-[700px]"
+                className="w-[55%] max-w-175"
               >
                 <Image
                   src="/ag-2.png"
@@ -286,7 +286,7 @@ export default function page() {
             </div>
 
             <motion.div
-              className="relative z-20 grid grid-cols-1 gap-8 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-center min-h-[420px]"
+              className="relative z-20 grid grid-cols-1 gap-8 md:grid-cols-[1fr_1.1fr_0.9fr] md:items-center min-h-105"
               variants={container}
               initial="hidden"
               animate="show"

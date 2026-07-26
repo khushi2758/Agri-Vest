@@ -160,7 +160,7 @@ export default function AgriVestAbout() {
         <WaveSeam color="#c7cdb9" />
         <div className="absolute inset-0 bg-[#c7cdb9]">
           <Image src="/bg.jpg" alt="" fill className="object-cover object-bottom opacity-[0.15]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#c7cdb9] via-[#daddce] to-[#e8eadf] opacity-90" />
+          <div className="absolute inset-0 bg-linear-to-b from-[#c7cdb9] via-[#daddce] to-[#e8eadf] opacity-90" />
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 md:py-32">
@@ -179,17 +179,17 @@ export default function AgriVestAbout() {
             <div className="grid grid-cols-3 gap-8">
               <Reveal delay={0}>
                 <div className="flex flex-col items-center">
-                  <span className="text-[120px] font-black text-[#0d140f]/[0.04] leading-none select-none pointer-events-none">1</span>
+                  <span className="text-[120px] font-black text-[#0d140f]/4 leading-none select-none pointer-events-none">1</span>
                 </div>
               </Reveal>
               <Reveal delay={140}>
                 <div className="flex flex-col items-center">
-                  <span className="text-[120px] font-black text-[#0d140f]/[0.04] leading-none select-none pointer-events-none">2</span>
+                  <span className="text-[120px] font-black text-[#0d140f]/4 leading-none select-none pointer-events-none">2</span>
                 </div>
               </Reveal>
               <Reveal delay={280}>
                 <div className="flex flex-col items-center">
-                  <span className="text-[120px] font-black text-[#0d140f]/[0.04] leading-none select-none pointer-events-none">3</span>
+                  <span className="text-[120px] font-black text-[#0d140f]/4 leading-none select-none pointer-events-none">3</span>
                 </div>
               </Reveal>
             </div>
@@ -197,17 +197,17 @@ export default function AgriVestAbout() {
             <div className="relative -mt-12">
               <div className="grid grid-cols-3 gap-8 relative z-20">
                 <div className="flex justify-center">
-                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/[0.04]">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/4">
                     <Sprout size={24} className="text-[#3f7a4f]" />
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/[0.04]">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/4">
                     <HandCoins size={24} className="text-[#3f7a4f]" />
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/[0.04]">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] flex items-center justify-center border border-black/4">
                     <TrendingUp size={24} className="text-[#3f7a4f]" />
                   </div>
                 </div>
@@ -255,7 +255,7 @@ export default function AgriVestAbout() {
               <Reveal key={step.title} delay={i * 120}>
                 <div className="flex gap-5 items-start">
                   <div className="shrink-0">
-                    <div className="w-12 h-12 rounded-xl bg-white shadow-[0_6px_24px_rgba(0,0,0,0.08)] flex items-center justify-center border border-black/[0.04]">
+                    <div className="w-12 h-12 rounded-xl bg-white shadow-[0_6px_24px_rgba(0,0,0,0.08)] flex items-center justify-center border border-black/4">
                       <step.icon size={20} className="text-[#3f7a4f]" />
                     </div>
                   </div>
@@ -274,9 +274,9 @@ export default function AgriVestAbout() {
       {/* ============ SECTION 2 — PILLARS (meadow pastel, glass with dark text) ============ */}
       <section className="relative overflow-hidden text-[#0d140f]">
         <WaveSeam color="#eef2df" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#c8e27b] via-[#8fc48f] to-[#c4d58f]" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#c8e27b] via-[#8fc48f] to-[#c4d58f]" />
         <div className="absolute inset-0 farmgrid opacity-[0.08]" />
-        <div className="absolute top-[10%] right-[-10%] w-[420px] h-[420px] rounded-full bg-white/25 blur-[110px] float-slow" />
+        <div className="absolute top-[10%] right-[-10%] w-105 h-105 rounded-full bg-white/25 blur-[110px] float-slow" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 md:py-32">
           <Reveal className="max-w-lg mb-12">
@@ -309,9 +309,9 @@ export default function AgriVestAbout() {
       {/* ============ SECTION 3 — VALUES (cream) ============ */}
       <section className="relative overflow-hidden text-[#0d140f]">
         <WaveSeam color="#f4f7ec" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f4f7ec] to-[#e7efdd]" />
-        <div className="absolute top-[-15%] left-[10%] w-[420px] h-[420px] rounded-full bg-[#c8e639]/30 blur-[110px] float-slow" />
-        <div className="absolute bottom-[-15%] right-[5%] w-[380px] h-[380px] rounded-full bg-[#7fb8de]/25 blur-[110px] float-slow-rev" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#f4f7ec] to-[#e7efdd]" />
+        <div className="absolute top-[-15%] left-[10%] w-105 h-105 rounded-full bg-[#c8e639]/30 blur-[110px] float-slow" />
+        <div className="absolute bottom-[-15%] right-[5%] w-95 h-95 rounded-full bg-[#7fb8de]/25 blur-[110px] float-slow-rev" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-12 items-start">
@@ -343,8 +343,8 @@ export default function AgriVestAbout() {
       {/* ============ SECTION 5 — CTA (bright lime finale) ============ */}
       <section className="relative overflow-hidden text-white">
         <WaveSeam color="#e7efdd" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#e3e4dc] via-[#d9dbd5] to-[#4f8f66]" />
-        <div className="absolute top-[-20%] left-[30%] w-[600px] h-[600px] rounded-full bg-white/15 blur-[130px] float-slow" />
+        <div className="absolute inset-0 bg-linear-to-br from-[#e3e4dc] via-[#d9dbd5] to-[#4f8f66]" />
+        <div className="absolute top-[-20%] left-[30%] w-150 h-150 rounded-full bg-white/15 blur-[130px] float-slow" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 md:py-32">
           <Reveal>
