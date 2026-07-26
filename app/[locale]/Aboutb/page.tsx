@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, ReactNode } from "react";
+
 import {
   Leaf, Sprout, LineChart, BrainCircuit, ArrowRight, ArrowUpRight,
   Lock, Eye, Globe2, HandCoins, TrendingUp,
@@ -108,8 +109,8 @@ type BrandPhotoProps = { src: string; alt: string; className?: string };
 
 function BrandPhoto({ src, alt, className = "" }: BrandPhotoProps) {
   return (
-    <div className={`relative overflow-hidden water-glass water-glass-light p-1.5 ${className}`}>
-      <div className="relative w-full h-full overflow-hidden rounded-[inherit]">
+    <div className={`relative overflow-hidden water-glass water-glass-light p-2 ${className}`}>
+      <div className="relative overflow-hidden bg-amber-300  rounded-[inherit]">
         <Image src={src} alt={alt} width={600} height={500} loading="lazy" className="w-full h-full object-cover" />
       </div>
     </div>
@@ -287,15 +288,13 @@ export default function AgriVestAbout() {
             <p className="text-[#0d140f]/60 font-medium">Everything a farmer or investor needs on AgriVest, in a single view.</p>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2  justify-center items-center">
             {PILLARS.map((p, i) => (
               <Reveal key={p.title} delay={i * 100}>
-                <GlassCard tone="deep" className="rounded-3xl flex flex-col sm:flex-row h-full">
-                  <BrandPhoto src={p.image} alt={p.title} className="w-full sm:w-40 h-40 sm:h-auto shrink-0 rounded-2xl m-3 sm:my-3 sm:ml-3 sm:mr-0" />
+                <GlassCard tone="deep" className="rounded-3xl flex flex-col sm:flex-row h-full  ">
+                  <BrandPhoto src={p.image} alt={p.title} className="w-full sm:w-40 h-440 sm:h-auto  rounded-2xl sm:my-3 sm:ml-3 sm:mr-0 " />
                   <div className="p-6 flex flex-col">
-                    <div className="w-10 h-10 rounded-xl bg-[#c8e639]/40 flex items-center justify-center mb-3">
-                      <p.icon size={18} className="text-[#3f7a4f]" />
-                    </div>
+                   
                     <h4 className="font-extrabold text-lg mb-2">{p.title}</h4>
                     <p className="text-[#0d140f]/60 text-sm leading-relaxed">{p.body}</p>
                   </div>
@@ -341,7 +340,7 @@ export default function AgriVestAbout() {
       </section>
 
       {/* ============ SECTION 5 — CTA (bright lime finale) ============ */}
-      <section className="relative overflow-hidden text-white">
+    <section className="relative overflow-hidden text-white">
         <WaveSeam color="#e7efdd" />
         <div className="absolute inset-0 bg-linear-to-br from-[#e3e4dc] via-[#d9dbd5] to-[#4f8f66]" />
         <div className="absolute top-[-20%] left-[30%] w-150 h-150 rounded-full bg-white/15 blur-[130px] float-slow" />
@@ -369,7 +368,7 @@ export default function AgriVestAbout() {
           </Reveal>
         </div>
       </section>
-
+   
       <style jsx global>{`
         .reveal {
           opacity: 0;

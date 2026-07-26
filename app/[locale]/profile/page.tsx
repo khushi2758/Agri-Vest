@@ -51,8 +51,6 @@ export default function AccountSettingsPage() {
     tax_country: "",
     address: "",
     preferred_language: "en",
-
-    // Single access role — a user has exactly one at a time
     role: "investor",
   });
   const [saveLoading, setSaveLoading] = useState(false);

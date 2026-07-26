@@ -180,6 +180,7 @@ const filteredNavLinks = NAV_LINKS.filter((link) => {
     case "farmer":
       return [
         "Home",
+
         "FarmerDashboard", 
         "Wallet",
       ].includes(link.label);
